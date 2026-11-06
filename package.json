@@ -6,7 +6,8 @@
     "studio": "remotion studio",
     "render": "remotion render",
     "hf:preview": "cd hyperframes-starter && npx hyperframes preview",
-    "hf:render": "cd hyperframes-starter && npx hyperframes render -o ../out/hyperframes.mp4"
+    "hf:render": "cd hyperframes-starter && npx hyperframes render -o ../out/hyperframes.mp4",
+    "video:car-engine": "python3 videos/01-car-engine/music.py && remotion render CarEngine out/car-engine.mp4"
   },
   "repository": {
     "type": "git",
@@ -27,5 +28,10 @@
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "remotion": "^4.0.541"
+  },
+  "devDependencies": {
+    "@remotion/fonts": "^4.0.541",
+    "@types/react": "^19.3.0",
+    "typescript": "^7.0.2"
   }
 }
