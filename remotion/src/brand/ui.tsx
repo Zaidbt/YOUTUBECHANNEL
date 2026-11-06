@@ -11,8 +11,8 @@ import { Px, Pixels, rect, disc, line, gear, dashed } from "./pixels";
 export const fontFamily = "PressStart2P";
 loadFont({ family: fontFamily, url: staticFile("fonts/PressStart2P-Regular.ttf") });
 
-export const CHANNEL = "BITWORKS";
-export const HANDLE = "@BITWORKS";
+export const CHANNEL = "HOW IT WORKS";
+export const HANDLE = "WITH ZAY";
 
 export const P = {
   // blueprint
