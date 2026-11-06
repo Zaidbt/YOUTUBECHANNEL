@@ -8,7 +8,8 @@
     "hf:preview": "cd hyperframes-starter && npx hyperframes preview",
     "hf:render": "cd hyperframes-starter && npx hyperframes render -o ../out/hyperframes.mp4",
     "video:car-engine": "python3 videos/01-car-engine/music.py && remotion render CarEngine out/car-engine.mp4",
-    "video:watch": "python3 videos/02-watch/build.py && remotion render WatchVideo out/watch.mp4 --gl=swangle"
+    "video:watch": "python3 videos/02-watch/build.py && remotion render WatchVideo out/watch.mp4 --gl=swangle",
+    "video:teasers": "python3 videos/teasers/build.py && remotion render FirefliesTeaser out/FirefliesTeaser.mp4 --gl=swangle && remotion render WatchTeaser out/WatchTeaser.mp4 --gl=swangle"
   },
   "repository": {
     "type": "git",

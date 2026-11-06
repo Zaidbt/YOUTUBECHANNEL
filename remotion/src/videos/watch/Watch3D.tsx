@@ -11,7 +11,7 @@ import { ThreeCanvas } from "@remotion/three";
 import { loadFont } from "@remotion/fonts";
 import { BlueprintBg } from "../../brand/ui";
 
-export type Look = "pixel" | "toy" | "blueprint";
+export type Look = "pixel" | "toy" | "blueprint" | "cinema";
 
 loadFont({ family: "Bungee", url: staticFile("fonts/Bungee-Regular.ttf") });
 loadFont({ family: "PressStart2P", url: staticFile("fonts/PressStart2P-Regular.ttf") });
@@ -99,6 +99,7 @@ type PartKey = "plate" | "barrel" | "fourth" | "escape" | "fork" | "balance" | "
 const COLORS: Record<Look, Record<PartKey, string>> = {
   pixel: { plate: "#3a4a78", barrel: "#e2b14c", fourth: "#e2b14c", escape: "#c3cede", fork: "#c3cede", balance: "#f0c45a", hairspring: "#5f8cff", jewel: "#ff3b6b", steel: "#c3cede" },
   toy: { plate: "#fff3e8", barrel: "#ffcf3f", fourth: "#ff8a3d", escape: "#ff5fa8", fork: "#9be84a", balance: "#4fd2ff", hairspring: "#7a5cff", jewel: "#ff3b6b", steel: "#ffffff" },
+  cinema: { plate: "#1c140c", barrel: "#c8913a", fourth: "#c8913a", escape: "#9aa3ad", fork: "#9aa3ad", balance: "#d9a441", hairspring: "#3b5bd6", jewel: "#ff2a4a", steel: "#a8b0ba" },
   blueprint: { plate: "#1b3d78", barrel: "#d9a441", fourth: "#d9a441", escape: "#b9c4d6", fork: "#b9c4d6", balance: "#e3b552", hairspring: "#4f7dff", jewel: "#ff2d5e", steel: "#b9c4d6" },
 };
 
@@ -115,6 +116,7 @@ export function useMaterials(look: Look) {
       const color = new THREE.Color(COLORS[look][k]);
       if (look === "pixel") out[k] = new THREE.MeshToonMaterial({ color, gradientMap: gradient });
       else if (look === "toy") out[k] = new THREE.MeshPhysicalMaterial({ color, roughness: 0.38, clearcoat: 1, clearcoatRoughness: 0.15, sheen: 0.3 });
+      else if (look === "cinema") out[k] = k === "jewel" ? new THREE.MeshBasicMaterial({ color }) : new THREE.MeshStandardMaterial({ color, metalness: k === "plate" ? 0.1 : 0.4, roughness: k === "plate" ? 0.85 : 0.35 });
       else out[k] = new THREE.MeshStandardMaterial({ color, metalness: k === "plate" ? 0.1 : 0.55, roughness: 0.32, transparent: k === "plate", opacity: k === "plate" ? 0.55 : 1 });
     });
     return out;
@@ -249,7 +251,7 @@ export const WatchCanvas: React.FC<{ look: Look; balanceA: number; escA: number;
 };
 
 // ---------- overlay UI per look ----------
-const FONT: Record<Look, string> = { pixel: "PressStart2P", toy: "Bungee", blueprint: "Bungee" };
+const FONT: Record<Look, string> = { pixel: "PressStart2P", toy: "Bungee", blueprint: "Bungee", cinema: "PressStart2P" };
 
 const StickerH: React.FC<{ x: number; y: number; bg: string; color?: string; tilt?: number; look: Look; lines: { t: string; s: number }[] }> = ({ x, y, bg, color = "#0a0f24", tilt = -3, look, lines }) => (
   <div style={{

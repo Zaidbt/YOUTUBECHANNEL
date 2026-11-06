@@ -5,6 +5,8 @@ import { Watch3DPreview } from "./videos/watch/Watch3D";
 import { KlininPreviews } from "./clients/klinin/KlininPreviews";
 import { KlininAdPreviews } from "./clients/klinin/KlininAdPreviews";
 import { KlininCreative } from "./clients/klinin/KlininCreative";
+import { CinematicPreview } from "./videos/watch/CinematicPreview";
+import { FirefliesTeaser, WatchTeaser, TEASER_FRAMES } from "./videos/teasers/Teasers";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -28,5 +30,9 @@ export const Root = () => (
     <Composition id="KlininPreviews" component={KlininPreviews} durationInFrames={1} fps={30} width={1080} height={1920} defaultProps={{ shot: 0 }} />
     <Composition id="KlininAdPreviews" component={KlininAdPreviews} durationInFrames={1} fps={30} width={1080} height={1920} defaultProps={{ shot: 0 }} />
     <Composition id="KlininCreative" component={KlininCreative} durationInFrames={1} fps={30} width={1080} height={1920} defaultProps={{ shot: 0 }} />
+    <Composition id="CinematicPreview" component={CinematicPreview} durationInFrames={1} fps={30} width={1080} height={1920} defaultProps={{ shot: 0 }} />
+    {/* Cinematic pixel-3D teasers (10 s, --gl=swangle) */}
+    <Composition id="FirefliesTeaser" component={FirefliesTeaser} durationInFrames={TEASER_FRAMES} fps={30} width={1080} height={1920} />
+    <Composition id="WatchTeaser" component={WatchTeaser} durationInFrames={TEASER_FRAMES} fps={30} width={1080} height={1920} />
   </>
 );
