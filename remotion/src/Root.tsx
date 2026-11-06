@@ -7,6 +7,7 @@ import { KlininAdPreviews } from "./clients/klinin/KlininAdPreviews";
 import { KlininCreative } from "./clients/klinin/KlininCreative";
 import { CinematicPreview } from "./videos/watch/CinematicPreview";
 import { FirefliesTeaser, WatchTeaser, TEASER_FRAMES } from "./videos/teasers/Teasers";
+import { FirefliesMajestic, WatchMajestic, MAJESTIC_FRAMES, FPS60 } from "./videos/teasers/Majestic";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -34,5 +35,8 @@ export const Root = () => (
     {/* Cinematic pixel-3D teasers (10 s, --gl=swangle) */}
     <Composition id="FirefliesTeaser" component={FirefliesTeaser} durationInFrames={TEASER_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="WatchTeaser" component={WatchTeaser} durationInFrames={TEASER_FRAMES} fps={30} width={1080} height={1920} />
+    {/* Majestic v2 teasers: 60 fps, 10 s */}
+    <Composition id="FirefliesMajestic" component={FirefliesMajestic} durationInFrames={MAJESTIC_FRAMES} fps={FPS60} width={1080} height={1920} />
+    <Composition id="WatchMajestic" component={WatchMajestic} durationInFrames={MAJESTIC_FRAMES} fps={FPS60} width={1080} height={1920} />
   </>
 );

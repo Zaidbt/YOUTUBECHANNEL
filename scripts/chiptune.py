@@ -115,6 +115,22 @@ class Song:
             if not self.loop: break
         self.buf = y
 
+    def reverb(self, wet=0.3, decay=2.2, predelay=0.02, seed=11):
+        """Convolution reverb with a synthetic hall impulse (exponentially decaying stereo-ish noise)."""
+        n = int(decay * 1.5 * SR); t = np.arange(n) / SR
+        rng = np.random.default_rng(seed)
+        ir = rng.standard_normal(n) * np.exp(-t * 6.9 / decay)
+        ir = np.convolve(ir, np.ones(8) / 8, mode="same")  # darker tail
+        ir = np.concatenate([np.zeros(int(predelay * SR)), ir]); ir /= np.sqrt(np.sum(ir ** 2))
+        L = len(self.buf) + len(ir)
+        y = np.fft.irfft(np.fft.rfft(self.buf, L) * np.fft.rfft(ir, L), L)
+        if self.loop:  # wrap the tail around for loops
+            tail = y[len(self.buf):]
+            y = y[:len(self.buf)].copy(); y[:len(tail)] += tail[:len(self.buf)]
+        else:
+            y = y[:len(self.buf)]
+        self.buf = self.buf + wet * y * (np.std(self.buf) / (np.std(y) + 1e-9))
+
     def save(self, path, lufs=-14):
         x = np.tanh(self.buf / (np.max(np.abs(self.buf)) + 1e-9) * 1.2) * 0.8  # soft limiter
         pcm = (x * 32767).astype(np.int16)
