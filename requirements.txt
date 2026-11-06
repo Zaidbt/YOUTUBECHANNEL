@@ -1,3 +1,5 @@
 yt-dlp[default]>=2026.10.26
 faster-whisper==1.2.1
 av<16
+kokoro-onnx
+soundfile
