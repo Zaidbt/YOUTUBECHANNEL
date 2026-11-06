@@ -15,6 +15,8 @@ This installs ffmpeg, yt-dlp, faster-whisper, Remotion and HyperFrames.
 | **HyperFrames** | Videos written as HTML + GSAP (`hyperframes-starter/`) | `npm run hf:preview` · `npm run hf:render` |
 | **ffmpeg** | Cutting, joining, resizing, audio | `ffmpeg -i in.mp4 -vf "crop=ih*9/16:ih" out.mp4` (16:9 → 9:16) |
 | **faster-whisper** | Speech → captions (SRT + word timings) | `python3 scripts/transcribe.py video.mp4 --model small` |
+| **Chatterbox** (voice) | Free, expressive voiceover + voice cloning (MIT license) | `.venv-tts/bin/python scripts/voice.py "text" --ref assets/voices/deep_storyteller.mp3 -o out/vo.wav` |
+| **Kokoro** (voice) | Fast, free draft voiceover | `npx hyperframes tts "text" -v am_michael -o out/draft.wav` |
 | **yt-dlp** | Fetching reference media, metadata and subtitles | `yt-dlp <url>` |
 
 Remotion compositions: `HelloShort` (1080×1920, vertical) and `HelloWide` (1920×1080, YouTube).

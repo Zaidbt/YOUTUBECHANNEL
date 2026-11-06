@@ -9,3 +9,4 @@ out/
 __pycache__/
 .DS_Store
 hyperframes-starter/.hyperframes/
+.venv-tts/
