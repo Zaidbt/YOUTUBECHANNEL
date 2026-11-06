@@ -19,7 +19,7 @@ loadFont({ family: "PressStart2P", url: staticFile("fonts/PressStart2P-Regular.t
 export const K = { navy: "#003367", blue: "#137fec", machine: "#3e6fd8", sky: "#e8f3ff", amber: "#f59e0b", ink: "#0f172a", white: "#ffffff", green: "#22c55e" };
 
 // ---------- 3D helpers ----------
-function roundedBox(w: number, h: number, d: number, r: number, hole?: { x: number; y: number; r: number }) {
+export function roundedBox(w: number, h: number, d: number, r: number, hole?: { x: number; y: number; r: number }) {
   const s = new THREE.Shape();
   const x = -w / 2, y = -h / 2;
   s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r);
@@ -30,9 +30,9 @@ function roundedBox(w: number, h: number, d: number, r: number, hole?: { x: numb
   g.translate(0, 0, -(d - 0.4) / 2);
   return g;
 }
-const toy = (color: string, extra: Record<string, unknown> = {}) => <meshPhysicalMaterial color={color} roughness={0.35} clearcoat={1} clearcoatRoughness={0.15} {...extra} />;
+export const toy = (color: string, extra: Record<string, unknown> = {}) => <meshPhysicalMaterial color={color} roughness={0.35} clearcoat={1} clearcoatRoughness={0.15} {...extra} />;
 
-const CLOTH = ["#ffffff", "#ffd166", "#ef476f", "#06d6a0", "#8ecae6", "#f4a261", "#cdb4db"];
+export const CLOTH = ["#ffffff", "#ffd166", "#ef476f", "#06d6a0", "#8ecae6", "#f4a261", "#cdb4db"];
 
 /** Washing machine in the Klinin logo style: blue body, white door ring, panel strip + 2 knobs, clothes + bubbles. */
 export const WashingMachine: React.FC<{ drumA: number }> = ({ drumA }) => {
@@ -65,7 +65,7 @@ export const WashingMachine: React.FC<{ drumA: number }> = ({ drumA }) => {
   );
 };
 
-const Bubbles: React.FC<{ n?: number; spread?: [number, number, number]; seed?: number }> = ({ n = 18, spread = [9, 12, 4], seed = 0 }) => (
+export const Bubbles: React.FC<{ n?: number; spread?: [number, number, number]; seed?: number }> = ({ n = 18, spread = [9, 12, 4], seed = 0 }) => (
   <group>
     {Array.from({ length: n }, (_, i) => {
       const r = 0.15 + rnd(i + seed) * 0.55;
@@ -79,7 +79,7 @@ const Bubbles: React.FC<{ n?: number; spread?: [number, number, number]; seed?: 
   </group>
 );
 
-const Lights: React.FC = () => (
+export const Lights: React.FC = () => (
   <>
     <ambientLight intensity={0.85} />
     <directionalLight position={[-8, 12, 14]} intensity={1.7} />

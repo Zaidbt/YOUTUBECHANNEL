@@ -4,6 +4,7 @@ import { StyleFrames } from "./videos/watch/StyleFrames";
 import { Watch3DPreview } from "./videos/watch/Watch3D";
 import { KlininPreviews } from "./clients/klinin/KlininPreviews";
 import { KlininAdPreviews } from "./clients/klinin/KlininAdPreviews";
+import { KlininCreative } from "./clients/klinin/KlininCreative";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -26,5 +27,6 @@ export const Root = () => (
     {/* Client: Klinin — concept previews (--props='{"shot":N}' --gl=swangle) */}
     <Composition id="KlininPreviews" component={KlininPreviews} durationInFrames={1} fps={30} width={1080} height={1920} defaultProps={{ shot: 0 }} />
     <Composition id="KlininAdPreviews" component={KlininAdPreviews} durationInFrames={1} fps={30} width={1080} height={1920} defaultProps={{ shot: 0 }} />
+    <Composition id="KlininCreative" component={KlininCreative} durationInFrames={1} fps={30} width={1080} height={1920} defaultProps={{ shot: 0 }} />
   </>
 );
