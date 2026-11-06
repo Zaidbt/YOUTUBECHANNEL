@@ -1,0 +1,11 @@
+node_modules/
+out/
+*.mp4
+*.mov
+*.webm
+*.wav
+*.mp3
+!assets/**/*.mp3
+__pycache__/
+.DS_Store
+hyperframes-starter/.hyperframes/

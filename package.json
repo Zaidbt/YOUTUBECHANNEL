@@ -1,0 +1,31 @@
+{
+  "name": "ai-video-studio",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render",
+    "hf:preview": "cd hyperframes-starter && npx hyperframes preview",
+    "hf:render": "cd hyperframes-starter && npx hyperframes render -o ../out/hyperframes.mp4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zaidbt/YOUTUBECHANNEL.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zaidbt/YOUTUBECHANNEL/issues"
+  },
+  "homepage": "https://github.com/Zaidbt/YOUTUBECHANNEL#readme",
+  "private": "true",
+  "type": "module",
+  "dependencies": {
+    "@remotion/cli": "^4.0.541",
+    "hyperframes": "^0.9.19",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "^4.0.541"
+  }
+}
