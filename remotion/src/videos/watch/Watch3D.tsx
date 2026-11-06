@@ -70,10 +70,10 @@ function gearShape(r: number, teeth: number, th: number, opts: { spokes?: number
   return s;
 }
 
-const extrude = (shape: THREE.Shape, depth: number) =>
+export const extrude = (shape: THREE.Shape, depth: number) =>
   new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.04, bevelSegments: 1, curveSegments: 8 });
 
-function annulus(ro: number, ri: number, depth: number) {
+export function annulus(ro: number, ri: number, depth: number) {
   const s = new THREE.Shape();
   arcPath(s as unknown as THREE.Path, ro, 0, Math.PI * 2, 64, true);
   const h = new THREE.Path();
@@ -92,7 +92,7 @@ function spiralTube(r0: number, r1: number, turns: number, radius: number, z = 0
   return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), n * 2, radius, 6, false);
 }
 
-const cylZ = (r: number, h: number, seg = 32) => new THREE.CylinderGeometry(r, r, h, seg).rotateX(Math.PI / 2);
+export const cylZ = (r: number, h: number, seg = 32) => new THREE.CylinderGeometry(r, r, h, seg).rotateX(Math.PI / 2);
 
 // ---------- materials ----------
 type PartKey = "plate" | "barrel" | "fourth" | "escape" | "fork" | "balance" | "hairspring" | "jewel" | "steel";
@@ -102,7 +102,7 @@ const COLORS: Record<Look, Record<PartKey, string>> = {
   blueprint: { plate: "#1b3d78", barrel: "#d9a441", fourth: "#d9a441", escape: "#b9c4d6", fork: "#b9c4d6", balance: "#e3b552", hairspring: "#4f7dff", jewel: "#ff2d5e", steel: "#b9c4d6" },
 };
 
-function useMaterials(look: Look) {
+export function useMaterials(look: Look) {
   return useMemo(() => {
     const out = {} as Record<PartKey, THREE.Material>;
     let gradient: THREE.DataTexture | undefined;
@@ -136,7 +136,7 @@ const Part: React.FC<{ geo: THREE.BufferGeometry; mat: THREE.Material; edges?: b
 };
 
 // ---------- the movement ----------
-export const MovementScene: React.FC<{ look: Look; balanceA: number; escA: number; forkA: number }> = ({ look, balanceA, escA, forkA }) => {
+export const MovementScene: React.FC<{ look: Look; balanceA: number; escA: number; forkA: number; tilt?: number }> = ({ look, balanceA, escA, forkA, tilt = TILT }) => {
   const m = useMaterials(look);
   const edges = look === "blueprint";
   const g = useMemo(() => {
@@ -172,7 +172,7 @@ export const MovementScene: React.FC<{ look: Look; balanceA: number; escA: numbe
   const entry: [number, number] = [-3.6, -2.1], exit: [number, number] = [-0.8, -2.5], tail: [number, number] = [1.4, 2.3];
 
   return (
-    <group rotation={[TILT, 0, 0]}>
+    <group rotation={[tilt, 0, 0]}>
       <Part geo={g.plate} mat={m.plate} edges={edges} position={[0, 0, -0.55]} />
       {/* mainspring barrel */}
       <group position={POS.barrel.toArray()} rotation={[0, 0, escA / 40]}>

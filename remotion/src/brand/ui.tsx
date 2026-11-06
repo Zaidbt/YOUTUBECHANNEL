@@ -52,8 +52,10 @@ export const TitleBlock: React.FC<{ title: string; scale: string; mode: "real" |
         rect(62, y, 1, h, P.chalk), rect(62, y + 15, 112, 1, P.chalk), rect(138, y + 15, 1, 15, P.chalk)]} />
       {/* logo cell */}
       <Pixels px={gear(20, y + 15, 6, 8, 0.3, P.yellow, P.paperDeep, { spokes: 0, tooth: 2, hub: 2 })} />
-      <Txt x={30} y={y + 9} s={4} c={P.yellow} anchor="start">BIT</Txt>
-      <Txt x={30} y={y + 16} s={4} c={P.chalk} anchor="start">WORKS</Txt>
+      <Txt x={29} y={y + 6} s={4} c={P.yellow} anchor="start">HOW IT</Txt>
+      <Txt x={29} y={y + 12} s={4} c={P.chalk} anchor="start">WORKS</Txt>
+      <rect x={29} y={y + 19} width={28} height={7} fill={P.pink} />
+      <Txt x={43} y={y + 21} s={3} c={P.ink}>W/ ZAY</Txt>
       {/* title */}
       <Txt x={66} y={y + 3} s={2.5} c={P.chalkDim} anchor="start">DRAWING TITLE</Txt>
       <Txt x={66} y={y + 8} s={4} anchor="start">{title}</Txt>

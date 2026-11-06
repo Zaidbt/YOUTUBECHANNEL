@@ -73,19 +73,27 @@ def boom(vol=0.9, seed=4):
 
 
 class Song:
-    def __init__(self, bpm, bars, tail=1.5):
+    def __init__(self, bpm, bars, tail=1.5, loop=False):
+        """loop=True: the buffer is exactly `bars` long and sounds ringing past the end wrap to the start,
+        so the track loops seamlessly."""
         self.bpm, self.beat = bpm, 60 / bpm
         self.bar = 4 * self.beat
-        self.buf = np.zeros(int((bars * self.bar + tail) * SR))
+        self.loop = loop
+        self.buf = np.zeros(int(round((bars * self.bar + (0 if loop else tail)) * SR)))
 
     def t(self, bar, beat=0.0):
         """Time in seconds of (bar, beat), both 0-based; beat may be fractional."""
         return bar * self.bar + beat * self.beat
 
     def add(self, sig, at):
-        i = int(at * SR)
-        if i >= len(self.buf): return
-        sig = sig[: len(self.buf) - i]
+        i = int(round(at * SR))
+        n = len(self.buf)
+        if self.loop:
+            idx = (i + np.arange(len(sig))) % n
+            np.add.at(self.buf, idx, sig)
+            return
+        if i >= n: return
+        sig = sig[: n - i]
         self.buf[i:i + len(sig)] += sig
 
     def tape_stop(self, start, dur, end_rate=0.12):
@@ -97,13 +105,31 @@ class Song:
         out = np.interp(pos, np.arange(n), seg) * np.clip(np.linspace(1.6, 0, n), 0, 1)
         self.buf[a:a + n] = out
 
+    def lowpass(self, cutoff=7000):
+        """One-pole low-pass: takes the harsh edge off square waves and noise."""
+        a = 1 - np.exp(-2 * np.pi * cutoff / SR)
+        y = np.empty_like(self.buf); acc = self.buf[-1] if self.loop else 0.0
+        for k in range(2):  # second pass settles the wrap-around state for loops
+            for i, v in enumerate(self.buf):
+                acc += a * (v - acc); y[i] = acc
+            if not self.loop: break
+        self.buf = y
+
     def save(self, path, lufs=-14):
-        x = self.buf / (np.max(np.abs(self.buf)) + 1e-9) * 0.8
+        x = np.tanh(self.buf / (np.max(np.abs(self.buf)) + 1e-9) * 1.2) * 0.8  # soft limiter
         pcm = (x * 32767).astype(np.int16)
         tmp = Path(tempfile.mkdtemp()) / "raw.wav"
         with wave.open(str(tmp), "wb") as w:
             w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
         Path(path).parent.mkdir(parents=True, exist_ok=True)
-        subprocess.run(["ffmpeg", "-nostdin", "-y", "-loglevel", "error", "-i", str(tmp),
-                        "-af", f"loudnorm=I={lufs}:TP=-1.0:LRA=9", "-ar", "48000", "-ac", "2", str(path)], check=True)
+        # two-pass linear loudnorm: one constant gain, so a looping track has no level jump at the seam
+        import json as _json
+        r = subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-i", str(tmp), "-af", f"loudnorm=I={lufs}:TP=-1.0:LRA=11:print_format=json",
+                            "-f", "null", "-"], capture_output=True, text=True)
+        m = _json.loads(r.stderr[r.stderr.rindex("{"):])
+        af = (f"loudnorm=I={lufs}:TP=-1.0:LRA=11:linear=true:measured_I={m['input_i']}:measured_TP={m['input_tp']}:"
+              f"measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}")
+        dur = len(self.buf) / SR
+        subprocess.run(["ffmpeg", "-nostdin", "-y", "-loglevel", "error", "-i", str(tmp), "-af", af, "-ar", "48000", "-ac", "2",
+                        "-t", f"{dur:.6f}", str(path)], check=True)
         print("Saved", path)

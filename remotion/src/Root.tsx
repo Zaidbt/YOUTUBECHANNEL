@@ -2,6 +2,7 @@ import { Composition } from "remotion";
 import { HelloShort } from "./HelloShort";
 import { StyleFrames } from "./videos/watch/StyleFrames";
 import { Watch3DPreview } from "./videos/watch/Watch3D";
+import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
 export const Root = () => (
@@ -18,5 +19,7 @@ export const Root = () => (
     <Composition id="StyleFrames" component={StyleFrames} durationInFrames={1} fps={30} width={1080} height={1920} defaultProps={{ shot: 0 }} />
     {/* 3D look previews (render with --props='{"look":"pixel"|"toy"|"blueprint"}' --gl=swangle) */}
     <Composition id="Watch3DPreview" component={Watch3DPreview} durationInFrames={60} fps={30} width={1080} height={1920} defaultProps={{ look: "toy" as const }} />
+    {/* 002 · How does a watch tick? (render with --gl=swangle) */}
+    <Composition id="WatchVideo" component={WatchVideo} durationInFrames={WATCH_DURATION} fps={WATCH_FPS} width={1080} height={1920} />
   </>
 );
