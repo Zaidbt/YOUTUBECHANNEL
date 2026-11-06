@@ -15,9 +15,9 @@ import { AbsoluteFill, Audio, staticFile, useCurrentFrame } from "remotion";
 import { ThreeCanvas } from "@remotion/three";
 import TL from "./timeline.json";
 import { MovementScene, annulus, cylZ } from "./Watch3D";
-import { Movement, BAL, FORK, ESC, FOURTH, BARREL } from "./Movement";
-import { P, BlueprintBg, TitleBlock, Balloon, Sticker, Cogsy, Txt } from "../../brand/ui";
-import { Pixels, ring } from "../../brand/pixels";
+import { Movement, BAL, FORK, ESC, FOURTH, BARREL, CANDY_PAL } from "./Movement";
+import { P, Balloon, Cogsy } from "../../brand/ui";
+import { Pixels, ring, rect } from "../../brand/pixels";
 
 export const FPS = 30;
 export const DURATION = Math.round(TL.duration * FPS); // 960
@@ -66,7 +66,13 @@ function camera(t: number) {
   return { dist: lerp(a.dist, b.dist, k), tilt: lerp(a.tilt, b.tilt, k), f: a.f.map((v, j) => lerp(v, b.f[j], k)) as [number, number, number] };
 }
 const dialOpacity = (t: number) => (t < 2.6 ? 1 : t < 3.6 ? 1 - ease((t - 2.6) / 1) : t < 26.6 ? 0 : t < 27.6 ? ease((t - 26.6) / 1) : 1);
-const pixelSize = (t: number) => (t >= 6.8 && t < 8.4 ? Math.round(lerp(1, 12, ease((t - 6.8) / 1.2))) : t >= 19.6 && t < 20.9 ? Math.round(lerp(12, 1, ease((t - 20.1) / 0.8))) : 1);
+// "bit-crush": the 3D image gets chunkier in 8-bit steps on every 8th note, cuts to 2D pixels on the kick, then back
+const CRUSH = [2, 3, 4, 6, 8, 12];
+const pixelSize = (t: number) => {
+  if (t >= 6.5 && t < 8) return CRUSH[Math.min(5, Math.floor((t - 6.5) / 0.25))];
+  if (t >= 20 && t < 21.5) return CRUSH[5 - Math.min(5, Math.floor((t - 20) / 0.25))];
+  return 1;
+};
 const handTime = (t: number) => (t < 16 ? t : t - 32 + 60);
 
 // ---------- 3D: watch exterior ----------
@@ -187,12 +193,18 @@ function caption3D(t: number): React.ReactNode {
   return <Hook pop={popIn(t, 30)} />;
 }
 
+const speedLabel = (t: number): [string, string] => {
+  if (t >= 6 && t < 8) return ["❚❚ SLOWING", "#59d8ff"];
+  if (t >= 8 && t < 16) return ["❚❚ SLOW-MO 1/8", "#59d8ff"];
+  if (t >= 16 && t < 18) return ["❚❚ SLOW-MO 1/4", "#59d8ff"];
+  if (t >= 18 && t < 20) return ["❚❚ SLOW-MO 1/2", "#59d8ff"];
+  return ["▶ REAL SPEED", "#b8ff4a"];
+};
 const SpeedTag: React.FC<{ t: number }> = ({ t }) => {
-  const slowing = t >= 6 && t < 8;
-  const c = slowing ? "#59d8ff" : "#b8ff4a";
+  const [label, c] = speedLabel(t);
   return (
     <div style={{ position: "absolute", left: 40, top: 40, fontFamily: "Bungee", fontSize: 34, color: "#0a0f24", background: c, border: "6px solid #0a0f24", borderRadius: 30, padding: "8px 26px", boxShadow: "8px 8px 0 #0a0f24" }}>
-      {slowing ? "❚❚ SLOWING" : "▶ REAL SPEED"}
+      {label}
     </div>
   );
 };
@@ -206,16 +218,34 @@ const Badge: React.FC = () => (
   </div>
 );
 
-// ---------- 2D blueprint slow-mo ----------
-type Step = { title: string; l1: string; l2: string; hi?: { x: number; y: number; r: number }; bal?: React.ReactNode; scale: string; cogsy?: { mood: "happy" | "wow" | "point"; say?: string } };
+// ---------- 2D pixel slow-mo (same candy world, flattened into pixels) ----------
+type Step = { title: string; l1?: string; hi?: { x: number; y: number; r: number }; balloon?: React.ReactNode; cogsy?: { mood: "happy" | "wow" | "point"; say?: string } };
 function step2D(b: number): Step {
-  if (b < 5) return { title: "1 THE MAINSPRING", l1: "A COILED SPRING", l2: "STORES THE ENERGY", hi: { ...BARREL, r: BARREL.r + 5 }, scale: "1:8 SLOW-MO", cogsy: { mood: "point" } };
-  if (b < 6) return { title: "2 THE GEARS", l1: "PASS THE PUSH ALONG", l2: "TO THE ESCAPE WHEEL", hi: { ...FOURTH, r: FOURTH.r + 4 }, scale: "1:8 SLOW-MO" };
-  if (b < 7) return { title: "3 THE PALLET FORK", l1: "LOCKS THE WHEEL, THEN", l2: "LETS 1/2 A TOOTH SLIP", hi: { x: FORK.x - 12, y: FORK.y + 10, r: 22 }, scale: "1:8 SLOW-MO", cogsy: { mood: "wow", say: "CLICK!" } };
-  if (b < 8) return { title: "4 THE BALANCE WHEEL", l1: "SWINGS BACK + FORTH", l2: "AND FLICKS THE FORK", hi: { ...BAL, r: BAL.r + 6 }, scale: "1:8 SLOW-MO" };
-  if (b < 9) return { title: "EVERY SWING = 1 TICK", l1: "THAT'S THE SOUND", l2: "YOU HEAR!", scale: "1:4 SLOW-MO", cogsy: { mood: "happy", say: "TICK TOCK!" } };
-  return { title: b < 9.5 ? "2X FASTER..." : "...AND AGAIN!", l1: "", l2: "", scale: b < 9.5 ? "1:2 SLOW-MO" : "1:2 SLOW-MO" };
+  if (b < 5) return { title: "THE MAINSPRING", l1: "A COILED SPRING STORES THE ENERGY", hi: { ...BARREL, r: BARREL.r + 5 },
+    balloon: <Balloon n={1} x={160} y={262} to={[BARREL.x + 10, BARREL.y + 12]} label="MAINSPRING" side="left" c={P.yellow} />, cogsy: { mood: "point" } };
+  if (b < 6) return { title: "THE GEARS", l1: "PASS THE PUSH TO THE ESCAPE WHEEL", hi: { ...ESC, r: ESC.r + 8 },
+    balloon: <Balloon n={2} x={20} y={262} to={[ESC.x - 10, ESC.y + 16]} label="ESCAPE WHEEL" c={P.pink} /> };
+  if (b < 7) return { title: "THE PALLET FORK", l1: "LOCKS IT... THEN LETS 1/2 A TOOTH SLIP", hi: { x: FORK.x - 12, y: FORK.y + 10, r: 22 },
+    balloon: <Balloon n={3} x={20} y={136} to={[FORK.x - 10, FORK.y + 4]} label="PALLET FORK" c={P.lime} />, cogsy: { mood: "wow", say: "CLICK!" } };
+  if (b < 8) return { title: "THE BALANCE WHEEL", l1: "SWINGS BACK + FORTH, FLICKING THE FORK", hi: { ...BAL, r: BAL.r + 6 },
+    balloon: <Balloon n={4} x={160} y={86} to={[BAL.x + 18, BAL.y - 19]} label="BALANCE" side="left" c={P.cyan} /> };
+  if (b < 9) return { title: "1 SWING = 1 TICK", l1: "THAT'S THE SOUND YOU HEAR!", cogsy: { mood: "happy", say: "TICK TOCK!" } };
+  return { title: b < 9.5 ? "2X FASTER..." : "...AND AGAIN!" };
 }
+
+// 2D camera: starts zoomed on the escapement exactly where the 3D camera was, zooms out on the beat (and back in at the end)
+const ZOOM_IN = { s: 3.1, x: 84, y: 180 }, ZOOM_OUT = { s: 1, x: 90, y: 160 };
+function cam2D(t: number) {
+  const k = t < 8.7 ? ease((t - 8) / 0.7) : t >= 19.3 ? 1 - ease((t - 19.3) / 0.7) : 1;
+  return { s: lerp(ZOOM_IN.s, ZOOM_OUT.s, k), x: lerp(ZOOM_IN.x, ZOOM_OUT.x, k), y: lerp(ZOOM_IN.y, ZOOM_OUT.y, k) };
+}
+
+const GraphPaper: React.FC = () => {
+  const px = [];
+  for (let x = 0; x <= 180; x += 6) px.push(rect(x, 0, 1, 320, "#ffffff", x % 30 === 0 ? 0.55 : 0.28));
+  for (let y = 0; y <= 320; y += 6) px.push(rect(0, y, 180, 1, "#ffffff", y % 30 === 0 ? 0.55 : 0.28));
+  return <Pixels px={px} />;
+};
 
 const Scene2D: React.FC<{ t: number }> = ({ t }) => {
   const b = t / BAR;
@@ -226,62 +256,45 @@ const Scene2D: React.FC<{ t: number }> = ({ t }) => {
   const beatPulse = Math.exp(-since * 8);
   const showTickPop = b >= 4 && b < 9 && since < 0.45;
   const stepStart = Math.floor(b) * BAR;
+  const c = cam2D(t);
+  const zoomed = c.s > 1.05;
+  const capPop = popIn(t, Math.max(stepStart, 8.6)) + (b >= 9 ? 0.04 * beatPulse : 0);
   return (
-    <AbsoluteFill style={{ backgroundColor: P.paper }}>
-      <svg viewBox="0 0 180 320" width={1080} height={1920} shapeRendering="crispEdges">
-        <BlueprintBg />
-        <g transform="translate(0 6)">
-          {st.hi && <Pixels px={ring(st.hi.x, st.hi.y, st.hi.r, P.pink, 2).map((p) => ({ ...p, o: 0.45 + 0.55 * beatPulse }))} />}
-          <Movement balanceA={ang.balanceA} escA={ang.escA} forkA={ang.forkA} />
-          {b < 5 && <Balloon n={1} x={160} y={262} to={[BARREL.x + 10, BARREL.y + 12]} label="MAINSPRING" side="left" c={P.yellow} />}
-          {b >= 5 && b < 6 && <Balloon n={2} x={20} y={262} to={[ESC.x - 10, ESC.y + 16]} label="ESCAPE WHEEL" />}
-          {b >= 6 && b < 7 && <Balloon n={3} x={20} y={136} to={[FORK.x - 10, FORK.y + 4]} label="PALLET FORK" c={P.pink} />}
-          {b >= 7 && b < 8 && <Balloon n={4} x={160} y={86} to={[BAL.x + 18, BAL.y - 19]} label="BALANCE" side="left" c={P.lime} />}
+    <AbsoluteFill>
+      <svg viewBox="0 0 180 320" width={1080} height={1920} shapeRendering="crispEdges" style={{ position: "absolute" }}>
+        <GraphPaper />
+        <g transform={`translate(90 160) scale(${c.s}) translate(${-c.x} ${-c.y})`}>
+          {st.hi && !zoomed && <Pixels px={ring(st.hi.x, st.hi.y, st.hi.r, P.pink, 2).map((p) => ({ ...p, o: 0.45 + 0.55 * beatPulse }))} />}
+          {/* 2D is y-down, 3D is y-up: negate angles so everything turns the same way as in 3D */}
+          <Movement balanceA={-ang.balanceA} escA={-ang.escA} forkA={-ang.forkA} pal={CANDY_PAL} />
+          {!zoomed && st.balloon}
         </g>
-        <Sticker x={90} y={34} bg={b >= 8 ? P.yellow : P.cyan} tilt={-2} pop={1 + 0.25 * Math.exp(-(t - stepStart) * 10) + (b >= 9 ? 0.04 * beatPulse : 0)}
-          lines={[{ t: st.title, s: st.title.length > 16 ? 6 : 7 }, ...(st.l1 ? [{ t: st.l1, s: 4.5 }, { t: st.l2, s: 4.5 }] : [])]} />
-        {showTickPop && (
-          <Sticker x={k % 2 ? 140 : 40} y={k % 2 ? 196 : 150} bg={k % 2 ? P.pink : P.yellow} tilt={k % 2 ? 6 : -6} pop={0.6 + 0.6 * Math.exp(-since * 12)}
-            lines={[{ t: k % 2 ? "TOCK!" : "TICK!", s: 10 }]} />
-        )}
-        {st.cogsy && <Cogsy x={22} y={262} mood={st.cogsy.mood} say={st.cogsy.say} t={t} />}
-        {b >= 9 && Math.floor(t * 10) % 2 === 0 && <Txt x={172} y={56} s={10} c={P.yellow} anchor="end">X2</Txt>}
-        <TitleBlock title="HOW A WATCH TICKS" scale={st.scale} mode="slow" dwg="002" />
+        {st.cogsy && !zoomed && <Cogsy x={22} y={262} mood={st.cogsy.mood} say={st.cogsy.say} t={t} />}
       </svg>
+      {!zoomed && (
+        <HSticker y={300} bg={b >= 8 ? "#ffd23f" : "#59d8ff"} tilt={-2} pop={capPop}
+          lines={[{ t: st.title, s: st.title.length > 15 ? 64 : 80 }, ...(st.l1 ? [{ t: st.l1, s: 28 }] : [])]} />
+      )}
+      {showTickPop && !zoomed && (
+        <HSticker x={k % 2 ? 840 : 250} y={k % 2 ? 1180 : 900} bg={k % 2 ? "#ff4fa3" : "#ffd23f"} tilt={k % 2 ? 6 : -6} pop={0.6 + 0.6 * Math.exp(-since * 12)}
+          lines={[{ t: k % 2 ? "TOCK!" : "TICK!", s: 72 }]} />
+      )}
+      {b >= 9 && Math.floor(t * 10) % 2 === 0 && <div style={{ position: "absolute", right: 50, top: 520, fontFamily: "Bungee", fontSize: 110, color: "#ff4fa3", WebkitTextStroke: "6px #0a0f24" }}>X2</div>}
     </AbsoluteFill>
   );
 };
 
-// ---------- transitions ----------
-const ScanLine: React.FC<{ y: number }> = ({ y }) => (
-  <div style={{ position: "absolute", left: 0, right: 0, top: y - 12, height: 24, background: "#8be9ff", boxShadow: "0 0 60px 20px rgba(89,216,255,0.8)" }} />
-);
-
 export const WatchVideo: React.FC = () => {
   const frame = useCurrentFrame();
   const t = frame / FPS;
-  const wipeIn = t >= 8 && t < 8.45 ? (t - 8) / 0.45 : null; // 3D -> 2D
-  const wipeOut = t >= 20 && t < 20.45 ? (t - 20) / 0.45 : null; // 2D -> 3D
-  const in2D = t >= 8 && t < 20;
-  const show3D = !in2D || wipeIn !== null || wipeOut !== null;
+  const in2D = t >= 8 && t < 20; // hard cuts on the kick at 8 s and 20 s, hidden by the pixel-size match
   return (
     <AbsoluteFill style={{ background: "radial-gradient(circle at 50% 45%, #fff6d8 0%, #ffc2dc 55%, #c9b6ff 100%)" }}>
       <Audio src={staticFile("videos/02-watch/music.wav")} />
-      {show3D && (
-        <>
-          <Scene3D t={wipeOut !== null ? t : wipeIn !== null ? 7.99 : t} />
-          {!in2D && caption3D(t)}
-          {!in2D && <SpeedTag t={t} />}
-          {!in2D && <Badge />}
-        </>
-      )}
-      {in2D && (
-        <AbsoluteFill style={{ clipPath: wipeIn !== null ? `inset(0 0 ${(1 - easeOut(wipeIn)) * 100}% 0)` : wipeOut !== null ? `inset(${easeOut(wipeOut) * 100}% 0 0 0)` : undefined }}>
-          <Scene2D t={t} />
-        </AbsoluteFill>
-      )}
-      {wipeIn !== null && <ScanLine y={easeOut(wipeIn) * 1920} />}
-      {wipeOut !== null && <ScanLine y={easeOut(wipeOut) * 1920} />}
+      {in2D ? <Scene2D t={t} /> : <Scene3D t={t} />}
+      {!in2D && caption3D(t)}
+      <SpeedTag t={t} />
+      <Badge />
     </AbsoluteFill>
   );
 };
