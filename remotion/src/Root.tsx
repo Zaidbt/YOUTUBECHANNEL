@@ -1,5 +1,6 @@
 import { Composition } from "remotion";
 import { HelloShort } from "./HelloShort";
+import { StyleFrames } from "./videos/watch/StyleFrames";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
 export const Root = () => (
@@ -12,5 +13,7 @@ export const Root = () => (
       defaultProps={{ title: "AI Video Studio" }} />
     {/* 8-bit engineering: how a car engine works */}
     <Composition id="CarEngine" component={CarEngine} durationInFrames={CAR_ENGINE_DURATION} fps={CAR_ENGINE_FPS} width={1080} height={1920} />
+    {/* Brand style previews (render with --props='{"shot":N}') */}
+    <Composition id="StyleFrames" component={StyleFrames} durationInFrames={1} fps={30} width={1080} height={1920} defaultProps={{ shot: 0 }} />
   </>
 );
