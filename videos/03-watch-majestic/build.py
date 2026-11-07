@@ -7,6 +7,8 @@ One tick timeline drives the picture and the music. Ticks per second per bar:
   16   4   slow-mo 1/2
   17-23 8  real speed, payoff + reveal of the dial
 
+Loops seamlessly: frame 48 s = frame 0, last bar flows into the first.
+
 Writes remotion/src/videos/watch/majestic.json and public/videos/03-watch-majestic/music.wav
 """
 import json, sys
@@ -70,7 +72,7 @@ def wood(tock, vol):
     f = 1300 if tock else 1900
     return (np.sin(2 * np.pi * f * t) + 0.4 * np.sin(2 * np.pi * 2 * f * t)) * np.exp(-t / 0.009) * vol
 
-s = Song(bpm=BPM, bars=BARS, loop=False, tail=0.0)
+s = Song(bpm=BPM, bars=BARS, loop=True)  # seamless loop: the last bar flows into the first
 PROG = [[50, 57, 62, 65], [46, 53, 62, 65], [53, 60, 64, 69], [48, 55, 64, 67]]  # Dm Bb F C
 chord = lambda bar: PROG[bar % 4]
 
@@ -84,14 +86,13 @@ CHAPTER = {
     12: [81, None, 77, None], 13: [79, None, 76, None],       # hairspring (calm)
     14: [74, 77, 81, 86], 15: [84, 81, 79, 76],               # every swing = a tick
 }
-PAYOFF = {18: [86, None, 84, 81], 19: [86, None, 88, 86], 20: [84, None, 81, 79], 21: [79, 81, 84, None], 22: [86, None, None, None]}
+PAYOFF = {18: [86, None, 84, 81], 19: [86, None, 88, 86], 20: [84, None, 81, 79], 21: [79, 81, 84, None], 22: [86, None, None, None], 23: [77, 76, 74, None]}
 
 for bar in range(BARS):
     ch = chord(bar)
     loud = 1.0 if 17 <= bar <= 21 else 0.75 if bar < 3 else 0.85
-    if bar < 23:
-        warm_pad(s.t(bar) - 0.12, BAR + 0.4, ch if bar < 18 else ch + [ch[2] + 12], vol=0.022 * loud)
-        sub(s.t(bar), BAR, ch[0] - 12, vol=0.28 * loud)
+    warm_pad(s.t(bar) - 0.12, BAR + 0.4, ch if bar < 18 or bar == 23 else ch + [ch[2] + 12], vol=0.022 * loud)
+    sub(s.t(bar), BAR, ch[0] - 12, vol=0.28 * loud)
     mel = INTRO.get(bar) or CHAPTER.get(bar) or PAYOFF.get(bar)
     if mel:
         for k, n in enumerate(mel):
@@ -100,17 +101,12 @@ for bar in range(BARS):
 s.tape_stop(s.t(3), BAR, end_rate=0.35)
 # bar 16: swell into real speed; bar 17 downbeat lift
 s.add(swell(BAR * 1.0, 0.2), s.t(16))
-# ending: final chord rings out
-for n in [50, 57, 62, 65, 69, 74]:
-    s.add(bell(n + 12, dur=4.0, vol=0.05), s.t(23))
-warm_pad(s.t(22.5), BAR * 1.5, [50, 57, 62, 69], vol=0.02)
-sub(s.t(23), BAR * 0.95, 38, vol=0.3)
 
 # ticks = percussion
 for k, t in enumerate(ticks):
     b = t / BAR; tock = k % 2 == 1
     if b < 3 or b >= 17:
-        s.add(wood(tock, 0.06 if b < 22 else 0.04), t)
+        s.add(wood(tock, 0.06), t)
     elif b < 4:
         s.add(wood(tock, 0.08), t)
     else:
@@ -118,6 +114,6 @@ for k, t in enumerate(ticks):
         s.add(kick(0.7) * 0.8 if not tock else mix(noise(0.22, 0.15, 0.08, rate=7000, seed=k), tri(57, 0.06, 0.14, decay=0.03)), t)
 
 s.lowpass(5600)
-s.reverb(wet=0.34, decay=2.6)
-n = int(1.2 * SR); s.buf[-n:] *= np.linspace(1, 0, n) ** 1.5
+s.reverb(wet=0.34, decay=2.6)  # in loop mode the tail wraps around to the start
+assert len(ticks) % 2 == 0, "tick/tock must alternate across the loop seam"
 s.save(ROOT / "public/videos/03-watch-majestic/music.wav")

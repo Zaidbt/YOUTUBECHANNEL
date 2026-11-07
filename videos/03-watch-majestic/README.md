@@ -1,6 +1,6 @@
 # 003 · How does a watch tick? (majestic)
 
-48 s · 9:16 · 60 fps · 120 BPM · cinematic pixel-3D (3D at 360x640 upscaled 3x, soft glow layer on top).
+48 s · seamless loop (last frame = first frame) · 9:16 · 60 fps · 120 BPM · cinematic pixel-3D (3D at 360x640 upscaled 3x, soft glow layer on top).
 
 Build: `npm run video:watch-majestic` → `out/watch-majestic.mp4` (~5.5 min render)
 

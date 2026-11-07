@@ -11,6 +11,7 @@ import TL from "./majestic.json";
 import { MovementScene, POS, annulus, cylZ } from "./Watch3D";
 import { glowTexture, Glow } from "./CinematicPreview";
 import { camAt, CamRig, CamKey, PixelLayer, GlowLayer, Captions, Vignette } from "../teasers/Majestic";
+// Captions fade in from cue.t; the loop hook is drawn separately so it is fully visible on frame 0.
 import { rnd } from "../../brand/pixels";
 
 export const FPS = 60;
@@ -28,11 +29,15 @@ function angles(t: number) {
   const tc = tcAt(t), n = Math.floor(tc + 1e-6), f = tc - n;
   return { balanceA: 2.3 * Math.sin(Math.PI * tc), escA: -(Math.PI * 2) / 30 * (n + easeOut(f / 0.2)), forkA: 0.12 * (n % 2 === 0 ? 1 : -1) * (2 * easeOut(f / 0.14) - 1) };
 }
+/** Second hand sweeps 8 steps/s; mapped so that t=48 lands exactly where t=0 started (one extra full turn). */
+const secondHand = (t: number) => (2 * Math.PI * Math.floor((t < 24 ? t : t - 48 + 60) * 8)) / 480;
 const lastTick = (t: number) => { let k = -1; for (let i = 0; i < TL.ticks.length && TL.ticks[i] <= t + 1e-6; i++) k = i; return k; };
 
 // ---------- camera: one continuous move ----------
+const HOME: Omit<CamKey, "t"> = { p: [0, -7, 50], l: [0, 0, 0.5] }; // first frame == last frame (seamless loop)
 const CAM: CamKey[] = [
-  { t: 0, p: [0.6, -10, 31], l: [0.3, 0.2, 0] },
+  { t: 0, ...HOME },
+  { t: 1.2, ...HOME },
   { t: 4, p: [0.3, -9, 25], l: [0.3, 0, 0] },
   { t: 7, p: [1.5, -9, 20], l: [1.2, -1.2, 0] },
   { t: 10, p: [5.6, -10.5, 13], l: [4.2, -4.8, 0.3] },      // mainspring barrel
@@ -44,7 +49,8 @@ const CAM: CamKey[] = [
   { t: 34, p: [0.3, -9.5, 24], l: [0.3, 0, 0] },
   { t: 38, p: [0.2, -11, 31], l: [0.2, 0, 0] },
   { t: 42, p: [0.1, -10, 44], l: [0, 0, 0.5] },             // pull back: the dial appears
-  { t: 48, p: [0, -7, 50], l: [0, 0, 0.5] },
+  { t: 45.5, ...HOME },
+  { t: 48, ...HOME },
 ];
 
 // ---------- the watch's outside (fades in over the movement at the end) ----------
@@ -52,7 +58,7 @@ const Exterior: React.FC<{ dial: number; t: number; occ?: boolean }> = ({ dial, 
   const g = useMemo(() => ({ caseRing: annulus(9.6, 8.6, 2.6), bezel: new THREE.TorusGeometry(9.05, 0.55, 16, 96), dial: cylZ(8.6, 0.12, 96), crown: new THREE.CylinderGeometry(0.9, 0.9, 1.3, 20).rotateZ(Math.PI / 2) }), []);
   const metal = occ ? <meshBasicMaterial color="#000" /> : <meshStandardMaterial color="#b8873a" metalness={0.45} roughness={0.35} />;
   const fade = { transparent: true, opacity: dial, depthWrite: dial > 0.98 };
-  const sec = (2 * Math.PI * Math.floor((t - 34) * 8)) / 480 + 0.9;
+  const sec = secondHand(t);
   const hand = (theta: number, len: number, w: number, z: number, color: string, tail = 0) => (
     <mesh position={[Math.sin(theta) * (len / 2 - tail), Math.cos(theta) * (len / 2 - tail), z]} rotation={[0, 0, -theta]}>
       <boxGeometry args={[w, len, 0.1]} />{occ ? <meshBasicMaterial color="#000" /> : <meshStandardMaterial color={color} {...fade} />}
@@ -102,6 +108,15 @@ const EnergyPulse: React.FC<{ map: THREE.Texture; since: number; k: number }> = 
   return o > 0 ? (<><Glow map={map} at={at} size={2.6} color="#ffb347" opacity={0.7 * o} /><Glow map={map} at={at} size={0.9} color="#fff4d6" opacity={o} /></>) : null;
 };
 
+/** Opening hook. Fully visible on frame 0 and settled again on the last frame, so the loop is invisible. */
+const Hook: React.FC<{ o: number }> = ({ o }) => (
+  <div style={{ position: "absolute", left: 0, right: 0, top: 200, textAlign: "center", fontFamily: "PressStart2P", color: "#f6e7c8", opacity: o, textShadow: "0 0 26px rgba(255,160,70,0.5), 4px 4px 0 rgba(0,0,0,0.85)", lineHeight: 1.6 }}>
+    <div style={{ fontSize: 30 }}>HOW DOES A</div>
+    <div style={{ fontSize: 64, lineHeight: 1.35 }}>WATCH TICK?</div>
+    <div style={{ fontSize: 30 }}>🎧</div>
+  </div>
+);
+
 export const WatchMajesticFull: React.FC = () => {
   const t = useCurrentFrame() / FPS;
   const map = useMemo(glowTexture, []);
@@ -110,7 +125,7 @@ export const WatchMajesticFull: React.FC = () => {
   const k = lastTick(t);
   const since = k >= 0 ? t - TL.ticks[k] : 9;
   const tg = Math.exp(-since * 6);
-  const dial = ease((t - 39) / 3.5);
+  const dial = t < 24 ? 1 - ease((t - 1.5) / 2.5) : ease((t - 39) / 3.5);
   // chapter spotlights
   const spring = window01(t, 8, 12), gears = window01(t, 12, 16), fork = window01(t, 16, 20), bal = window01(t, 20, 28), hair = window01(t, 24, 28);
   const jewels: [number, number, number, number][] = [
@@ -150,13 +165,12 @@ export const WatchMajesticFull: React.FC = () => {
           <Glow key={`d${i}`} map={map} at={[(rnd(i) - 0.5) * 26 + 0.4 * Math.sin(t * 0.3 + i), (rnd(i + 40) - 0.5) * 26 + 0.3 * Math.cos(t * 0.25 + i), 2 + rnd(i + 80) * 12]} size={0.12 + rnd(i + 9) * 0.24} color="#ffd9a0" opacity={0.22 + 0.4 * rnd(i + 3)} />
         ))}
         {/* second-hand tip glow once the dial is in */}
-        {dial > 0.3 && (() => { const a = (2 * Math.PI * Math.floor((t - 34) * 8)) / 480 + 0.9; return <Glow map={map} at={[Math.sin(a) * 6.3, Math.cos(a) * 6.3, 2.2]} size={1.4} color="#ff3355" opacity={0.6 * dial} />; })()}
+        {dial > 0.3 && (() => { const a = secondHand(t); return <Glow map={map} at={[Math.sin(a) * 6.3, Math.cos(a) * 6.3, 2.2]} size={1.4} color="#ff3355" opacity={0.6 * dial} />; })()}
       </GlowLayer>
       <Vignette s={0.82} />
-      <div style={{ position: "absolute", left: 50, top: 70, fontFamily: "PressStart2P", fontSize: 22, color: "#f6e7c8", opacity: 0.85 * (1 - ease((t - 44) / 1)), textShadow: "3px 3px 0 #000" }}>{tag}</div>
+      <div style={{ position: "absolute", left: 50, top: 70, fontFamily: "PressStart2P", fontSize: 22, color: "#f6e7c8", opacity: 0.85, textShadow: "3px 3px 0 #000" }}>{tag}</div>
       <Captions t={t} end={48} color="#f6e7c8" glow="rgba(255,160,70,0.5)" cues={[
-        { t: 0, a: "HOW DOES A", b: "WATCH TICK?", c: "🎧" },
-        { t: 4, a: "LISTEN...", b: "8 TICKS", c: "EVERY SECOND" },
+        { t: 2.2, a: "LISTEN...", b: "8 TICKS", c: "EVERY SECOND" },
         { t: 6, a: "LET'S", b: "SLOW IT", c: "DOWN" },
         { t: 8, a: "IT STARTS WITH", b: "A SPRING", c: "WOUND TIGHT" },
         { t: 10, a: "ITS PUSH FLOWS", b: "THROUGH", c: "THE GEARS" },
@@ -177,12 +191,13 @@ export const WatchMajesticFull: React.FC = () => {
         { t: 40, a: "ALL FROM ONE", b: "TINY", c: "SPRING" },
         { t: 42, a: "RIGHT THERE", b: "ON YOUR", c: "WRIST" },
         { t: 44, b: "TICK. TOCK." },
+        { t: 46, b: "" },
       ]} />
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 300, textAlign: "center", fontFamily: "PressStart2P", color: "#f6e7c8", opacity: ease((t - 45) / 0.8), textShadow: "4px 4px 0 #000" }}>
+      <Hook o={t < 2.2 ? ease((2.2 - t) / 0.35) : ease((t - 46.2) / 0.6)} />
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 300, textAlign: "center", fontFamily: "PressStart2P", color: "#f6e7c8", opacity: Math.min(ease((t - 44.2) / 0.6), ease((45.9 - t) / 0.5)), textShadow: "4px 4px 0 #000" }}>
         <div style={{ fontSize: 30 }}>HOW IT WORKS</div>
         <div style={{ fontSize: 22, marginTop: 20, opacity: 0.7 }}>WITH ZAY</div>
       </div>
-      <AbsoluteFill style={{ background: "#000", opacity: ease((t - 47.2) / 0.8) }} />
     </AbsoluteFill>
   );
 };
