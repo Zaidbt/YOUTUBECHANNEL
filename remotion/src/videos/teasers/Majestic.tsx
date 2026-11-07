@@ -23,11 +23,11 @@ export const FPS60 = 60;
 export const MAJESTIC_FRAMES = 600;
 
 // ---------- smooth camera: Catmull-Rom through timed keys (continuous velocity, no stops) ----------
-type CamKey = { t: number; p: [number, number, number]; l: [number, number, number] };
+export type CamKey = { t: number; p: [number, number, number]; l: [number, number, number] };
 function catmull(p0: number, p1: number, p2: number, p3: number, u: number) {
   return 0.5 * (2 * p1 + (-p0 + p2) * u + (2 * p0 - 5 * p1 + 4 * p2 - p3) * u * u + (-p0 + 3 * p1 - 3 * p2 + p3) * u * u * u);
 }
-function camAt(keys: CamKey[], t: number) {
+export function camAt(keys: CamKey[], t: number) {
   let i = 0;
   while (i < keys.length - 2 && keys[i + 1].t <= t) i++;
   const k0 = keys[Math.max(0, i - 1)], k1 = keys[i], k2 = keys[i + 1], k3 = keys[Math.min(keys.length - 1, i + 2)];
@@ -35,7 +35,7 @@ function camAt(keys: CamKey[], t: number) {
   const f = (key: "p" | "l") => [0, 1, 2].map((j) => catmull(k0[key][j], k1[key][j], k2[key][j], k3[key][j], u)) as [number, number, number];
   return { p: f("p"), l: f("l") };
 }
-const CamRig: React.FC<{ p: [number, number, number]; l: [number, number, number] }> = ({ p, l }) => {
+export const CamRig: React.FC<{ p: [number, number, number]; l: [number, number, number] }> = ({ p, l }) => {
   const { camera } = useThree();
   camera.position.set(...p);
   camera.lookAt(...l);
@@ -45,7 +45,7 @@ const CamRig: React.FC<{ p: [number, number, number]; l: [number, number, number
 
 // ---------- layers ----------
 const PIX = 3;
-const PixelLayer: React.FC<{ bg: string; fov: number; children: React.ReactNode }> = ({ bg, fov, children }) => (
+export const PixelLayer: React.FC<{ bg: string; fov: number; children: React.ReactNode }> = ({ bg, fov, children }) => (
   <AbsoluteFill style={{ imageRendering: "pixelated" }}>
     <div style={{ width: 1080 / PIX, height: 1920 / PIX, transform: `scale(${PIX})`, transformOrigin: "top left" }}>
       <ThreeCanvas width={1080 / PIX} height={1920 / PIX} gl={{ antialias: false }} camera={{ fov, near: 0.1, far: 300 }}>
@@ -55,7 +55,7 @@ const PixelLayer: React.FC<{ bg: string; fov: number; children: React.ReactNode 
     </div>
   </AbsoluteFill>
 );
-const GlowLayer: React.FC<{ fov: number; children: React.ReactNode }> = ({ fov, children }) => (
+export const GlowLayer: React.FC<{ fov: number; children: React.ReactNode }> = ({ fov, children }) => (
   <AbsoluteFill style={{ mixBlendMode: "screen" }}>
     <div style={{ width: 540, height: 960, transform: "scale(2)", transformOrigin: "top left" }}>
       <ThreeCanvas width={540} height={960} gl={{ antialias: true }} camera={{ fov, near: 0.1, far: 300 }}>
@@ -68,8 +68,8 @@ const GlowLayer: React.FC<{ fov: number; children: React.ReactNode }> = ({ fov, 
 
 // ---------- captions ----------
 const ease = (x: number) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
-type Cue = { t: number; a?: string; b: string; c?: string };
-const Captions: React.FC<{ t: number; cues: Cue[]; color: string; glow: string; end: number }> = ({ t, cues, color, glow, end }) => (
+export type Cue = { t: number; a?: string; b: string; c?: string };
+export const Captions: React.FC<{ t: number; cues: Cue[]; color: string; glow: string; end: number }> = ({ t, cues, color, glow, end }) => (
   <>
     {cues.map((cue, i) => {
       const until = i + 1 < cues.length ? cues[i + 1].t : end + 1;
@@ -86,13 +86,13 @@ const Captions: React.FC<{ t: number; cues: Cue[]; color: string; glow: string; 
     })}
   </>
 );
-const EndTag: React.FC<{ t: number; color: string }> = ({ t, color }) => (
+export const EndTag: React.FC<{ t: number; color: string }> = ({ t, color }) => (
   <div style={{ position: "absolute", left: 0, right: 0, bottom: 300, textAlign: "center", fontFamily: "PressStart2P", color, opacity: ease((t - 8.7) / 0.6), textShadow: "4px 4px 0 #000" }}>
     <div style={{ fontSize: 30 }}>FULL VIDEO SOON</div>
     <div style={{ fontSize: 22, marginTop: 20, opacity: 0.7 }}>HOW IT WORKS · WITH ZAY</div>
   </div>
 );
-const Vignette: React.FC<{ s?: number }> = ({ s = 0.75 }) => <AbsoluteFill style={{ background: `radial-gradient(ellipse at 50% 48%, rgba(0,0,0,0) 42%, rgba(0,0,0,${s}) 100%)` }} />;
+export const Vignette: React.FC<{ s?: number }> = ({ s = 0.75 }) => <AbsoluteFill style={{ background: `radial-gradient(ellipse at 50% 48%, rgba(0,0,0,0) 42%, rgba(0,0,0,${s}) 100%)` }} />;
 
 // ===================== FIREFLIES =====================
 const level = (fs: number[], t: number) => {

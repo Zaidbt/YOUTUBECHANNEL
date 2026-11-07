@@ -92,7 +92,9 @@ class Song:
             idx = (i + np.arange(len(sig))) % n
             np.add.at(self.buf, idx, sig)
             return
-        if i >= n: return
+        if i < 0:  # starts before t=0: drop the part that falls before the beginning
+            sig, i = sig[-i:], 0
+        if i >= n or len(sig) == 0: return
         sig = sig[: n - i]
         self.buf[i:i + len(sig)] += sig
 
