@@ -98,3 +98,19 @@ Sound on 🔊 when the switch hits ON, the engine noise really disappears from t
 #headphones #noisecancelling #howitworks #pixelart #science
 
 Extra tags (optional): #tech #audio #physics #soundwaves #pixelart3d #learnoninstagram
+
+## Post · How does a chameleon change color? (out/chameleon.mp4)
+How does a chameleon change color? 🦎🎧
+It's not just paint. Under its skin sit layers of cells packed with tiny crystals that reflect light.
+Calm: the crystals sit close together and bounce back blue. Blue + the yellow pigment above it = green.
+Excited: the cell stretches, the crystals spread apart and reflect yellow, orange, red.
+
+🦎 it changes in seconds, by moving crystals, not by mixing paint
+🦎 mostly to talk (to rivals and mates), not to hide
+🦎 bonus: its tongue shoots out up to 2× its body length
+
+Sound on 🔊 every colour is a chord: green = Am, yellow = C, orange = F, red = G.
+
+#chameleon #animals #nature #pixelart #science
+
+Extra tags (optional): #reptiles #biology #animalfacts #howitworks #pixelart3d #learnoninstagram

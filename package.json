@@ -19,7 +19,8 @@
     "video:dna": "python3 videos/08-dna/build.py && remotion render DnaVideo out/dna.mp4 --gl=swangle",
     "video:screens": "python3 videos/09-screens/build.py && remotion render ScreensVideo out/screens.mp4 --gl=swangle",
     "video:baby": "python3 videos/10-baby/build.py && remotion render BabyVideo out/baby.mp4 --gl=swangle",
-    "video:anc": "python3 videos/11-anc/build.py && remotion render AncVideo out/anc.mp4 --gl=swangle"
+    "video:anc": "python3 videos/11-anc/build.py && remotion render AncVideo out/anc.mp4 --gl=swangle",
+    "video:chameleon": "python3 videos/12-chameleon/build.py && remotion render ChameleonVideo out/chameleon.mp4 --gl=swangle"
   },
   "repository": {
     "type": "git",

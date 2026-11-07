@@ -21,6 +21,7 @@ import { DnaVideo, DURATION as DNA_DURATION, FPS as DNA_FPS } from "./videos/dna
 import { ScreensVideo, DURATION as SCR_DURATION, FPS as SCR_FPS } from "./videos/screens/ScreensVideo";
 import { BabyVideo, DURATION as BABY_DURATION, FPS as BABY_FPS } from "./videos/baby/BabyVideo";
 import { AncVideo, DURATION as ANC_DURATION, FPS as ANC_FPS } from "./videos/anc/AncVideo";
+import { ChameleonVideo, DURATION as CHAM_DURATION, FPS as CHAM_FPS } from "./videos/chameleon/ChameleonVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -74,5 +75,6 @@ export const Root = () => (
     <Composition id="BabyVideo" component={BabyVideo} durationInFrames={BABY_DURATION} fps={BABY_FPS} width={1080} height={1920} />
     {/* 011 · How do noise-cancelling headphones work? (48 s loop @ 60 fps, 130 BPM UK garage, --gl=swangle) */}
     <Composition id="AncVideo" component={AncVideo} durationInFrames={ANC_DURATION} fps={ANC_FPS} width={1080} height={1920} />
+    <Composition id="ChameleonVideo" component={ChameleonVideo} durationInFrames={CHAM_DURATION} fps={CHAM_FPS} width={1080} height={1920} />
   </>
 );
