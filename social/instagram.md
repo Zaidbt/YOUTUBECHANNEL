@@ -24,3 +24,18 @@ Which machine should I take apart next? 👇
 #howitworks #mechanicalwatch #horology #pixelart #engineering
 
 Extra tags (optional, pick a few): #watchmovement #escapement #watchnerd #science #explained #satisfying #pixelart3d #learnoninstagram
+
+## Post · How do bees build perfect hexagons? (out/bees-pixel.mp4)
+How do bees build perfect hexagons? 🐝🎧
+No plan. No tools. No boss.
+
+Young bees hang in chains and make wax from 8 glands under their belly. They chew it soft and press it into walls, cell by cell.
+
+Why hexagons? Circles leave gaps. Squares use more wall. Hexagons leave no gaps AND use the least wax (~7% less than squares) — and wax costs bees about 8 kg of honey per kg.
+Mathematicians only proved it in 1999. Bees knew all along.
+
+Sound on 🔊 every new cell is a note.
+
+#bees #honeycomb #howitworks #pixelart #science
+
+Extra tags (optional): #beekeeping #nature #math #hexagon #pixelart3d #satisfying #explained #learnoninstagram

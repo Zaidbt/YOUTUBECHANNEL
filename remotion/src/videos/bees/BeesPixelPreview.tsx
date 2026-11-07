@@ -18,7 +18,7 @@ const tex = (w: number, h: number, f: (x: number, y: number) => [number, number,
   const t = new THREE.DataTexture(d, w, h, THREE.RGBAFormat); t.magFilter = t.minFilter = THREE.NearestFilter; t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true; return t;
 };
 const hex = (h: string): [number, number, number] => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
-function useTextures() {
+export function useTextures() {
   return useMemo(() => {
     const toon = new THREE.DataTexture(new Uint8Array([60, 60, 60, 255, 140, 140, 140, 255, 210, 210, 210, 255, 255, 255, 255, 255]), 4, 1, THREE.RGBAFormat);
     toon.minFilter = toon.magFilter = THREE.NearestFilter; toon.needsUpdate = true;
@@ -36,13 +36,13 @@ function useTextures() {
 }
 
 // ---------- bee ----------
-const Bee: React.FC<{ p: V3; heading: number; pitch?: number; t?: number; s?: number; flake?: boolean }> = ({ p, heading, pitch = 0, t = 0, s = 1, flake }) => {
+export const Bee: React.FC<{ p: V3; heading: number; pitch?: number; t?: number; s?: number; flake?: boolean; belly?: boolean }> = ({ p, heading, pitch = 0, t = 0, s = 1, flake, belly }) => {
   const x = useTextures();
   const toon = (props: Record<string, unknown>) => <meshToonMaterial gradientMap={x.toon} {...props} />;
   const abd = useMemo(() => new THREE.SphereGeometry(0.55, 16, 12).rotateZ(-Math.PI / 2), []);
-  const flap = Math.sin(t * 60) * 0.25;
+  const flap = Math.sin(t * 535 * ((2 * Math.PI) / 48)) * 0.25; // periodic over 48 s (loop-safe)
   return (
-    <group position={p} rotation={[pitch, 0, heading]} scale={s}>
+    <group position={p} rotation={[pitch + (belly ? Math.PI : 0), 0, heading]} scale={s}>
       <mesh geometry={abd} position={[-0.68, 0, 0.02]} scale={[1.3, 0.8, 0.78]}>{toon({ map: x.stripes })}</mesh>
       <mesh position={[0.22, 0, 0.05]}><sphereGeometry args={[0.44, 14, 10]} />{toon({ map: x.fuzz })}</mesh>
       <mesh position={[0.82, 0, 0.02]}><sphereGeometry args={[0.31, 12, 10]} />{toon({ color: "#6b3512" })}</mesh>
@@ -94,7 +94,7 @@ const Comb: React.FC<{ built?: (i: number) => number }> = ({ built = () => 1 }) 
 };
 
 const Cam: React.FC<{ p: V3; l: V3 }> = ({ p, l }) => { const { camera } = useThree(); camera.position.set(...p); camera.lookAt(...l); camera.updateMatrixWorld(); return null; };
-const Lights: React.FC = () => (
+export const Lights: React.FC = () => (
   <>
     <ambientLight intensity={0.35} color="#4a3f63" />
     <directionalLight position={[-8, 14, 14]} intensity={2.6} color="#ffd59a" />

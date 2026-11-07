@@ -16,14 +16,14 @@ export const FPS = 60;
 export const DURATION = Math.round(DATA.duration * FPS);
 type V3 = [number, number, number];
 /** Every idle motion uses whole multiples of this angular speed, so it is back where it started at t = 48 s (seamless loop). */
-const LW = (2 * Math.PI) / 48;
+export const LW = (2 * Math.PI) / 48;
 const ease = (x: number) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
 const R = DATA.R, TOP = DATA.top, D = 1.3, Z0 = -0.3, TILT = -0.22; // cells tilt up ~13°
 const BG = "#0b0603";
 const COL = { wax: "#e3b04b", waxDk: "#b8862c", honey: "#d9820f", cap: "#f3dc98", bar: "#5a3a1f", body: "#e6a21f", stripe: "#2a1a0c", thorax: "#6b4a1e" };
 
 // ---------- comb state per cell ----------
-function cellState(c: (typeof DATA.cells)[number], t: number) {
+export function cellState(c: (typeof DATA.cells)[number], t: number) {
   if (t < 5) return { grow: 1, fill: 1, cap: c.cap !== null ? 1 : 0, flash: 0 };
   if (t < 7.3) { const g = 1 - ease((t - c.vanish) / 0.25); return { grow: g, fill: g, cap: c.cap !== null ? g : 0, flash: 0 }; }
   const grow = ease((t - c.build) / 0.45);
@@ -76,29 +76,29 @@ const Bee: React.FC<{ p: V3; heading: number; t: number; belly?: boolean; scale?
     </group>
   );
 };
-const CRAWLERS = Array.from({ length: 24 }, (_, i) => {
+export const CRAWLERS = Array.from({ length: 24 }, (_, i) => {
   const c = DATA.cells[Math.floor(rnd(i + 70) * DATA.cells.length)];
   return { x: c.x, y: c.y, a: rnd(i + 80) * Math.PI * 2, s: 0.75 + rnd(i + 90) * 0.15 };
 });
-const crawlerPos = (i: number, t: number): { p: V3; h: number } => {
+export const crawlerPos = (i: number, t: number): { p: V3; h: number } => {
   const b = CRAWLERS[i], n = 1 + Math.floor(rnd(i) * 2), w1 = n * LW, w2 = (n + 1) * LW;
   const x = b.x + 0.7 * Math.sin(t * w1 + i), y = b.y + 0.6 * Math.sin(t * w2 + i * 2);
   const dx = 0.7 * w1 * Math.cos(t * w1 + i), dy = 0.6 * w2 * Math.cos(t * w2 + i * 2);
   return { p: [x, y, 1.25], h: Math.atan2(dy, dx) + b.a * 0.1 };
 };
-const chainVis = (t: number) => Math.min(ease((t - 6.2) / 0.8), 1 - ease((t - 13.5) / 1.0));
-const crawlVis = (t: number) => (t < 24 ? 1 - ease((t - 4.6) / 0.6) : 1) * (t > 14 ? ease((t - 14.5) / 1.2) : t < 5.2 ? 1 : 0);
-const CHAIN_X = [-2.4, 0, 2.4];
-const chainBee = (ci: number, j: number, t: number): { p: V3; h: number } => {
+export const chainVis = (t: number) => Math.min(ease((t - 6.2) / 0.8), 1 - ease((t - 13.5) / 1.0));
+export const crawlVis = (t: number) => (t < 24 ? 1 - ease((t - 4.6) / 0.6) : 1) * (t > 14 ? ease((t - 14.5) / 1.2) : t < 5.2 ? 1 : 0);
+export const CHAIN_X = [-2.4, 0, 2.4];
+export const chainBee = (ci: number, j: number, t: number): { p: V3; h: number } => {
   const sway = 0.25 * Math.sin(t * 1.1 + ci) * (j / 5);
   return { p: [CHAIN_X[ci] + sway, TOP - 0.9 - j * 1.85, 0.8], h: -Math.PI / 2 + 0.15 * Math.sin(t * 1.3 + j + ci) };
 };
-const HERO = { ci: 1, j: 2 };
+export const HERO = { ci: 1, j: 2 };
 
 // ---------- camera ----------
 const HOME = { p: [5, 0.5, 33] as V3, l: [0, 2.6, 0] as V3 };
 const heroP = chainBee(HERO.ci, HERO.j, 10).p;
-const CAM: CamKey[] = [
+export const CAM: CamKey[] = [
   { t: 0, ...HOME }, { t: 1.4, ...HOME },
   { t: 4.6, p: [3, 2, 25], l: [0, 1.8, 0] },
   { t: 7.2, p: [0.5, 2.6, 24], l: [0, 2.2, 0] },
@@ -124,7 +124,7 @@ function hexOutline(cx: number, cy: number, r: number, c: string): Px[] {
   }
   return out;
 }
-const Diagram: React.FC<{ t: number }> = ({ t }) => {
+export const Diagram: React.FC<{ t: number }> = ({ t }) => {
   const o = Math.min(ease((t - 18.8) / 0.5), 1 - ease((t - 26.8) / 0.5));
   if (o <= 0) return null;
   const mode = t < 21 ? "circle" : t < 23 ? "square" : "hex";

@@ -17,7 +17,14 @@ Short-form explainer videos (YouTube Shorts, TikTok, Instagram Reels), 9:16, 108
   `build.py` writes the timeline JSON and the music from the same data).
 - **Facts on screen must be correct.** Double-check numbers before rendering.
 
-## Current style: cinematic pixel-3D ("majestic")
+## Current style: TRUE pixel-art 3D (use this)
+3D scene rendered at 270x480 through `remotion/src/brand/PixelPipeline.tsx` (`PixelArtCanvas`): 1-px depth outlines,
+4x4 Bayer dithering, every pixel snapped to a fixed palette (glows too), toon (MeshToonMaterial) shading, pixel
+textures (DataTexture, NearestFilter), upscaled 4x. Captions: Press Start 2P with a hard 4-px outline, stepped fades.
+Brand on screen: @HOWTOWITHZAY. Reference: `remotion/src/videos/bees/BeesPixelVideo.tsx`.
+Instagram copy lives in `social/instagram.md`.
+
+## Previous style: cinematic pixel-3D ("majestic")
 60 fps · 3D rendered at 360x640 and upscaled 3x with hard pixels · soft glows in a separate full-res layer ·
 continuous Catmull-Rom camera · small / BIG / small pixel captions that fade · warm pads, sub, bells, hall reverb.
 Reference implementation: `remotion/src/videos/watch/WatchMajesticFull.tsx` + `videos/03-watch-majestic/build.py`.
