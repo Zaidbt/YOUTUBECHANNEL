@@ -16,9 +16,11 @@ Short-form explainer videos (YouTube Shorts, TikTok, Instagram Reels), 9:16, 108
 - **Music-driven, no voiceover.** On-screen actions are timed to the beat from one shared timeline (a Python
   `build.py` writes the timeline JSON and the music from the same data).
 - **Facts on screen must be correct.** Double-check numbers before rendering.
-- **Text lives inside the animation** (feedback: overlay captions were too fast to read). Write words with pixels
-  on in-scene screens or as voxel letters next to the thing being explained (`remotion/src/brand/pixelFont.ts`);
-  1–3 short words per phrase, each held for at least one bar. Only a small corner tag may be an overlay.
+- **Text must be readable** (feedback history: overlay captions at the top were too fast; text drawn with in-scene
+  pixels / voxel letters was NOT readable after the pixel pipeline). Use crisp HTML labels (Press Start 2P, ~44/58 px)
+  in a solid dark panel with a coloured 8-px border, anchored next to the thing being explained by projecting its 3D
+  position (see `Labels` in `remotion/src/videos/screens/ScreensVideo.tsx`). Never render text through
+  `PixelArtCanvas`. 1–3 short lines, one label per ~2 bars (≥ 2.5 s), colour-code words to match what's on screen.
 - **Every video gets a different hyped rhythm/genre** (done so far: 120 BPM chiptune, 150 BPM four-on-the-floor
   hyper, 170 BPM drum & bass). Pick a BPM where `48 s × BPM / 240` is a whole number of bars.
 - **The animation plays the music**: map visual events to instruments/notes (parts = drums, colours/letters = notes)

@@ -85,7 +85,7 @@ const lastIdx = (arr: number[], t: number) => { let k = -1; for (let i = 0; i < 
 function screen(t: number, c: number, r: number): RGB {
   const b = t / BAR, i = r * COLS + c;
   const bg: RGB = r % 2 ? C.navy : C.navy2;
-  if (b < 4 || b >= 33) return HOOK.get(i) ?? bg;
+  if (b < 4 || b >= 33) return bg;
   if (b < 22) {
     if (b >= 18) { // the drop: every pixel cycles colours, offset by position
       const k = lastIdx(CYCLE_T, t);
@@ -93,19 +93,18 @@ function screen(t: number, c: number, r: number): RGB {
       return NAMED(MASK_RGB(m));
     }
     const upTo = b < 6 ? Math.ceil(((lastIdx(EV.reveal, t) + 1) / EV.reveal.length) * COLS) : 99;
-    const p = revealMap(upTo).get(i);
-    return p ?? bg;
+    if (c >= upTo || b < 4) return bg;
+    return NAMED(MASK_RGB(1 + ((c * 3 + r * 5) % 7))); // a mosaic of the 7 RGB mixes, revealed column by column
   }
-  if (b < 26) return (b < 24 ? MIL : EYE).get(i) ?? landscape(c, r);
+  if (b < 26) return landscape(c, r);
   if (b < 30) {
-    const txt = RED.get(i); if (txt) return txt;
     if (r < 21) return C.navy;
     const k = lastIdx(EV.scans, t);
     const scanRow = 21 + ((t - EV.scans[Math.max(0, k)]) / BEAT) * 43;
     if (Math.abs(r - scanRow) < 0.7) return C.white;
     return ballFrame(r < scanRow ? k : k - 1, c, r);
   }
-  return (b < 32 ? NOW : HANDLE).get(i) ?? bg;
+  return bg;
 }
 
 /** The zoomed pixel's three lights: the drum machine, then colour chords, levels and the colour storm. */
@@ -214,7 +213,6 @@ export const ScreensVideo: React.FC = () => {
   const tgt = targetRGB(t);
   const mixed = NAMED(tgt);
   const lit = Math.max(...tgt);
-  const words = closeText(t);
   const showClose = b >= 8 && b < 20.5;
   const tag = b < 4 || b >= 30 ? "▶ YOUR PHONE" : b < 8 ? "⌕ ZOOM IN" : b < 21 ? "⌕ ONE PIXEL" : b < 26 ? "▶ 2,073,600 PIXELS" : "▶ REFRESH · SLOW-MO";
   return (
@@ -227,14 +225,61 @@ export const ScreensVideo: React.FC = () => {
         <Phone />
         <Screen t={t} />
         {showClose && lit > 0.25 && <Glow map={map} at={[TX, TY, -0.05]} size={1.5 + 0.6 * lit} color={`rgb(${mixed.map((v) => Math.round(v * 255)).join(",")})`} opacity={0.55 * lit} />}
-        {showClose && b >= 10 && b < 11 && (["R", "G", "B"] as const).map((L, k) => (
-          <VoxelText key={L} lines={[L]} color={[C.red, C.green, C.blue][k]} at={[TX + (k - 1) * 0.31 - 0.006, TY + 0.66, 0.05]} v={0.034} />
-        ))}
-        {showClose && words && <VoxelText lines={words.lines} color={words.color} at={[TX, TY + 1.02, 0.05]} />}
         <Glow map={map} at={[0, 0, -3]} size={90} color="#1f2a52" opacity={0.35} />
       </PixelArtCanvas>
+      <Labels t={t} cam={cam} />
       <div style={{ position: "absolute", left: 48, top: 72, fontFamily: "PressStart2P", fontSize: 22, color: "#bfe6ff", textShadow: "4px 4px 0 #05060a, -4px 0 0 #05060a, 0 -4px 0 #05060a" }}>{tag}</div>
     </AbsoluteFill>
+  );
+};
+// ---------- crisp labels, anchored to what they describe (not drawn through the pixel pipeline) ----------
+type Seg = { t: string; c?: string };
+type LabelDef = { from: number; to: number; anchor: V3; lines: Seg[][]; border: string };
+const hx = (rgb: RGB) => `rgb(${rgb.map((v) => Math.round(v * 255)).join(",")})`;
+const SCREEN_MID: V3 = [0, 4, 0], ABOVE_PIXEL: V3 = [TX, TY + 0.72, 0];
+const LABELS: LabelDef[] = [
+  { from: 0, to: 4, anchor: SCREEN_MID, border: "#ffd23f", lines: [[{ t: "HOW DO" }], [{ t: "SCREENS", c: "#ffd23f" }], [{ t: "WORK? 🎧" }]] },
+  { from: 4, to: 8, anchor: [TX, TY + 6, 0], border: "#ffffff", lines: [[{ t: "IT'S ALL" }], [{ t: "PIXELS", c: "#ffd23f" }]] },
+  { from: 8, to: 10, anchor: ABOVE_PIXEL, border: "#ffffff", lines: [[{ t: "EACH PIXEL" }], [{ t: "= 3 LIGHTS", c: "#ffd23f" }]] },
+  { from: 10, to: 12, anchor: ABOVE_PIXEL, border: "#ffffff", lines: [[{ t: "RED", c: "#ff2a2a" }, { t: " " }, { t: "GREEN", c: "#2aff4a" }], [{ t: "BLUE", c: "#2a6aff" }]] },
+  { from: 12, to: 13, anchor: ABOVE_PIXEL, border: "#ffff3a", lines: [[{ t: "R", c: "#ff2a2a" }, { t: "+" }, { t: "G", c: "#2aff4a" }, { t: " =" }], [{ t: "YELLOW", c: "#ffff3a" }]] },
+  { from: 13, to: 14, anchor: ABOVE_PIXEL, border: "#3affff", lines: [[{ t: "G", c: "#2aff4a" }, { t: "+" }, { t: "B", c: "#2a6aff" }, { t: " =" }], [{ t: "CYAN", c: "#3affff" }]] },
+  { from: 14, to: 15, anchor: ABOVE_PIXEL, border: "#ff3aff", lines: [[{ t: "R", c: "#ff2a2a" }, { t: "+" }, { t: "B", c: "#2a6aff" }, { t: " =" }], [{ t: "MAGENTA", c: "#ff3aff" }]] },
+  { from: 15, to: 16, anchor: ABOVE_PIXEL, border: "#ffffff", lines: [[{ t: "R", c: "#ff2a2a" }, { t: "+" }, { t: "G", c: "#2aff4a" }, { t: "+" }, { t: "B", c: "#2a6aff" }, { t: " =" }], [{ t: "WHITE" }]] },
+  { from: 16, to: 18, anchor: ABOVE_PIXEL, border: "#ffffff", lines: [[{ t: "256 LEVELS" }], [{ t: "EACH", c: "#ffd23f" }]] },
+  { from: 18, to: 20, anchor: ABOVE_PIXEL, border: "#ffd23f", lines: [[{ t: "16.7 MILLION", c: "#ffd23f" }], [{ t: "COLORS" }]] },
+  { from: 22, to: 24, anchor: SCREEN_MID, border: "#ffffff", lines: [[{ t: "2 MILLION", c: "#ffd23f" }], [{ t: "PIXELS" }], [{ t: "ON YOUR PHONE" }]] },
+  { from: 24, to: 26, anchor: SCREEN_MID, border: "#ffffff", lines: [[{ t: "YOUR EYE" }], [{ t: "BLENDS THEM", c: "#ffd23f" }]] },
+  { from: 26, to: 30, anchor: [0, 22, 0], border: "#ffffff", lines: [[{ t: "REDRAWN" }], [{ t: "60-120×", c: "#ffd23f" }], [{ t: "A SECOND" }]] },
+  { from: 30, to: 32, anchor: SCREEN_MID, border: "#ffd23f", lines: [[{ t: "NOW YOU" }], [{ t: "KNOW.", c: "#ffd23f" }]] },
+  { from: 32, to: 33, anchor: SCREEN_MID, border: "#ffffff", lines: [[{ t: "@HOWTOWITHZAY", c: "#ffd23f" }]] },
+  { from: 33, to: 34.01, anchor: SCREEN_MID, border: "#ffd23f", lines: [[{ t: "HOW DO" }], [{ t: "SCREENS", c: "#ffd23f" }], [{ t: "WORK? 🎧" }]] },
+];
+const projCam = new THREE.PerspectiveCamera(42, 1080 / 1920, 0.1, 300);
+function project(a: V3, cam: { p: V3; l: V3 }): [number, number] {
+  projCam.position.set(...cam.p); projCam.lookAt(...cam.l); projCam.updateMatrixWorld();
+  const v = new THREE.Vector3(...a).project(projCam);
+  return [((v.x + 1) / 2) * 1080, ((1 - v.y) / 2) * 1920];
+}
+const Labels: React.FC<{ t: number; cam: { p: V3; l: V3 } }> = ({ t, cam }) => {
+  const b = t / BAR;
+  const L = LABELS.find((l) => b >= l.from && b < l.to);
+  if (!L) return null;
+  const [x, y] = project(L.anchor, cam);
+  const age = (b - L.from) * BAR, left = (L.to - b) * BAR;
+  const first = L.from === 0, last = L.to > 34;
+  const o = first || last ? 1 : Math.min(1, Math.floor(Math.min(age, left) / 0.06) / 3);
+  const pop = first || last ? 1 : age < 0.1 ? 0.92 : 1;
+  const cx = Math.max(300, Math.min(780, x)), cy = Math.max(330, Math.min(1500, y));
+  return (
+    <div style={{ position: "absolute", left: cx, top: cy, transform: `translate(-50%, -100%) scale(${pop})`, opacity: o, textAlign: "center", fontFamily: "PressStart2P",
+      background: "rgba(5,6,10,0.9)", border: `8px solid ${L.border}`, boxShadow: "10px 10px 0 #000", padding: "26px 30px 18px", lineHeight: 1.35, whiteSpace: "nowrap" }}>
+      {L.lines.map((segs, i) => (
+        <div key={i} style={{ fontSize: i === 0 && L.lines.length > 1 ? 44 : 58, color: "#ffffff", marginBottom: 8 }}>
+          {segs.map((sg, j) => <span key={j} style={{ color: sg.c ?? "#ffffff" }}>{sg.t}</span>)}
+        </div>
+      ))}
+    </div>
   );
 };
 const CamOn: React.FC<{ p: V3; l: V3 }> = ({ p, l }) => { const { camera } = useThree(); camera.position.set(...p); camera.lookAt(...l); camera.updateMatrixWorld(); return null; };

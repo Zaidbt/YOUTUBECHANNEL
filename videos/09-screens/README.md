@@ -2,8 +2,8 @@
 
 48 s · seamless loop · 9:16 · 60 fps · **170 BPM drum & bass** · true pixel-art 3D. Build: `npm run video:screens` (~4.5 min).
 
-No overlay captions: text is part of the animation — drawn by the phone screen's own pixels (3x5 font,
-`remotion/src/brand/pixelFont.ts`) or floating as voxel letters next to the zoomed pixel. Each phrase holds ≥ 1 bar.
+Text: crisp labels in solid panels, anchored to what they describe (projected from 3D), one per ~2 bars.
+(A first version drew text with the screen's own pixels / voxel letters; it wasn't readable through the pixel pipeline.)
 
 The animation plays the music: in the close-up the red sub-pixel flashes on every kick, green on every snare,
 blue on every hat. Colours are chords (R = A, G = C, B = E): yellow = A+C, white = the full A-minor chord.
