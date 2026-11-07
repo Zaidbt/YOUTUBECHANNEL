@@ -17,7 +17,8 @@
     "video:bees": "python3 videos/06-bees/build.py && remotion render BeesPixelVideo out/bees-pixel.mp4 --gl=swangle",
     "video:fusion": "python3 videos/07-fusion/build.py && remotion render FusionVideo out/fusion.mp4 --gl=swangle",
     "video:dna": "python3 videos/08-dna/build.py && remotion render DnaVideo out/dna.mp4 --gl=swangle",
-    "video:screens": "python3 videos/09-screens/build.py && remotion render ScreensVideo out/screens.mp4 --gl=swangle"
+    "video:screens": "python3 videos/09-screens/build.py && remotion render ScreensVideo out/screens.mp4 --gl=swangle",
+    "video:baby": "python3 videos/10-baby/build.py && remotion render BabyVideo out/baby.mp4 --gl=swangle"
   },
   "repository": {
     "type": "git",
