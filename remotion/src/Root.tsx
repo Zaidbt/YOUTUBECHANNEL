@@ -13,6 +13,7 @@ import { SewingPreview } from "./videos/sewing/SewingPreview";
 import { SewingVideo, DURATION as SEW_DURATION, FPS as SEW_FPS } from "./videos/sewing/SewingVideo";
 import { LightVideo, DURATION as LIGHT_DURATION, FPS as LIGHT_FPS } from "./videos/light/LightVideo";
 import { BeesVideo, DURATION as BEES_DURATION, FPS as BEES_FPS } from "./videos/bees/BeesVideo";
+import { BeesPixelPreview } from "./videos/bees/BeesPixelPreview";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -52,5 +53,6 @@ export const Root = () => (
     <Composition id="LightVideo" component={LightVideo} durationInFrames={LIGHT_DURATION} fps={LIGHT_FPS} width={1080} height={1920} />
     {/* 006 · How do bees build perfect hexagons? (48 s loop @ 60 fps, --gl=swangle) */}
     <Composition id="BeesVideo" component={BeesVideo} durationInFrames={BEES_DURATION} fps={BEES_FPS} width={1080} height={1920} />
+    <Composition id="BeesPixelPreview" component={BeesPixelPreview} durationInFrames={1} fps={60} width={1080} height={1920} defaultProps={{ shot: 0 }} />
   </>
 );
