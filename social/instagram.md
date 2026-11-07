@@ -84,22 +84,3 @@ Sound on 🔊 the pixel IS the drum machine: red = kick, green = snare, blue = h
 #pixels #screens #howitworks #pixelart #science
 
 Extra tags (optional): #tech #technology #rgb #oled #learnoninstagram #pixelart3d #stem
-
-## Post · How does a baby form? (out/baby.mp4)
-How does a baby form? 👶🎧
-~250 million sperm set off. A few hundred reach the egg. Only ONE gets in.
-That single cell splits 1 → 2 → 4 → 8… and by day 5 it's a hollow ball of ~100 cells that settles into the womb.
-
-🫀 week 6: a heartbeat (~140 beats a minute, the tempo of this song)
-🍓 week 8: ~1.6 cm, a raspberry
-🍋 week 12: ~5 cm, a lime
-🍌 week 20: ~25 cm, a banana
-🍉 week 40: ~50 cm, ~3.4 kg, head down and ready
-
-It all started as one cell.
-
-Sound on 🔊 the heartbeat IS the kick drum.
-
-#pregnancy #baby #biology #pixelart #science
-
-Extra tags (optional): #embryology #humanbody #howitworks #pixelart3d #learnoninstagram #momtobe
