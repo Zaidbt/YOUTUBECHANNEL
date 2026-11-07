@@ -2,6 +2,11 @@
 
 Short-form explainer videos (YouTube Shorts, TikTok, Instagram Reels), 9:16, 1080x1920.
 
+## How to report a finished video (user preference)
+Keep the reply minimal: send the video file, then only the YouTube copy (title, description, tags), the Instagram
+copy (caption + hashtags) and the TikTok copy (caption + hashtags). No process notes, no checks summary, nothing else.
+Save the copy in `social/youtube.md`, `social/instagram.md`, `social/tiktok.md`.
+
 ## Hard rules for every video
 - **Seamless loop.** The last frame must be identical to the first frame, and the music's last bar must flow
   into its first bar (no fade-out, no ending hit, no fade to black). Shorts/Reels loop forever, so the end is
