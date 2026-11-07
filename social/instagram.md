@@ -72,3 +72,15 @@ Sound on 🔊 the melody IS the DNA sequence.
 #dna #biology #genetics #pixelart #science
 
 Extra tags (optional): #cellbiology #dnareplication #howitworks #pixelart3d #learnoninstagram #stem
+
+## Post · How do screens work? (out/screens.mp4)
+How does your screen make every color? 📱🎧
+Zoom in far enough and it's all pixels. Each pixel is 3 tiny lights: red, green and blue.
+Red + green = yellow. Green + blue = cyan. All three = white.
+Each light has 256 brightness levels → 16.7 million colors, and your phone has over 2 million pixels, redrawn 60–120 times a second. Your eye blends it all into one picture.
+
+Sound on 🔊 the pixel IS the drum machine: red = kick, green = snare, blue = hats.
+
+#pixels #screens #howitworks #pixelart #science
+
+Extra tags (optional): #tech #technology #rgb #oled #learnoninstagram #pixelart3d #stem
