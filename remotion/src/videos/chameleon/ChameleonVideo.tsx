@@ -21,6 +21,11 @@ type V3 = [number, number, number];
 const LW = (2 * Math.PI) / EV.duration;
 const BAR = EV.bar, BEAT = BAR / 4;
 const bt = (bar: number) => bar * BAR;
+/** The active timeline (the 48 s video or a cut-down hook). Set at the top of a composition's render. */
+export type Timeline = { colors: number[][]; tongue: number; flyBack: number; lw: number; beamN: number; dur: number };
+const MAIN_TL: Timeline = { colors: EV.colors, tongue: EV.tongue, flyBack: bt(23), lw: LW, beamN: 48, dur: EV.duration };
+let TL: Timeline = MAIN_TL;
+export const setTimeline = (x: Timeline) => { TL = x; };
 const ease = (x: number) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
 const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
 
@@ -31,13 +36,13 @@ export const JUNGLE_PALETTE = [
   "#1f4abf", "#4a9aff", "#bfe6ff", "#ffffff", "#fff8d0", "#05080a",
 ];
 const BG = "#06110a";
-const STATE = [
+export const STATE = [
   { name: "GREEN", mid: "#3fcf6a", light: "#9bf08a", dark: "#1f8a4a", s: 0, refl: "#4a9aff" },
   { name: "YELLOW", mid: "#ffd23f", light: "#fff08a", dark: "#c8a010", s: 0.4, refl: "#9bf08a" },
   { name: "ORANGE", mid: "#ff8a1f", light: "#ffbf6a", dark: "#c85a10", s: 0.7, refl: "#ffd23f" },
   { name: "RED", mid: "#ff3a2a", light: "#ff8a7a", dark: "#8a1414", s: 1, refl: "#ff3a2a" },
 ];
-const stateAt = (t: number) => { let s = 0, at = 0, prev = 0; for (const [tt, c] of EV.colors) if (tt <= t + 1e-6) { prev = s; s = c; at = tt; } return { s, at, prev }; };
+export const stateAt = (t: number) => { let s = 0, at = 0, prev = 0; for (const [tt, c] of TL.colors) if (tt <= t + 1e-6) { prev = s; s = c; at = tt; } return { s, at, prev }; };
 const spacingAt = (t: number) => { const { s, at, prev } = stateAt(t); return lerp(STATE[prev].s, STATE[s].s, ease((t - at) / 0.15)); };
 const changeFlash = (t: number) => { const at = stateAt(t).at; return at === 0 ? 0 : Math.exp(-(t - at) / 0.12); }; // t=0 is already green (loop seam)
 
@@ -67,14 +72,14 @@ export const cyl = (a: V3, b: V3, r: number, c: string, map?: THREE.Texture) => 
 
 // ===================== the chameleon =====================
 const MOUTH: V3 = [3.35, 1.55, 0];
-const flyPos = (t: number): V3 => [7.4 + 0.6 * Math.sin(6 * LW * t), 3.2 + 0.5 * Math.sin(9 * LW * t + 1), 0.3 * Math.cos(5 * LW * t)];
-const tongueLen = (t: number) => { const d = t - (EV.tongue - 0.12); if (d < 0 || d > 0.7) return 0; return d < 0.12 ? d / 0.12 : Math.max(0, 1 - (d - 0.12) / 0.5); };
-const flyAlive = (t: number) => t < EV.tongue || t > bt(23);
+const flyPos = (t: number): V3 => [7.4 + 0.6 * Math.sin(6 * TL.lw * t), 3.2 + 0.5 * Math.sin(9 * TL.lw * t + 1), 0.3 * Math.cos(5 * TL.lw * t)];
+const tongueLen = (t: number) => { const d = t - (TL.tongue - 0.12); if (d < 0 || d > 0.7) return 0; return d < 0.12 ? d / 0.12 : Math.max(0, 1 - (d - 0.12) / 0.5); };
+const flyAlive = (t: number) => t < TL.tongue || t > TL.flyBack;
 export const Chameleon: React.FC<{ t: number; map: THREE.Texture; state?: number; noFly?: boolean; gearEye?: boolean }> = ({ t, map, state, noFly, gearEye }) => {
   const a = useAssets();
   const st = STATE[state ?? stateAt(t).s];
   const fl = changeFlash(t);
-  const breathe = 1 + 0.03 * Math.sin(8 * LW * t);
+  const breathe = 1 + 0.03 * Math.sin(8 * TL.lw * t);
   const tail = useMemo(() => {
     const pts: THREE.Vector3[] = [new THREE.Vector3(-1.9, 1.3, 0), new THREE.Vector3(-3.3, 0.9, 0)];
     for (let i = 0; i <= 26; i++) { const th = (i / 26) * Math.PI * 2.6, r = 1.25 * (1 - i / 32); pts.push(new THREE.Vector3(-4.3 + Math.cos(th + 1.2) * r, -0.3 + Math.sin(th + 1.2) * r, 0)); }
@@ -82,7 +87,7 @@ export const Chameleon: React.FC<{ t: number; map: THREE.Texture; state?: number
   }, []);
   const eye = (side: number, k: number) => {
     const c: V3 = [2.8, 2.2, side * 0.55];
-    const yaw = 0.8 * Math.sin((7 + k * 3) * LW * t + k), pitch = 0.4 * Math.sin((5 + k * 4) * LW * t + 2 * k);
+    const yaw = 0.8 * Math.sin((7 + k * 3) * TL.lw * t + k), pitch = 0.4 * Math.sin((5 + k * 4) * TL.lw * t + 2 * k);
     const dir = new THREE.Vector3(Math.cos(pitch) * Math.cos(yaw), Math.sin(pitch), side * Math.abs(Math.cos(pitch) * Math.sin(yaw)) + side * 0.4).normalize();
     return (
       <group key={side}>
@@ -132,13 +137,13 @@ const LEAVES = Array.from({ length: 46 }, (_, i) => ({
   p: [(rnd(i) - 0.5) * 50, (rnd(i + 1) - 0.4) * 34, -6 - rnd(i + 2) * 24] as V3,
   s: 1.6 + rnd(i + 3) * 2.6, r: rnd(i + 4) * Math.PI, c: ["#1f4a2a", "#2e6a35", "#3f8f3a", "#143020"][i % 4],
 }));
-const Jungle: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => (
+export const Jungle: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => (
   <group>
     {cyl([-16, -0.25, 0], [18, -0.7, 0], 0.55, "#5a3a1f")}
     {cyl([7, -0.55, 0], [10.5, 1.4, -0.6], 0.25, "#5a3a1f")}
     {[[10.5, 1.4, -0.6], [-9, -0.3, 0.2]].map((p, i) => <mesh key={i} position={p as V3} rotation={[0.4, 0.3 * i, 0.6]} scale={[1.6, 0.25, 0.8]}><sphereGeometry args={[1, 10, 6]} /><Toon c="#6fbf4a" /></mesh>)}
     {LEAVES.map((l, i) => (
-      <mesh key={i} position={l.p} rotation={[0.3, 0.2, l.r + 0.08 * Math.sin(2 * LW * t + i)]} scale={[l.s, l.s * 0.38, 0.12]}><sphereGeometry args={[1, 10, 6]} /><Toon c={l.c} /></mesh>
+      <mesh key={i} position={l.p} rotation={[0.3, 0.2, l.r + 0.08 * Math.sin(2 * TL.lw * t + i)]} scale={[l.s, l.s * 0.38, 0.12]}><sphereGeometry args={[1, 10, 6]} /><Toon c={l.c} /></mesh>
     ))}
     {Array.from({ length: 7 }, (_, i) => cyl([-14 + i * 5, 16, -8 - i], [-13.4 + i * 5 + Math.sin(i) * 1.2, 2 + rnd(i) * 4, -8 - i], 0.12, "#2e6a35"))}
     {/* foreground framing leaves */}
@@ -148,37 +153,37 @@ const Jungle: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => (
     <Glow map={map} at={[5, 9, -33]} size={12} color="#fff8d0" opacity={0.5} />
     {/* lower canopy: bright leaves + a hanging flower vine below the branch */}
     {Array.from({ length: 14 }, (_, i) => (
-      <mesh key={`lo${i}`} position={[-8 + i * 1.3 + rnd(i + 90) * 0.8, -2.2 - rnd(i + 91) * 3.8, 1 + rnd(i + 92) * 4]} rotation={[0.5, 0.3 * rnd(i + 93), (rnd(i + 94) - 0.5) * 2.4 + 0.06 * Math.sin(3 * LW * t + i)]} scale={[2.0, 0.75, 0.15]}>
+      <mesh key={`lo${i}`} position={[-8 + i * 1.3 + rnd(i + 90) * 0.8, -2.2 - rnd(i + 91) * 3.8, 1 + rnd(i + 92) * 4]} rotation={[0.5, 0.3 * rnd(i + 93), (rnd(i + 94) - 0.5) * 2.4 + 0.06 * Math.sin(3 * TL.lw * t + i)]} scale={[2.0, 0.75, 0.15]}>
         <sphereGeometry args={[1, 10, 6]} /><Toon c={["#3f8f3a", "#2e6a35", "#6fbf4a", "#1f4a2a"][i % 4]} e={0.35} />
       </mesh>
     ))}
-    {cyl([-2.6, -0.4, 0.6], [-2.2 + 0.3 * Math.sin(2 * LW * t), -4.4, 1.2], 0.07, "#3f8f3a")}
-    {cyl([4.6, -0.6, 0.6], [4.9 + 0.3 * Math.sin(2 * LW * t + 1), -3.6, 1.2], 0.07, "#3f8f3a")}
+    {cyl([-2.6, -0.4, 0.6], [-2.2 + 0.3 * Math.sin(2 * TL.lw * t), -4.4, 1.2], 0.07, "#3f8f3a")}
+    {cyl([4.6, -0.6, 0.6], [4.9 + 0.3 * Math.sin(2 * TL.lw * t + 1), -3.6, 1.2], 0.07, "#3f8f3a")}
     {[[-2.2, -4.5, 1.2, "#ff3a2a"], [4.9, -3.7, 1.2, "#ffd23f"], [-4.8, -2.6, 3, "#ff8a1f"], [5.2, -1.9, 2.6, "#ff3a2a"]].map(([x, y, z, c], i) => (
       <group key={`fl${i}`} position={[x as number, y as number, z as number]}>
-        {Array.from({ length: 5 }, (_, k) => <mesh key={k} rotation={[0, 0, (k / 5) * Math.PI * 2 + 0.1 * Math.sin(2 * LW * t)]} position={[0.35 * Math.cos((k / 5) * Math.PI * 2), 0.35 * Math.sin((k / 5) * Math.PI * 2), 0]} scale={[0.45, 0.22, 0.1]}><sphereGeometry args={[1, 8, 6]} /><Toon c={c as string} /></mesh>)}
+        {Array.from({ length: 5 }, (_, k) => <mesh key={k} rotation={[0, 0, (k / 5) * Math.PI * 2 + 0.1 * Math.sin(2 * TL.lw * t)]} position={[0.35 * Math.cos((k / 5) * Math.PI * 2), 0.35 * Math.sin((k / 5) * Math.PI * 2), 0]} scale={[0.45, 0.22, 0.1]}><sphereGeometry args={[1, 8, 6]} /><Toon c={c as string} /></mesh>)}
         <mesh><sphereGeometry args={[0.18, 8, 6]} /><Toon c="#fff08a" /></mesh>
       </group>
     ))}
     {/* god rays + dust */}
     {[[-4, 10, -10], [3, 12, -12], [9, 11, -14]].map((p, i) => (
       <sprite key={i} position={p as V3} scale={[3.2, 26, 1]}>
-        <spriteMaterial map={map} color="#fff8d0" transparent opacity={0.28 + 0.06 * Math.sin(4 * LW * t + i)} rotation={0.35} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <spriteMaterial map={map} color="#fff8d0" transparent opacity={0.28 + 0.06 * Math.sin(4 * TL.lw * t + i)} rotation={0.35} blending={THREE.AdditiveBlending} depthWrite={false} />
       </sprite>
     ))}
-    {Array.from({ length: 36 }, (_, i) => <Glow key={i} map={map} at={[(rnd(i + 50) - 0.5) * 26 + 0.8 * Math.sin(3 * LW * t + i), (rnd(i + 60) - 0.3) * 16 + 0.6 * Math.cos(2 * LW * t + i), (rnd(i + 70) - 0.5) * 10]} size={0.25} color="#fff8d0" opacity={0.7} />)}
+    {Array.from({ length: 36 }, (_, i) => <Glow key={i} map={map} at={[(rnd(i + 50) - 0.5) * 26 + 0.8 * Math.sin(3 * TL.lw * t + i), (rnd(i + 60) - 0.3) * 16 + 0.6 * Math.cos(2 * TL.lw * t + i), (rnd(i + 70) - 0.5) * 10]} size={0.25} color="#fff8d0" opacity={0.7} />)}
   </group>
 );
 
 // ===================== inside the skin =====================
-const Skin: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
+export const Skin: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
   const sp = spacingAt(t), st = STATE[stateAt(t).s], fl = changeFlash(t);
   const gap = 0.62 + 0.75 * sp;
   const crystals: V3[] = [];
   for (let i = -6; i <= 6; i++) for (let j = 0; j < 4; j++) for (let k = -1; k <= 0; k++) crystals.push([i * gap + (j % 2) * gap * 0.5, 1.0 + (j - 1.5) * gap * 0.8, k * gap]);
   const refl = STATE.find((x) => Math.abs(x.s - sp) < 0.2)?.refl ?? st.refl;
   const beam = (a: V3, b: V3, color: string, n = 26, phase = 0) =>
-    Array.from({ length: n }, (_, i) => { const u = ((i / n + 12 * LW * t / (2 * Math.PI) * 4 + phase) % 1); return <Glow key={`${color}${i}`} map={map} at={[a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, a[2] + (b[2] - a[2]) * u]} size={0.75} color={color} opacity={0.95} />; });
+    Array.from({ length: n }, (_, i) => { const u = ((i / n + TL.beamN * t / TL.dur + phase) % 1); return <Glow key={`${color}${i}`} map={map} at={[a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, a[2] + (b[2] - a[2]) * u]} size={0.75} color={color} opacity={0.95} />; });
   return (
     <group>
       {/* skin surface (shows the final colour) and the yellow pigment layer */}
@@ -242,6 +247,7 @@ const LABELS: LabelDef[] = [
 ];
 
 export const ChameleonVideo: React.FC = () => {
+  setTimeline(MAIN_TL);
   const t = useCurrentFrame() / FPS;
   const a = useAssets();
   const sc = sceneAt(t);
