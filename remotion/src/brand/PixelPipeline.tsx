@@ -74,10 +74,10 @@ const Post: React.FC<{ w: number; h: number; palette: string[]; dither: number; 
 };
 
 /** Drop-in canvas: children are a normal R3F scene; output is palette-locked pixel art at 1080x1920. */
-export const PixelArtCanvas: React.FC<{ scale?: number; fov?: number; bg: string; palette?: string[]; dither?: number; outline?: boolean; outlineColor?: string; children: React.ReactNode }> = ({
-  scale = 4, fov = 40, bg, palette = HIVE_PALETTE, dither = 0.09, outline = true, outlineColor = "#0b0604", children,
+export const PixelArtCanvas: React.FC<{ scale?: number; fov?: number; bg: string; palette?: string[]; dither?: number; outline?: boolean; outlineColor?: string; width?: number; height?: number; children: React.ReactNode }> = ({
+  width = 1080, height = 1920, scale = 4, fov = 40, bg, palette = HIVE_PALETTE, dither = 0.09, outline = true, outlineColor = "#0b0604", children,
 }) => {
-  const w = 1080 / scale, h = 1920 / scale;
+  const w = width / scale, h = height / scale;
   return (
     <AbsoluteFill style={{ imageRendering: "pixelated" }}>
       <div style={{ width: w, height: h, transform: `scale(${scale})`, transformOrigin: "top left" }}>

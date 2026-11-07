@@ -1,12 +1,12 @@
 # Instagram · @howtowithzay
 
 ## Profile
-- **Name field** (searchable): How To with Zay | Pixel Explainers
-- **Bio** (≤150 chars):
-  ⚙️ How things work — in pixel art & music 🎧
-  Watches · bees · light · machines
-  1 mechanism, 1 minute, on loop 🔁
-- **Picture**: `social/profile-howtowithzay.png` (1080x1080)
+- **Name field** (searchable): How To with Zay | How It Works
+- **Bio**:
+  ⚙️ How things work, in pixel art & music 🎧
+  A new 1-minute explainer every day 🔁
+  Watches · bees · DNA · chameleons
+- **Picture**: `social/profile-howtowithzay.png` (Zbot mascot, made by `scripts/profile_pic.py`)
 
 ## Post · How does a watch tick? (out/watch-majestic.mp4)
 How does a watch tick? 🎧⌚

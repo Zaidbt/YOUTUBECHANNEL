@@ -41,7 +41,7 @@ const stateAt = (t: number) => { let s = 0, at = 0, prev = 0; for (const [tt, c]
 const spacingAt = (t: number) => { const { s, at, prev } = stateAt(t); return lerp(STATE[prev].s, STATE[s].s, ease((t - at) / 0.15)); };
 const changeFlash = (t: number) => { const at = stateAt(t).at; return at === 0 ? 0 : Math.exp(-(t - at) / 0.12); }; // t=0 is already green (loop seam)
 
-function useAssets() {
+export function useAssets() {
   return useMemo(() => {
     const toon = new THREE.DataTexture(new Uint8Array([90, 90, 90, 255, 170, 170, 170, 255, 230, 230, 230, 255, 255, 255, 255, 255]), 4, 1, THREE.RGBAFormat);
     toon.minFilter = toon.magFilter = THREE.NearestFilter; toon.needsUpdate = true;
@@ -54,12 +54,12 @@ function useAssets() {
     return { toon, skin, glow: glowTexture() };
   }, []);
 }
-const Toon: React.FC<{ c: string; map?: THREE.Texture | null; e?: number; o?: number }> = ({ c, map, e = 0, o }) => {
+export const Toon: React.FC<{ c: string; map?: THREE.Texture | null; e?: number; o?: number }> = ({ c, map, e = 0, o }) => {
   const a = useAssets();
   return <meshToonMaterial color={c} map={map ?? null} gradientMap={a.toon} emissive={c} emissiveIntensity={e} transparent={o !== undefined} opacity={o ?? 1} depthWrite={o === undefined} />;
 };
 const Cam: React.FC<{ p: V3; l: V3 }> = ({ p, l }) => { const { camera } = useThree(); camera.position.set(...p); camera.lookAt(...l); camera.updateMatrixWorld(); return null; };
-const cyl = (a: V3, b: V3, r: number, c: string, map?: THREE.Texture) => {
+export const cyl = (a: V3, b: V3, r: number, c: string, map?: THREE.Texture) => {
   const va = new THREE.Vector3(...a), vb = new THREE.Vector3(...b), mid = va.clone().add(vb).multiplyScalar(0.5);
   const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), vb.clone().sub(va).normalize());
   return <mesh position={mid.toArray()} quaternion={q}><cylinderGeometry args={[r, r * 0.9, va.distanceTo(vb), 10]} /><Toon c={c} map={map} /></mesh>;
@@ -70,9 +70,9 @@ const MOUTH: V3 = [3.35, 1.55, 0];
 const flyPos = (t: number): V3 => [7.4 + 0.6 * Math.sin(6 * LW * t), 3.2 + 0.5 * Math.sin(9 * LW * t + 1), 0.3 * Math.cos(5 * LW * t)];
 const tongueLen = (t: number) => { const d = t - (EV.tongue - 0.12); if (d < 0 || d > 0.7) return 0; return d < 0.12 ? d / 0.12 : Math.max(0, 1 - (d - 0.12) / 0.5); };
 const flyAlive = (t: number) => t < EV.tongue || t > bt(23);
-const Chameleon: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
+export const Chameleon: React.FC<{ t: number; map: THREE.Texture; state?: number; noFly?: boolean; gearEye?: boolean }> = ({ t, map, state, noFly, gearEye }) => {
   const a = useAssets();
-  const st = STATE[stateAt(t).s];
+  const st = STATE[state ?? stateAt(t).s];
   const fl = changeFlash(t);
   const breathe = 1 + 0.03 * Math.sin(8 * LW * t);
   const tail = useMemo(() => {
@@ -87,7 +87,8 @@ const Chameleon: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
     return (
       <group key={side}>
         <mesh position={c}><sphereGeometry args={[0.4, 14, 10]} /><Toon c={st.mid} map={a.skin} /></mesh>
-        <mesh position={[c[0] + dir.x * 0.36, c[1] + dir.y * 0.36, c[2] + dir.z * 0.36]}><sphereGeometry args={[0.11, 8, 6]} /><Toon c="#05080a" /></mesh>
+        <mesh position={[c[0] + dir.x * 0.36, c[1] + dir.y * 0.36, c[2] + dir.z * 0.36]}><sphereGeometry args={[gearEye ? 0.16 : 0.11, 8, 6]} /><Toon c={gearEye ? "#ffd23f" : "#05080a"} e={gearEye ? 0.4 : 0} /></mesh>
+        {gearEye && <mesh position={[c[0] + dir.x * 0.47, c[1] + dir.y * 0.47, c[2] + dir.z * 0.47]}><sphereGeometry args={[0.07, 6, 4]} /><Toon c="#05080a" /></mesh>}
       </group>
     );
   };
@@ -115,7 +116,7 @@ const Chameleon: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
         </group>
       ))}
       {L > 0 && <>{cyl(MOUTH, tip, 0.13, "#ff8a7a")}<mesh position={tip}><sphereGeometry args={[0.28, 10, 8]} /><Toon c="#ff3a2a" /></mesh></>}
-      {flyAlive(t) && (
+      {!noFly && flyAlive(t) && (
         <group position={fly}>
           <mesh><sphereGeometry args={[0.2, 8, 6]} /><Toon c="#05080a" /></mesh>
           {[1, -1].map((s) => <mesh key={s} position={[0, 0.18, s * 0.18]} rotation={[s * (0.6 + 0.5 * Math.sin(t * 90)), 0, 0]}><planeGeometry args={[0.35, 0.18]} /><meshBasicMaterial color="#bfe6ff" transparent opacity={0.6} side={THREE.DoubleSide} /></mesh>)}
