@@ -56,3 +56,19 @@ Sound on 🔊 every fusion is a hit.
 #nuclearfusion #sun #physics #pixelart #science
 
 Extra tags (optional): #space #astronomy #emc2 #einstein #howitworks #pixelart3d #learnoninstagram
+
+## Post · How does your DNA copy itself? (out/dna.mp4)
+How does your DNA copy itself? 🧬🎧
+Every cell holds 2 meters of DNA, packed into a nucleus ~6 µm wide. It's a code with just 4 letters: A always pairs with T, C with G.
+
+To copy it, a helicase unzips the helix, and a polymerase grabs free letters and matches every single one. Each copy ends up with 1 old strand + 1 new strand, and it even proofreads itself: about 1 mistake per billion letters.
+
+🧬 ~50 letters per second
+🧬 at thousands of forks at once
+🧬 ~330 billion new cells in your body every day, every one copied like this
+
+Sound on 🔊 the melody IS the DNA sequence.
+
+#dna #biology #genetics #pixelart #science
+
+Extra tags (optional): #cellbiology #dnareplication #howitworks #pixelart3d #learnoninstagram #stem

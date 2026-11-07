@@ -15,7 +15,8 @@
     "video:sewing": "python3 videos/04-sewing/build.py && remotion render SewingVideo out/sewing.mp4 --gl=swangle",
     "video:light": "python3 videos/05-light/build.py && remotion render LightVideo out/light.mp4 --gl=swangle",
     "video:bees": "python3 videos/06-bees/build.py && remotion render BeesPixelVideo out/bees-pixel.mp4 --gl=swangle",
-    "video:fusion": "python3 videos/07-fusion/build.py && remotion render FusionVideo out/fusion.mp4 --gl=swangle"
+    "video:fusion": "python3 videos/07-fusion/build.py && remotion render FusionVideo out/fusion.mp4 --gl=swangle",
+    "video:dna": "python3 videos/08-dna/build.py && remotion render DnaVideo out/dna.mp4 --gl=swangle"
   },
   "repository": {
     "type": "git",

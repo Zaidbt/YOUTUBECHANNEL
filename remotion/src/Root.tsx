@@ -17,6 +17,7 @@ import { BeesPixelPreview } from "./videos/bees/BeesPixelPreview";
 import { ProfilePic } from "./brand/ProfilePic";
 import { BeesPixelVideo } from "./videos/bees/BeesPixelVideo";
 import { FusionVideo, DURATION as FUSION_DURATION, FPS as FUSION_FPS } from "./videos/fusion/FusionVideo";
+import { DnaVideo, DURATION as DNA_DURATION, FPS as DNA_FPS } from "./videos/dna/DnaVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -62,5 +63,7 @@ export const Root = () => (
     <Composition id="BeesPixelVideo" component={BeesPixelVideo} durationInFrames={BEES_DURATION} fps={BEES_FPS} width={1080} height={1920} />
     {/* 007 · How does fusion power the Sun? (48 s loop @ 60 fps, 150 BPM, --gl=swangle) */}
     <Composition id="FusionVideo" component={FusionVideo} durationInFrames={FUSION_DURATION} fps={FUSION_FPS} width={1080} height={1920} />
+    {/* 008 · How does your DNA copy itself? (48 s loop @ 60 fps, 150 BPM, --gl=swangle) */}
+    <Composition id="DnaVideo" component={DnaVideo} durationInFrames={DNA_DURATION} fps={DNA_FPS} width={1080} height={1920} />
   </>
 );
