@@ -19,7 +19,7 @@ Short-form explainer videos (YouTube Shorts, TikTok, Instagram Reels), 9:16, 108
 - **Text must be readable** (feedback history: overlay captions at the top were too fast; text drawn with in-scene
   pixels / voxel letters was NOT readable after the pixel pipeline). Use crisp HTML labels (Press Start 2P, ~44/58 px)
   in a solid dark panel with a coloured 8-px border, anchored next to the thing being explained by projecting its 3D
-  position (see `Labels` in `remotion/src/videos/screens/ScreensVideo.tsx`). Never render text through
+  position — use `Labels` / `LabelDef` from `remotion/src/brand/Labels.tsx` (anchors can be functions of t; `hold: true` for the loop hook). Never render text through
   `PixelArtCanvas`. 1–3 short lines, one label per ~2 bars (≥ 2.5 s), colour-code words to match what's on screen.
 - **Every video gets a different hyped rhythm/genre** (done so far: 120 BPM chiptune, 150 BPM four-on-the-floor
   hyper, 170 BPM drum & bass). Pick a BPM where `48 s × BPM / 240` is a whole number of bars.
@@ -29,8 +29,8 @@ Short-form explainer videos (YouTube Shorts, TikTok, Instagram Reels), 9:16, 108
 ## Current style: TRUE pixel-art 3D (use this)
 3D scene rendered at 270x480 through `remotion/src/brand/PixelPipeline.tsx` (`PixelArtCanvas`): 1-px depth outlines,
 4x4 Bayer dithering, every pixel snapped to a fixed palette (glows too), toon (MeshToonMaterial) shading, pixel
-textures (DataTexture, NearestFilter), upscaled 4x. Captions: Press Start 2P with a hard 4-px outline, stepped fades.
-Brand on screen: @HOWTOWITHZAY. Reference: `remotion/src/videos/bees/BeesPixelVideo.tsx`.
+textures (DataTexture, NearestFilter), upscaled 4x. Text: anchored `Labels` panels (see the text rule above).
+Brand on screen: @HOWTOWITHZAY. References: `remotion/src/videos/dna/DnaVideo.tsx` (labels + hyper music), `remotion/src/videos/bees/BeesPixelVideo.tsx`.
 Instagram copy lives in `social/instagram.md`.
 
 ## Previous style: cinematic pixel-3D ("majestic")

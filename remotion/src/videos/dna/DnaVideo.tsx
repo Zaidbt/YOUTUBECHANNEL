@@ -18,6 +18,7 @@ import { PixelArtCanvas } from "../../brand/PixelPipeline";
 import { glowTexture, Glow } from "../watch/CinematicPreview";
 import { camAt, CamKey } from "../teasers/Majestic";
 import { rnd } from "../../brand/pixels";
+import { Labels, LabelDef } from "../../brand/Labels";
 
 export const FPS = 60;
 export const DURATION = Math.round(EV.duration * FPS);
@@ -224,6 +225,29 @@ const Letters: React.FC<{ t: number }> = ({ t }) => {
 };
 
 // ---------- composition ----------
+// ---------- readable labels, anchored to what they describe (one per ~2 bars) ----------
+const L = LETTER;
+const forkAnchor = (t: number): V3 => [0, yOf(Math.min(N - 1, EV.unzip.filter((x) => x <= t).length)) + 2.4, 0];
+const polyAnchor = (t: number): V3 => { const k = Math.min(N - 1, EV.add.filter((x) => x <= t).length); return [centers(t)[0], yOf(k) + 2.2, 0]; };
+const HOOK_LINES = [[{ t: "HOW DOES YOUR" }], [{ t: "DNA", c: "#3ad6ff" }], [{ t: "COPY ITSELF? 🎧" }]];
+const DNA_LABELS: LabelDef[] = [
+  { from: 0, to: 4.8, anchor: [0, 7, 0], border: "#ff5cc8", lines: HOOK_LINES, hold: true },
+  { from: 4.8, to: 8.0, anchor: [0, 8.2, 0], border: "#3ad6ff", lines: [[{ t: "EVERY CELL HAS" }], [{ t: "2 METERS", c: "#3ad6ff" }], [{ t: "OF DNA" }]] },
+  { from: 8.0, to: 11.2, anchor: [0, 6.2, 0], border: "#ffffff", lines: [[{ t: "A CODE OF 4 LETTERS" }], [{ t: "A ", c: L.A }, { t: "T ", c: L.T }, { t: "C ", c: L.C }, { t: "G", c: L.G }]] },
+  { from: 11.2, to: 14.4, anchor: [0, 3.4, 0], border: "#ffffff", lines: [[{ t: "THEY ALWAYS PAIR" }], [{ t: "A", c: L.A }, { t: "-" }, { t: "T", c: L.T }, { t: "  " }, { t: "C", c: L.C }, { t: "-" }, { t: "G", c: L.G }]] },
+  { from: 14.4, to: 17.6, anchor: forkAnchor, border: "#ff9a1f", lines: [[{ t: "STEP 1" }], [{ t: "UNZIP", c: "#ff9a1f" }]] },
+  { from: 17.6, to: 20.8, anchor: polyAnchor, border: "#b05cff", lines: [[{ t: "STEP 2" }], [{ t: "MATCH", c: "#b05cff" }], [{ t: "A", c: L.A }, { t: "→" }, { t: "T", c: L.T }, { t: "  " }, { t: "C", c: L.C }, { t: "→" }, { t: "G", c: L.G }]] },
+  { from: 20.8, to: 24.0, anchor: polyAnchor, border: "#b05cff", lines: [[{ t: "LETTER BY LETTER" }], [{ t: "~50 / SEC", c: "#ffd23f" }]] },
+  { from: 24.0, to: 27.2, anchor: [0, 9.6, 0], border: "#ffffff", lines: [[{ t: "STEP 3" }], [{ t: "2 COPIES", c: "#ffffff" }], [{ t: "1 OLD", c: "#3ad6ff" }, { t: " + " }, { t: "1 NEW", c: "#ffffff" }]] },
+  { from: 27.2, to: 32.0, anchor: [-4.5 + R * 0.5, yOf(EV.errIdx) + 1.3, 0], border: "#ff4a4a", lines: [[{ t: "IT PROOFREADS" }], [{ t: "~1 ERROR", c: "#ff4a4a" }], [{ t: "PER BILLION" }]] },
+  { from: 32.0, to: 34.4, anchor: [0, 10, 0], border: "#ff9a1f", lines: [[{ t: "THOUSANDS" }], [{ t: "OF FORKS", c: "#ff9a1f" }], [{ t: "AT ONCE" }]] },
+  { from: 34.4, to: 36.8, anchor: [0, 10, 0], border: "#3ad6ff", lines: [[{ t: "6 BILLION LETTERS" }], [{ t: "IN ~8 HOURS", c: "#3ad6ff" }]] },
+  { from: 36.8, to: 40.0, anchor: [0, 9.6, 0], border: "#ffffff", lines: [[{ t: "THE CELL SPLITS" }], [{ t: "EACH GETS", c: "#ffd23f" }], [{ t: "A COPY", c: "#ffd23f" }]] },
+  { from: 40.0, to: 43.2, anchor: [0, 9.6, 0], border: "#3ee06a", lines: [[{ t: "YOUR BODY MAKES" }], [{ t: "~330 BILLION", c: "#3ee06a" }], [{ t: "CELLS A DAY" }]] },
+  { from: 43.2, to: 46.4, anchor: [0, 8, 0], border: "#ffd23f", lines: [[{ t: "NOW YOU KNOW." }], [{ t: "@HOWTOWITHZAY", c: "#ffd23f" }]] },
+  { from: 46.4, to: 48.01, anchor: [0, 7, 0], border: "#ff5cc8", lines: HOOK_LINES, hold: true },
+];
+
 export const DnaVideo: React.FC = () => {
   const t = useCurrentFrame() / FPS;
   const toon = useToon();
@@ -313,9 +337,7 @@ export const DnaVideo: React.FC = () => {
       </PixelArtCanvas>
       <AbsoluteFill style={{ background: "#cfe6ff", opacity: stepped(flashAt(t)) }} />
       <div style={{ position: "absolute", left: 48, top: 72, fontFamily: "PressStart2P", fontSize: 22, color: "#cfe6ff", textShadow: OUT }}>{tag}</div>
-      <Letters t={t} />
-      {cue && cue.b && !(t >= 8.0 && t < 9.6) && <CapBlock cue={cue} o={cueO} />}
-      {hook > 0 && <CapBlock cue={{ a: "HOW DOES YOUR", b: "DNA", c: "COPY ITSELF? 🎧" }} o={hook} />}
+      <Labels t={t} cam={cam} labels={DNA_LABELS} />
     </AbsoluteFill>
   );
 };
