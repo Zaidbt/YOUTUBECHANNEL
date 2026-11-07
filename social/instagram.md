@@ -39,3 +39,20 @@ Sound on 🔊 every new cell is a note.
 #bees #honeycomb #howitworks #pixelart #science
 
 Extra tags (optional): #beekeeping #nature #math #hexagon #pixelart3d #satisfying #explained #learnoninstagram
+
+## Post · How does fusion power the Sun? (out/fusion.mp4)
+How does fusion power the Sun? ☀️🎧
+The Sun isn't on fire. Its core is 15 million °C, so hot that atoms fall apart into bare protons.
+
+Protons repel each other… but it's so hot and crowded they slam together and fuse: deuterium, then helium-3, then helium-4. 4 protons in, 1 helium out, and the helium is 0.7% lighter.
+That missing mass becomes energy. E = mc².
+
+☀️ 600 million tonnes of hydrogen fused every second
+☀️ 4 million tonnes turned into pure energy every second
+☀️ that light takes thousands of years to get out… and 8 minutes to reach you
+
+Sound on 🔊 every fusion is a hit.
+
+#nuclearfusion #sun #physics #pixelart #science
+
+Extra tags (optional): #space #astronomy #emc2 #einstein #howitworks #pixelart3d #learnoninstagram
