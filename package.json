@@ -21,7 +21,7 @@
     "video:baby": "python3 videos/10-baby/build.py && remotion render BabyVideo out/baby.mp4 --gl=swangle",
     "video:anc": "python3 videos/11-anc/build.py && remotion render AncVideo out/anc.mp4 --gl=swangle",
     "video:chameleon": "python3 videos/12-chameleon/build.py && remotion render ChameleonVideo out/chameleon.mp4 --gl=swangle",
-    "video:chameleon-hook": "python3 videos/12-chameleon/build_hook.py && remotion render ChameleonHook out/chameleon-hook.mp4 --gl=swangle"
+    "video:chameleon30": "python3 videos/12-chameleon/build_30.py && remotion render Chameleon30 out/chameleon30.mp4 --gl=swangle"
   },
   "repository": {
     "type": "git",

@@ -1,8 +1,8 @@
-"""Video 012 · 10 s HOOK cut of the chameleon video — 144 BPM funk (6 bars = exactly 10 s), seamless loop.
+"""Video 012 · 30 s retention cut of the chameleon video — 144 BPM funk ("funk 150" feel), 18 bars = exactly 30 s, loop.
 
-Built for retention: action from frame 0 (the colour flips on every beat), a crash-zoom into the skin at 3.3 s,
-the tongue shot at 7.5 s, and the hook comes back for the loop. Every colour flip is a chord (G=Am Y=C O=F R=G).
-Writes remotion/src/videos/chameleon/hook.json + public/videos/12-chameleon/hook.wav.
+Action from frame 0 (a colour on every beat), crash-zoom into the skin at 3.3 s, the crystal explanation, the drop
+(bars 8-9), back to the jungle (it's to talk), the tongue shot, then the hook again so the end flows into the start.
+Every colour change is a chord (G=Am Y=C O=F R=G). Writes remotion/src/videos/chameleon/c30.json + public/videos/12-chameleon/c30.wav.
 """
 import json, sys
 from pathlib import Path
@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from chiptune import *  # noqa: E402
 from hyper import big_kick, clap, impact, riser  # noqa: E402
 
-BPM, BARS = 144, 6
+BPM, BARS = 144, 18
 BEAT = 60 / BPM; BAR = 4 * BEAT; DUR = BARS * BAR
 S16 = BEAT / 4
 r4 = lambda x: round(x, 4)
@@ -22,13 +22,17 @@ beat = lambda b: r4(b * BEAT)
 
 G, Y, O, R = 0, 1, 2, 3
 cycle = [G, Y, O, R]
-colors = [[beat(b), cycle[b % 4]] for b in range(8)]                       # bars 0-1: a colour on every beat
-colors += [[beat(8), G], [beat(10), R], [beat(12), G], [beat(14), R]]      # bars 2-3 (skin): close / spread
-colors += [[beat(16), G], [beat(18), R], [beat(20), G]]                    # bar 4: tongue on beat 18
-colors += [[beat(b), cycle[b % 4]] for b in (21, 22, 23)]                  # ramps back into beat 0 = green
-tongue = beat(18)
+colors = [[beat(b), cycle[b % 4]] for b in range(8)]                                   # 0-3.3 s: a colour every beat
+colors += [[beat(8 + 2 * k), c] for k, c in enumerate([G, Y, O, R])] + [[beat(16), G]]  # skin: the crystals breathe, then calm
+colors += [[beat(24), Y], [beat(26), O], [beat(28), R]]                                 # excited: they spread -> red
+colors += [[beat(b), cycle[b % 4]] for b in range(32, 40)]                              # the drop: a colour every beat
+colors += [[beat(40), G], [beat(44), O], [beat(46), R]]                                 # back in the jungle
+colors += [[beat(b), [O, R][b % 2]] for b in range(48, 55)]                             # talking to a rival: flicker
+colors += [[beat(56), Y], [beat(60), G]]                                                # tongue on beat 58
+colors += [[beat(b), cycle[b % 4]] for b in range(65, 72)]                              # ramps back into beat 0 = green
+tongue = beat(58)
 ev = {"duration": DUR, "bpm": BPM, "bar": BAR, "colors": colors, "tongue": tongue}
-(ROOT / "remotion/src/videos/chameleon/hook.json").write_text(json.dumps(ev))
+(ROOT / "remotion/src/videos/chameleon/c30.json").write_text(json.dumps(ev))
 
 def b808(midi, dur, vol=0.5):
     n = int(dur * SR); t = np.arange(n) / SR
@@ -67,14 +71,15 @@ for bar in range(BARS):
         sc.add(b808(CHORD[state_at(bt(bar, s))][0] - 24, ln * S16 * 0.95, 0.45), bt(bar, s))
 for t, c in colors:
     for i, n in enumerate(CHORD[c]): main.add(chop(n + 12, BEAT * 0.9, 0.04), t + i * 0.012)
-    main.add(whistle(0.14, 0.05, 2200 + 200 * c), t)
+    if t < bt(2) or bt(8) <= t < bt(10) or bt(12) <= t < bt(14) or t >= bt(16): main.add(whistle(0.14, 0.05, 2200 + 200 * c), t)
 for bar in range(BARS):
     for half in (0, 8):
         c = state_at(bt(bar, half))
         for n in CHORD[c]:
             x = tri(n + 12, BEAT * 2, 0.018); k = np.linspace(0, 1, len(x)); sc.add(x * np.clip(k / 0.15, 0, 1) * np.clip((1 - k) / 0.2, 0, 1), bt(bar, half))
 main.add(riser(BAR, 0.16, seed=3), bt(1)); main.add(impact(0.95, seed=4), bt(2))   # crash-zoom into the skin
-main.add(impact(0.8, seed=16), bt(4))                                              # back out
+main.add(riser(BAR, 0.18, seed=7), bt(7)); main.add(impact(1.0, seed=8), bt(8))    # the drop
+main.add(impact(0.8, seed=16), bt(10))                                             # back to the jungle
 n = int(0.25 * SR); tt_ = np.arange(n) / SR
 main.add(np.sin(2 * np.pi * np.cumsum(300 + 3000 * tt_ / 0.25) / SR) * np.exp(-tt_ / 0.1) * 0.12, tongue - 0.12)
 main.add(impact(0.7, seed=20), tongue)
@@ -83,5 +88,5 @@ last = np.full(len(t), -10.0)
 for k in sorted(kicks): last[t >= k] = k
 main.buf += sc.buf * (1 - 0.55 * np.exp(-(t - last) / 0.1))
 main.lowpass(9500); main.reverb(wet=0.14, decay=1.2)
-main.save(ROOT / "public/videos/12-chameleon/hook.wav")
-print(f"hook: {DUR:.3f} s, {len(colors)} colour changes")
+main.save(ROOT / "public/videos/12-chameleon/c30.wav")
+print(f"c30: {DUR:.3f} s, {len(colors)} colour changes")
