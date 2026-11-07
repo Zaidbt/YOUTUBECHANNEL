@@ -12,7 +12,8 @@ Short-form explainer videos (YouTube Shorts, TikTok, Instagram Reels), 9:16, 108
   - every idle/ambient motion (crawling, wing flaps, dust, sways) must be periodic with the video length:
     use angular speeds that are whole multiples of 2π/duration, never arbitrary values like `t * 0.3`;
   - music: `Song(..., loop=True)` (exact length, tails wrap to the start), and an even tick/tock count;
-  - verify: compare the first and last frames and the audio level at both ends after rendering.
+  - verify: compare the first and last frames and the audio level at both ends after rendering. With fast motion
+    on screen, compare the seam against a normal frame-to-frame difference (frame 0 vs frame 1), not against 0.
 - **Music-driven, no voiceover.** On-screen actions are timed to the beat from one shared timeline (a Python
   `build.py` writes the timeline JSON and the music from the same data).
 - **Facts on screen must be correct.** Double-check numbers before rendering.
@@ -22,7 +23,7 @@ Short-form explainer videos (YouTube Shorts, TikTok, Instagram Reels), 9:16, 108
   position — use `Labels` / `LabelDef` from `remotion/src/brand/Labels.tsx` (anchors can be functions of t; `hold: true` for the loop hook). Never render text through
   `PixelArtCanvas`. 1–3 short lines, one label per ~2 bars (≥ 2.5 s), colour-code words to match what's on screen.
 - **Every video gets a different hyped rhythm/genre** (done so far: 120 BPM chiptune, 150 BPM four-on-the-floor
-  hyper, 170 BPM drum & bass, 140 BPM jersey club / trap with 808s). Pick a BPM where `48 s × BPM / 240` is a whole number of bars.
+  hyper, 170 BPM drum & bass, 140 BPM jersey club / trap with 808s, 130 BPM UK garage 2-step). Pick a BPM where `48 s × BPM / 240` is a whole number of bars.
 - **The animation plays the music**: map visual events to instruments/notes (parts = drums, colours/letters = notes)
   from the shared timeline, so what you see is what you hear.
 

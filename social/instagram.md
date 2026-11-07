@@ -84,3 +84,17 @@ Sound on 🔊 the pixel IS the drum machine: red = kick, green = snare, blue = h
 #pixels #screens #howitworks #pixelart #science
 
 Extra tags (optional): #tech #technology #rgb #oled #learnoninstagram #pixelart3d #stem
+
+## Post · How do noise-cancelling headphones work? (out/anc.mp4)
+How do noise-cancelling headphones work? 🎧✈️
+Noise is a wave. A tiny mic on your headphones hears it, a chip flips it upside down, and the speaker plays that "anti-noise" with your music. Peak + valley = silence.
+
+🔇 recalculated thousands of times a second
+✈️ best on low hums: engines, trains, air conditioning
+🗣️ voices and clicks partly slip through (the ear pads help)
+
+Sound on 🔊 when the switch hits ON, the engine noise really disappears from the track.
+
+#headphones #noisecancelling #howitworks #pixelart #science
+
+Extra tags (optional): #tech #audio #physics #soundwaves #pixelart3d #learnoninstagram
