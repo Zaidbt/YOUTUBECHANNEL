@@ -10,6 +10,7 @@ import { FirefliesTeaser, WatchTeaser, TEASER_FRAMES } from "./videos/teasers/Te
 import { FirefliesMajestic, WatchMajestic, MAJESTIC_FRAMES, FPS60 } from "./videos/teasers/Majestic";
 import { WatchMajesticFull, DURATION as WMF_DURATION, FPS as WMF_FPS } from "./videos/watch/WatchMajesticFull";
 import { SewingPreview } from "./videos/sewing/SewingPreview";
+import { SewingVideo, DURATION as SEW_DURATION, FPS as SEW_FPS } from "./videos/sewing/SewingVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -43,5 +44,7 @@ export const Root = () => (
     {/* 003 · How does a watch tick? (majestic, 48 s @ 60 fps, --gl=swangle) */}
     <Composition id="WatchMajesticFull" component={WatchMajesticFull} durationInFrames={WMF_DURATION} fps={WMF_FPS} width={1080} height={1920} />
     <Composition id="SewingPreview" component={SewingPreview} durationInFrames={1} fps={60} width={1080} height={1920} defaultProps={{ shot: 0 }} />
+    {/* 004 · Sewing machine lockstitch (48 s loop @ 60 fps, --gl=swangle) */}
+    <Composition id="SewingVideo" component={SewingVideo} durationInFrames={SEW_DURATION} fps={SEW_FPS} width={1080} height={1920} />
   </>
 );
