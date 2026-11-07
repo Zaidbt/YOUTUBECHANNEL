@@ -9,6 +9,8 @@ Short-form explainer videos (YouTube Shorts, TikTok, Instagram Reels), 9:16, 108
   - camera: first and last camera keys are the same pose, with a short hold on both sides so velocity is ~0 at the seam;
   - captions: the opening hook is fully visible on frame 0 and settled again on the last frame;
   - any clock-like motion (second hands, counters) must land back where it started;
+  - every idle/ambient motion (crawling, wing flaps, dust, sways) must be periodic with the video length:
+    use angular speeds that are whole multiples of 2π/duration, never arbitrary values like `t * 0.3`;
   - music: `Song(..., loop=True)` (exact length, tails wrap to the start), and an even tick/tock count;
   - verify: compare the first and last frames and the audio level at both ends after rendering.
 - **Music-driven, no voiceover.** On-screen actions are timed to the beat from one shared timeline (a Python

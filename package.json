@@ -13,7 +13,8 @@
     "video:majestic": "python3 videos/teasers/build_v2.py && remotion render FirefliesMajestic out/FirefliesMajestic.mp4 --gl=swangle && remotion render WatchMajestic out/WatchMajestic.mp4 --gl=swangle",
     "video:watch-majestic": "python3 videos/03-watch-majestic/build.py && remotion render WatchMajesticFull out/watch-majestic.mp4 --gl=swangle",
     "video:sewing": "python3 videos/04-sewing/build.py && remotion render SewingVideo out/sewing.mp4 --gl=swangle",
-    "video:light": "python3 videos/05-light/build.py && remotion render LightVideo out/light.mp4 --gl=swangle"
+    "video:light": "python3 videos/05-light/build.py && remotion render LightVideo out/light.mp4 --gl=swangle",
+    "video:bees": "python3 videos/06-bees/build.py && remotion render BeesVideo out/bees.mp4 --gl=swangle"
   },
   "repository": {
     "type": "git",
