@@ -5,7 +5,9 @@ Short-form explainer videos (YouTube Shorts, TikTok, Instagram Reels), 9:16, 108
 ## How to report a finished video (user preference)
 Keep the reply minimal: send the video file, then only the YouTube copy (title, description, tags), the Instagram
 copy (caption + hashtags) and the TikTok copy (caption + hashtags). No process notes, no checks summary, nothing else.
-Save the copy in `social/youtube.md`, `social/instagram.md`, `social/tiktok.md`.
+Put every copy-paste piece (YouTube title, YouTube description, YouTube tags, Instagram caption, TikTok caption)
+in its own fenced code block so the user can copy it with one click. Save the copy in `social/youtube.md`,
+`social/instagram.md`, `social/tiktok.md`.
 
 ## Hard rules for every video
 - **Seamless loop.** The last frame must be identical to the first frame, and the music's last bar must flow
@@ -37,7 +39,8 @@ Save the copy in `social/youtube.md`, `social/instagram.md`, `social/tiktok.md`.
 3D scene rendered at 270x480 through `remotion/src/brand/PixelPipeline.tsx` (`PixelArtCanvas`): 1-px depth outlines,
 4x4 Bayer dithering, every pixel snapped to a fixed palette (glows too), toon (MeshToonMaterial) shading, pixel
 textures (DataTexture, NearestFilter), upscaled 4x. Text: anchored `Labels` panels (see the text rule above).
-Brand on screen: @HOWTOWITHZAY. References: `remotion/src/videos/dna/DnaVideo.tsx` (labels + hyper music), `remotion/src/videos/bees/BeesPixelVideo.tsx`.
+Brand on screen: @HOWTOWITHZAY. References: `remotion/src/videos/chameleon/ChameleonVideo.tsx` (user's favourite so far: rich scene, colour = chord,
+zoom into the mechanism, quality bar to match), `remotion/src/videos/dna/DnaVideo.tsx` (labels + hyper music), `remotion/src/videos/bees/BeesPixelVideo.tsx`.
 Instagram copy lives in `social/instagram.md`.
 
 ## Previous style: cinematic pixel-3D ("majestic")
