@@ -65,9 +65,9 @@ export function useAssets() {
     return { toon, skin, glow: glowTexture() };
   }, []);
 }
-export const Toon: React.FC<{ c: string; map?: THREE.Texture | null; e?: number; o?: number }> = ({ c, map, e = 0, o }) => {
+export const Toon: React.FC<{ c: string; map?: THREE.Texture | null; e?: number; o?: number; vc?: boolean }> = ({ c, map, e = 0, o, vc }) => {
   const a = useAssets();
-  return <meshToonMaterial color={c} map={map ?? null} gradientMap={a.toon} emissive={c} emissiveIntensity={e} transparent={o !== undefined} opacity={o ?? 1} depthWrite={o === undefined} />;
+  return <meshToonMaterial color={c} vertexColors={!!vc} map={map ?? null} gradientMap={a.toon} emissive={c} emissiveIntensity={e} transparent={o !== undefined} opacity={o ?? 1} depthWrite={o === undefined} />;
 };
 const Cam: React.FC<{ p: V3; l: V3 }> = ({ p, l }) => { const { camera } = useThree(); camera.position.set(...p); camera.lookAt(...l); camera.updateMatrixWorld(); return null; };
 export const cyl = (a: V3, b: V3, r: number, c: string, map?: THREE.Texture) => {
@@ -121,6 +121,9 @@ function bodyGeo() {
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx);
   g.computeVertexNormals();
+  const n = pos.length / 3, dist = new Float32Array(n);
+  for (let k = 0; k < n; k++) dist[k] = 3.8 - pos[k * 3];
+  g.setAttribute("color", new THREE.Float32BufferAttribute(new Float32Array(n * 3), 3)); g.userData.dist = dist;
   return g;
 }
 function tailGeo() {
@@ -133,15 +136,30 @@ function tailGeo() {
     for (let j = 0; j <= RAD; j++) { const k = i * (RAD + 1) + j; p.setXYZ(k, c.x + (p.getX(k) - c.x) * rad, c.y + (p.getY(k) - c.y) * rad, c.z + (p.getZ(k) - c.z) * rad); }
   }
   g.computeVertexNormals();
+  const n = p.count, dist = new Float32Array(n);
+  for (let i = 0; i <= SEG; i++) for (let j = 0; j <= RAD; j++) dist[i * (RAD + 1) + j] = 6.3 + (i / SEG) * 6.5;
+  g.setAttribute("color", new THREE.Float32BufferAttribute(new Float32Array(n * 3), 3)); g.userData.dist = dist;
   return g;
 }
+/** the colour wave: a change starts at the snout and rolls to the tail tip (distance d from the snout) */
+const WAVE_SPEED = 30, WAVE_EDGE = 0.9;
+const waveK = (t: number, at: number, d: number) => Math.max(0, Math.min(1, ((t - at) * WAVE_SPEED - d) / WAVE_EDGE));
+const C3 = (h: string) => new THREE.Color(h);
+const mixCol = (a: string, b: string, k: number, edge: string) => { const e = 1 - Math.abs(2 * k - 1); return C3(a).lerp(C3(b), k).lerp(C3(edge), k > 0 && k < 1 ? 0.55 * e : 0); };
+const paint = (g: THREE.BufferGeometry, t: number, at: number, from: string, to: string, edge: string) => {
+  const c = g.attributes.color as THREE.BufferAttribute, d = g.userData.dist as Float32Array, A = C3(from), B = C3(to), E = C3(edge), tmp = new THREE.Color();
+  for (let k = 0; k < c.count; k++) { const w = waveK(t, at, d[k]), e = w > 0 && w < 1 ? 0.55 * (1 - Math.abs(2 * w - 1)) : 0; tmp.copy(A).lerp(B, w).lerp(E, e); c.setXYZ(k, tmp.r, tmp.g, tmp.b); }
+  c.needsUpdate = true;
+};
 const branchY = (x: number) => -0.25 - 0.45 * (x + 16) / 34; // centre of the main branch (radius 0.55)
 const flyPos = (t: number): V3 => [7.4 + 0.6 * Math.sin(6 * TL.lw * t), 3.2 + 0.5 * Math.sin(9 * TL.lw * t + 1), 0.3 * Math.cos(5 * TL.lw * t)];
 const tongueLen = (t: number) => { const d = t - (TL.tongue - 0.12); if (d < 0 || d > 0.7) return 0; return d < 0.12 ? d / 0.12 : Math.max(0, 1 - (d - 0.12) / 0.5); };
 const flyAlive = (t: number) => t < TL.tongue || t > TL.flyBack;
-export const Chameleon: React.FC<{ t: number; map: THREE.Texture; state?: number; noFly?: boolean; gearEye?: boolean }> = ({ t, map, state, noFly }) => {
+export const Chameleon: React.FC<{ t: number; map: THREE.Texture; state?: number; noFly?: boolean; gearEye?: boolean; eyeLook?: { p: V3; w: number } }> = ({ t, map, state, noFly, eyeLook }) => {
   const a = useAssets();
-  const st = STATE[state ?? stateAt(t).s];
+  const S0 = stateAt(t), cur = state ?? S0.s, prev = state ?? S0.prev, at = state !== undefined ? -99 : S0.at;
+  const st = STATE[cur], pv = STATE[prev];
+  const col = (d: number, which: "mid" | "dark" | "light") => "#" + mixCol(pv[which], st[which], waveK(t, at, d), st.light).getHexString();
   const fl = changeFlash(t);
   const breathe = 1 + 0.05 * Math.sin(8 * TL.lw * t);
   const geo = useMemo(() => {
@@ -157,39 +175,41 @@ export const Chameleon: React.FC<{ t: number; map: THREE.Texture; state?: number
     const c: V3 = [2.72, 2.15, side * (geo.eyeZ - 0.05)];
     const yaw = 0.7 * Math.sin((7 + k * 3) * TL.lw * t + k), pitch = 0.35 * Math.sin((5 + k * 4) * TL.lw * t + 2 * k);
     const dir = new THREE.Vector3(Math.cos(pitch) * Math.sin(yaw) * 0.9, Math.sin(pitch), side * Math.max(0.35, Math.cos(pitch) * Math.cos(yaw))).normalize();
+    if (eyeLook && eyeLook.w > 0 && side > 0) dir.lerp(new THREE.Vector3(eyeLook.p[0] - c[0], eyeLook.p[1] - c[1], eyeLook.p[2] - c[2]).normalize(), eyeLook.w).normalize();
     const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
-    const at = (d: number): V3 => [c[0] + dir.x * d, c[1] + dir.y * d, c[2] + dir.z * d];
+    const atD = (d: number): V3 => [c[0] + dir.x * d, c[1] + dir.y * d, c[2] + dir.z * d];
     return (
       <group key={side}>
-        <mesh position={c}><sphereGeometry args={[0.36, 14, 10]} /><Toon c={st.mid} map={a.skin} /></mesh>
-        <mesh position={at(0.3)} quaternion={q}><cylinderGeometry args={[0.12, 0.26, 0.2, 12]} /><Toon c={st.light} map={a.skin} /></mesh>
-        <mesh position={at(0.4)}><sphereGeometry args={[0.1, 8, 6]} /><Toon c="#05080a" /></mesh>
-        <mesh position={at(0.47)}><sphereGeometry args={[0.035, 4, 3]} /><meshBasicMaterial color="#ffffff" /></mesh>
+        <mesh position={c}><sphereGeometry args={[0.36, 14, 10]} /><Toon c={col(1.1, "mid")} map={a.skin} /></mesh>
+        <mesh position={atD(0.3)} quaternion={q}><cylinderGeometry args={[0.12, 0.26, 0.2, 12]} /><Toon c={col(1.0, "light")} map={a.skin} /></mesh>
+        <mesh position={atD(0.4)}><sphereGeometry args={[0.1, 8, 6]} /><Toon c="#05080a" /></mesh>
+        <mesh position={atD(0.47)}><sphereGeometry args={[0.035, 4, 3]} /><meshBasicMaterial color="#ffffff" /></mesh>
       </group>
     );
   };
   const leg = (x: number, s: number, front: boolean, key: number) => {
-    const by = branchY(x), hip: V3 = [x, front ? 1.15 : 1.05, s * 0.4], knee: V3 = [x + (front ? 0.45 : -0.45), 0.62, s * 0.82];
+    const d = 3.8 - x, by = branchY(x), hip: V3 = [x, front ? 1.15 : 1.05, s * 0.4], knee: V3 = [x + (front ? 0.45 : -0.45), 0.62, s * 0.82];
     const wrist: V3 = [x + (front ? 0.2 : -0.15), by + 0.66, s * 0.3];
     const toe = (ang: number, dx: number): V3 => [wrist[0] + dx, by + 0.62 * Math.cos(ang), s * 0.62 * Math.sin(ang)];
     return (
       <group key={key}>
-        {cyl(hip, knee, 0.15, st.mid, a.skin)}{cyl(knee, wrist, 0.12, st.mid, a.skin)}
-        <mesh position={knee}><sphereGeometry args={[0.15, 8, 6]} /><Toon c={st.mid} map={a.skin} /></mesh>
-        {cyl(wrist, toe(1.0, 0.08), 0.085, st.dark)}{cyl(wrist, toe(-0.75, -0.08), 0.085, st.dark)}
+        {cyl(hip, knee, 0.15, col(d, "mid"), a.skin)}{cyl(knee, wrist, 0.12, col(d + 0.3, "mid"), a.skin)}
+        <mesh position={knee}><sphereGeometry args={[0.15, 8, 6]} /><Toon c={col(d, "mid")} map={a.skin} /></mesh>
+        {cyl(wrist, toe(1.0, 0.08), 0.085, col(d + 0.6, "dark"))}{cyl(wrist, toe(-0.75, -0.08), 0.085, col(d + 0.6, "dark"))}
       </group>
     );
   };
+  paint(geo.body, t, at, pv.mid, st.mid, st.light); paint(geo.tail, t, at, pv.mid, st.mid, st.light);
   const L = tongueLen(t);
   const fly = flyPos(t);
   const tip: V3 = [MOUTH[0] + (fly[0] - MOUTH[0]) * L, MOUTH[1] + (fly[1] - MOUTH[1]) * L, MOUTH[2] + (fly[2] - MOUTH[2]) * L];
   return (
     <group>
-      <mesh geometry={geo.body} scale={[1, 1, breathe]}><Toon c={st.mid} map={a.skin} e={0.15 * fl} /></mesh>
-      {geo.crest.map(([p, h], i) => <mesh key={i} position={p}><coneGeometry args={[h * 0.55, h * 2, 4]} /><Toon c={st.dark} /></mesh>)}
-      {[1, -1].map((sd) => <group key={sd}>{tubeAlong(geo.lipL, sd, 0.05, st.light, "l")}{tubeAlong(geo.lipD, sd, 0.022, "#05080a", "d")}</group>)}
+      <mesh geometry={geo.body} scale={[1, 1, breathe]}><Toon c="#ffffff" vc map={a.skin} /></mesh>
+      {geo.crest.map(([p, h], i) => <mesh key={i} position={p}><coneGeometry args={[h * 0.55, h * 2, 4]} /><Toon c={col(3.8 - p[0], "dark")} /></mesh>)}
+      {[1, -1].map((sd) => <group key={sd}>{tubeAlong(geo.lipL, sd, 0.05, col(0.6, "light"), "l")}{tubeAlong(geo.lipD, sd, 0.022, "#05080a", "d")}</group>)}
       {eye(1, 0)}{eye(-1, 1)}
-      <mesh geometry={geo.tail}><Toon c={st.mid} map={a.skin} /></mesh>
+      <mesh geometry={geo.tail}><Toon c="#ffffff" vc map={a.skin} /></mesh>
       {leg(1.15, 1, true, 0)}{leg(1.15, -1, true, 1)}{leg(-1.3, 1, false, 2)}{leg(-1.3, -1, false, 3)}
       {L > 0 && <>{cyl(MOUTH, tip, 0.11, "#ff8a7a")}<mesh position={tip}><sphereGeometry args={[0.24, 10, 8]} /><Toon c="#ff3a2a" /></mesh></>}
       {!noFly && flyAlive(t) && (

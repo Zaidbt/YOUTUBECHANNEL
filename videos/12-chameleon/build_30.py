@@ -22,7 +22,7 @@ beat = lambda b: r4(b * BEAT)
 
 G, Y, O, R = 0, 1, 2, 3
 cycle = [G, Y, O, R]
-colors = [[beat(b), cycle[b % 4]] for b in range(8)]                                   # 0-3.3 s: a colour every beat
+colors = [[beat(0), G], [beat(2), R], [beat(4), Y], [beat(5), O], [beat(6), R], [beat(7), Y]]  # eye lock, DROP on beat 2, then a colour per beat
 colors += [[beat(8 + 2 * k), c] for k, c in enumerate([G, Y, O, R])] + [[beat(16), G]]  # skin: the crystals breathe, then calm
 colors += [[beat(24), Y], [beat(26), O], [beat(28), R]]                                 # excited: they spread -> red
 colors += [[beat(b), cycle[b % 4]] for b in range(32, 40)]                              # the drop: a colour every beat
@@ -78,6 +78,9 @@ for bar in range(BARS):
         for n in CHORD[c]:
             x = tri(n + 12, BEAT * 2, 0.018); k = np.linspace(0, 1, len(x)); sc.add(x * np.clip(k / 0.15, 0, 1) * np.clip((1 - k) / 0.2, 0, 1), bt(bar, half))
 main.add(riser(BAR, 0.16, seed=3), bt(1)); main.add(impact(0.95, seed=4), bt(2))   # crash-zoom into the skin
+main.add(impact(1.0, seed=2), beat(2)); main.add(b808(33, BEAT * 2, 0.5), beat(2))    # the opening drop (eye locks on you, red wave)
+n0 = int(0.45 * SR); t0 = np.arange(n0) / SR                                          # eye-swivel 'zip' into the drop
+main.add(np.sin(2 * np.pi * np.cumsum(500 + 2500 * (t0 / 0.45) ** 2) / SR) * 0.05 * np.clip(t0 / 0.05, 0, 1) * np.clip((0.45 - t0) / 0.05, 0, 1), beat(2) - 0.45)
 main.add(riser(BAR, 0.18, seed=7), bt(7)); main.add(impact(1.0, seed=8), bt(8))    # the drop
 main.add(impact(0.8, seed=16), bt(10))                                             # back to the jungle
 n = int(0.25 * SR); tt_ = np.arange(n) / SR
