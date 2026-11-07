@@ -50,12 +50,18 @@ export function useAssets() {
   return useMemo(() => {
     const toon = new THREE.DataTexture(new Uint8Array([90, 90, 90, 255, 170, 170, 170, 255, 230, 230, 230, 255, 255, 255, 255, 255]), 4, 1, THREE.RGBAFormat);
     toon.minFilter = toon.magFilter = THREE.NearestFilter; toon.needsUpdate = true;
-    const W = 32, H = 16, d = new Uint8Array(W * H * 4);
+    const W = 64, H = 32, d = new Uint8Array(W * H * 4);
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-      const band = y % 8 < 2 ? 255 : 228, dot = (x * 7 + y * 13) % 11 === 0 ? 165 : 0;
-      const v = dot || band; d.set([v, v, v, 255], (y * W + x) * 4);
+      const v = y / H; // around the body (0 = dorsal ridge, 0.5 = belly)
+      let c = 214;
+      if (x % 16 < 4 && v > 0.08 && v < 0.92) c = 172;                       // dark vertical bands
+      if (Math.abs(v - 0.32) < 0.035 || Math.abs(v - 0.68) < 0.035) c = 255;  // light lateral stripe
+      if (Math.abs(v - 0.5) < 0.1) c = 240;                                   // pale belly
+      if ((x * 5 + y * 3) % 7 === 0) c -= 30;                                 // scales
+      if ((x * 3 + y * 11) % 13 === 0) c = 250;                               // tubercles
+      d.set([c, c, c, 255], (y * W + x) * 4);
     }
-    const skin = new THREE.DataTexture(d, W, H, THREE.RGBAFormat); skin.magFilter = skin.minFilter = THREE.NearestFilter; skin.wrapS = skin.wrapT = THREE.RepeatWrapping; skin.repeat.set(3, 2); skin.needsUpdate = true;
+    const skin = new THREE.DataTexture(d, W, H, THREE.RGBAFormat); skin.magFilter = skin.minFilter = THREE.NearestFilter; skin.wrapS = skin.wrapT = THREE.RepeatWrapping; skin.needsUpdate = true;
     return { toon, skin, glow: glowTexture() };
   }, []);
 }
@@ -71,29 +77,106 @@ export const cyl = (a: V3, b: V3, r: number, c: string, map?: THREE.Texture) => 
 };
 
 // ===================== the chameleon =====================
-const MOUTH: V3 = [3.35, 1.55, 0];
+const MOUTH: V3 = [3.72, 1.5, 0];
+/** Side profile of a veiled chameleon, snout → tail base: [x, top, bottom, half-width]. Tall, laterally flat body,
+ * a helmet-like casque on the head, a pointed snout. Lofted into one mesh with a dorsal ridge. */
+const PROF: [number, number, number, number][] = [
+  [3.8, 1.62, 1.42, 0.05], [3.45, 1.95, 1.22, 0.26], [3.0, 2.35, 1.08, 0.42], [2.5, 2.85, 1.02, 0.47], [2.05, 3.35, 1.05, 0.42],
+  [1.7, 3.45, 1.08, 0.36], [1.42, 2.6, 1.05, 0.43], [1.15, 2.5, 0.95, 0.52], [0.5, 2.85, 0.55, 0.6], [-0.4, 2.95, 0.5, 0.62],
+  [-1.3, 2.7, 0.72, 0.54], [-2.0, 2.15, 1.05, 0.38], [-2.5, 1.66, 1.2, 0.24],
+];
+const RINGS = 72, RS = 18;
+const ring = (u: number) => {
+  const k = Math.min(PROF.length - 1.0001, u * (PROF.length - 1)), i = Math.floor(k), f = k - i;
+  const P = (j: number) => PROF[Math.max(0, Math.min(PROF.length - 1, j))];
+  const cr = (c: number) => { const p0 = P(i - 1)[c], p1 = P(i)[c], p2 = P(i + 1)[c], p3 = P(i + 2)[c]; return 0.5 * (2 * p1 + (-p0 + p2) * f + (2 * p0 - 5 * p1 + 4 * p2 - p3) * f * f + (-p0 + 3 * p1 - 3 * p2 + p3) * f * f * f); };
+  return { x: cr(0), top: cr(1), bot: cr(2), hw: Math.max(0.03, cr(3)) };
+};
+const secPt = (r: ReturnType<typeof ring>, phi: number): V3 => {
+  const cy = (r.top + r.bot) / 2, hh = (r.top - r.bot) / 2, c = Math.cos(phi);
+  const narrow = 1 - 0.6 * Math.max(0, c) ** 2 - 0.2 * Math.max(0, -c) ** 2; // dorsal ridge + slight keel
+  return [r.x, cy + hh * c, r.hw * Math.sin(phi) * narrow];
+};
+/** half-width of the body surface at (x, y) — to put eyes, lips and legs on the skin */
+const surfZ = (x: number, y: number) => {
+  let best = ring(0);
+  for (let i = 0; i <= 200; i++) { const r = ring(i / 200); if (Math.abs(r.x - x) < Math.abs(best.x - x)) best = r; }
+  const cy = (best.top + best.bot) / 2, hh = (best.top - best.bot) / 2, c = Math.max(-1, Math.min(1, (y - cy) / hh));
+  return secPt(best, Math.acos(c))[2];
+};
+function bodyGeo() {
+  const pos: number[] = [], uv: number[] = [], idx: number[] = [];
+  for (let i = 0; i <= RINGS; i++) {
+    const r = ring(i / RINGS);
+    for (let j = 0; j <= RS; j++) { pos.push(...secPt(r, (j / RS) * Math.PI * 2)); uv.push((i / RINGS) * 2.2, j / RS); }
+  }
+  for (let i = 0; i < RINGS; i++) for (let j = 0; j < RS; j++) {
+    const a = i * (RS + 1) + j, b = a + RS + 1;
+    idx.push(a, a + 1, b, b, a + 1, b + 1);
+  }
+  for (const [i, flip] of [[0, false], [RINGS, true]] as [number, boolean][]) { // end caps
+    const r = ring(i / RINGS), c = pos.length / 3; pos.push(r.x, (r.top + r.bot) / 2, 0); uv.push(0, 0.5);
+    for (let j = 0; j < RS; j++) { const a = i * (RS + 1) + j; flip ? idx.push(c, a, a + 1) : idx.push(c, a + 1, a); }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx);
+  g.computeVertexNormals();
+  return g;
+}
+function tailGeo() {
+  const pts: THREE.Vector3[] = [new THREE.Vector3(-2.45, 1.43, 0), new THREE.Vector3(-3.1, 1.25, 0), new THREE.Vector3(-3.7, 0.75, 0)];
+  for (let i = 0; i <= 26; i++) { const th = (i / 26) * Math.PI * 2.5, r = 1.05 * (1 - i / 30); pts.push(new THREE.Vector3(-4.0 + Math.cos(th + 0.9) * r, -0.15 + Math.sin(th + 0.9) * r * 0.95, 0)); }
+  const curve = new THREE.CatmullRomCurve3(pts), SEG = 120, RAD = 10;
+  const g = new THREE.TubeGeometry(curve, SEG, 1, RAD, false), p = g.attributes.position;
+  for (let i = 0; i <= SEG; i++) {
+    const c = curve.getPointAt(i / SEG), rad = 0.25 * (1 - i / SEG) ** 0.9 + 0.045;
+    for (let j = 0; j <= RAD; j++) { const k = i * (RAD + 1) + j; p.setXYZ(k, c.x + (p.getX(k) - c.x) * rad, c.y + (p.getY(k) - c.y) * rad, c.z + (p.getZ(k) - c.z) * rad); }
+  }
+  g.computeVertexNormals();
+  return g;
+}
+const branchY = (x: number) => -0.25 - 0.45 * (x + 16) / 34; // centre of the main branch (radius 0.55)
 const flyPos = (t: number): V3 => [7.4 + 0.6 * Math.sin(6 * TL.lw * t), 3.2 + 0.5 * Math.sin(9 * TL.lw * t + 1), 0.3 * Math.cos(5 * TL.lw * t)];
 const tongueLen = (t: number) => { const d = t - (TL.tongue - 0.12); if (d < 0 || d > 0.7) return 0; return d < 0.12 ? d / 0.12 : Math.max(0, 1 - (d - 0.12) / 0.5); };
 const flyAlive = (t: number) => t < TL.tongue || t > TL.flyBack;
-export const Chameleon: React.FC<{ t: number; map: THREE.Texture; state?: number; noFly?: boolean; gearEye?: boolean }> = ({ t, map, state, noFly, gearEye }) => {
+export const Chameleon: React.FC<{ t: number; map: THREE.Texture; state?: number; noFly?: boolean; gearEye?: boolean }> = ({ t, map, state, noFly }) => {
   const a = useAssets();
   const st = STATE[state ?? stateAt(t).s];
   const fl = changeFlash(t);
-  const breathe = 1 + 0.03 * Math.sin(8 * TL.lw * t);
-  const tail = useMemo(() => {
-    const pts: THREE.Vector3[] = [new THREE.Vector3(-1.9, 1.3, 0), new THREE.Vector3(-3.3, 0.9, 0)];
-    for (let i = 0; i <= 26; i++) { const th = (i / 26) * Math.PI * 2.6, r = 1.25 * (1 - i / 32); pts.push(new THREE.Vector3(-4.3 + Math.cos(th + 1.2) * r, -0.3 + Math.sin(th + 1.2) * r, 0)); }
-    return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 80, 0.26, 8, false);
+  const breathe = 1 + 0.05 * Math.sin(8 * TL.lw * t);
+  const geo = useMemo(() => {
+    const body = bodyGeo(), tail = tailGeo();
+    const crest: [V3, number][] = [];
+    for (let i = 0; i <= 200; i++) { const r = ring(i / 200); if (r.x < 1.35 && r.x > -2.25 && i % 7 === 0) crest.push([[r.x, r.top + 0.05, 0], 0.09 + 0.07 * Math.sin(((1.35 - r.x) / 3.6) * Math.PI)]); }
+    const lip = (dy: number) => [3.55, 3.3, 3.0, 2.6, 2.3].map((x) => { const y = 1.5 - (3.72 - x) * 0.12 + dy; return [x, y, surfZ(x, y) - 0.02] as V3; });
+    return { body, tail, crest, lipD: lip(0), lipL: lip(-0.1), eyeZ: surfZ(2.72, 2.15) };
   }, []);
+  const tubeAlong = (pts: V3[], side: number, r: number, c: string, key: string) =>
+    pts.slice(1).map((p, i) => <React.Fragment key={key + i}>{cyl([pts[i][0], pts[i][1], side * (pts[i][2] + 0.01)], [p[0], p[1], side * (p[2] + 0.01)], r, c)}</React.Fragment>);
   const eye = (side: number, k: number) => {
-    const c: V3 = [2.8, 2.2, side * 0.55];
-    const yaw = 0.8 * Math.sin((7 + k * 3) * TL.lw * t + k), pitch = 0.4 * Math.sin((5 + k * 4) * TL.lw * t + 2 * k);
-    const dir = new THREE.Vector3(Math.cos(pitch) * Math.cos(yaw), Math.sin(pitch), side * Math.abs(Math.cos(pitch) * Math.sin(yaw)) + side * 0.4).normalize();
+    const c: V3 = [2.72, 2.15, side * (geo.eyeZ - 0.05)];
+    const yaw = 0.7 * Math.sin((7 + k * 3) * TL.lw * t + k), pitch = 0.35 * Math.sin((5 + k * 4) * TL.lw * t + 2 * k);
+    const dir = new THREE.Vector3(Math.cos(pitch) * Math.sin(yaw) * 0.9, Math.sin(pitch), side * Math.max(0.35, Math.cos(pitch) * Math.cos(yaw))).normalize();
+    const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+    const at = (d: number): V3 => [c[0] + dir.x * d, c[1] + dir.y * d, c[2] + dir.z * d];
     return (
       <group key={side}>
-        <mesh position={c}><sphereGeometry args={[0.4, 14, 10]} /><Toon c={st.mid} map={a.skin} /></mesh>
-        <mesh position={[c[0] + dir.x * 0.36, c[1] + dir.y * 0.36, c[2] + dir.z * 0.36]}><sphereGeometry args={[gearEye ? 0.16 : 0.11, 8, 6]} /><Toon c={gearEye ? "#ffd23f" : "#05080a"} e={gearEye ? 0.4 : 0} /></mesh>
-        {gearEye && <mesh position={[c[0] + dir.x * 0.47, c[1] + dir.y * 0.47, c[2] + dir.z * 0.47]}><sphereGeometry args={[0.07, 6, 4]} /><Toon c="#05080a" /></mesh>}
+        <mesh position={c}><sphereGeometry args={[0.36, 14, 10]} /><Toon c={st.mid} map={a.skin} /></mesh>
+        <mesh position={at(0.3)} quaternion={q}><cylinderGeometry args={[0.12, 0.26, 0.2, 12]} /><Toon c={st.light} map={a.skin} /></mesh>
+        <mesh position={at(0.4)}><sphereGeometry args={[0.1, 8, 6]} /><Toon c="#05080a" /></mesh>
+        <mesh position={at(0.47)}><sphereGeometry args={[0.035, 4, 3]} /><meshBasicMaterial color="#ffffff" /></mesh>
+      </group>
+    );
+  };
+  const leg = (x: number, s: number, front: boolean, key: number) => {
+    const by = branchY(x), hip: V3 = [x, front ? 1.15 : 1.05, s * 0.4], knee: V3 = [x + (front ? 0.45 : -0.45), 0.62, s * 0.82];
+    const wrist: V3 = [x + (front ? 0.2 : -0.15), by + 0.66, s * 0.3];
+    const toe = (ang: number, dx: number): V3 => [wrist[0] + dx, by + 0.62 * Math.cos(ang), s * 0.62 * Math.sin(ang)];
+    return (
+      <group key={key}>
+        {cyl(hip, knee, 0.15, st.mid, a.skin)}{cyl(knee, wrist, 0.12, st.mid, a.skin)}
+        <mesh position={knee}><sphereGeometry args={[0.15, 8, 6]} /><Toon c={st.mid} map={a.skin} /></mesh>
+        {cyl(wrist, toe(1.0, 0.08), 0.085, st.dark)}{cyl(wrist, toe(-0.75, -0.08), 0.085, st.dark)}
       </group>
     );
   };
@@ -102,32 +185,20 @@ export const Chameleon: React.FC<{ t: number; map: THREE.Texture; state?: number
   const tip: V3 = [MOUTH[0] + (fly[0] - MOUTH[0]) * L, MOUTH[1] + (fly[1] - MOUTH[1]) * L, MOUTH[2] + (fly[2] - MOUTH[2]) * L];
   return (
     <group>
-      <group scale={[breathe, breathe, 1]}>
-        <mesh position={[0, 1.5, 0]} scale={[2.2, 1.25, 0.95]}><sphereGeometry args={[1, 24, 16]} /><Toon c={st.mid} map={a.skin} e={0.15 * fl} /></mesh>
-        {Array.from({ length: 11 }, (_, i) => <mesh key={i} position={[-1.8 + i * 0.36, 2.72 - 0.02 * (i - 5) ** 2 * 0.6, 0]}><coneGeometry args={[0.14, 0.34, 4]} /><Toon c={st.dark} /></mesh>)}
-      </group>
-      <mesh position={[2.45, 1.9, 0]} scale={[1.05, 0.9, 0.75]}><sphereGeometry args={[1, 18, 14]} /><Toon c={st.mid} map={a.skin} e={0.15 * fl} /></mesh>
-      <mesh position={[1.95, 2.75, 0]} rotation={[0, 0, 0.6]}><coneGeometry args={[0.55, 1.3, 6]} /><Toon c={st.dark} /></mesh>
-      <mesh position={[3.0, 1.45, 0]} scale={[0.5, 0.18, 0.6]}><sphereGeometry args={[1, 12, 8]} /><Toon c={st.light} /></mesh>
-      <mesh position={[2.95, 1.62, 0]}><boxGeometry args={[0.9, 0.05, 1.0]} /><Toon c="#05080a" /></mesh>
+      <mesh geometry={geo.body} scale={[1, 1, breathe]}><Toon c={st.mid} map={a.skin} e={0.15 * fl} /></mesh>
+      {geo.crest.map(([p, h], i) => <mesh key={i} position={p}><coneGeometry args={[h * 0.55, h * 2, 4]} /><Toon c={st.dark} /></mesh>)}
+      {[1, -1].map((sd) => <group key={sd}>{tubeAlong(geo.lipL, sd, 0.05, st.light, "l")}{tubeAlong(geo.lipD, sd, 0.022, "#05080a", "d")}</group>)}
       {eye(1, 0)}{eye(-1, 1)}
-      <mesh geometry={tail}><Toon c={st.mid} map={a.skin} /></mesh>
-      {/* legs gripping the branch */}
-      {[[1.3, 1], [1.3, -1], [-1.2, 1], [-1.2, -1]].map(([x, s], i) => (
-        <group key={i}>
-          {cyl([x, 1.1, s * 0.55], [x + 0.35, 0.45, s * 0.75], 0.2, st.mid, a.skin)}
-          {cyl([x + 0.35, 0.45, s * 0.75], [x + 0.1, 0.05, s * 0.35], 0.17, st.mid, a.skin)}
-          <mesh position={[x + 0.1, 0.02, s * 0.32]}><sphereGeometry args={[0.2, 8, 6]} /><Toon c={st.dark} /></mesh>
-        </group>
-      ))}
-      {L > 0 && <>{cyl(MOUTH, tip, 0.13, "#ff8a7a")}<mesh position={tip}><sphereGeometry args={[0.28, 10, 8]} /><Toon c="#ff3a2a" /></mesh></>}
+      <mesh geometry={geo.tail}><Toon c={st.mid} map={a.skin} /></mesh>
+      {leg(1.15, 1, true, 0)}{leg(1.15, -1, true, 1)}{leg(-1.3, 1, false, 2)}{leg(-1.3, -1, false, 3)}
+      {L > 0 && <>{cyl(MOUTH, tip, 0.11, "#ff8a7a")}<mesh position={tip}><sphereGeometry args={[0.24, 10, 8]} /><Toon c="#ff3a2a" /></mesh></>}
       {!noFly && flyAlive(t) && (
         <group position={fly}>
           <mesh><sphereGeometry args={[0.2, 8, 6]} /><Toon c="#05080a" /></mesh>
           {[1, -1].map((s) => <mesh key={s} position={[0, 0.18, s * 0.18]} rotation={[s * (0.6 + 0.5 * Math.sin(t * 90)), 0, 0]}><planeGeometry args={[0.35, 0.18]} /><meshBasicMaterial color="#bfe6ff" transparent opacity={0.6} side={THREE.DoubleSide} /></mesh>)}
         </group>
       )}
-      <Glow map={map} at={[0.5, 1.8, -0.5]} size={9 + 3 * fl} color={st.mid} opacity={0.18 + 0.2 * fl} />
+      <Glow map={map} at={[0.5, 1.8, -0.8]} size={9 + 3 * fl} color={st.mid} opacity={0.15 + 0.2 * fl} />
     </group>
   );
 };
