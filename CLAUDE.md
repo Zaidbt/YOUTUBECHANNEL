@@ -20,7 +20,9 @@ wobbles), crisp colour wipes via clipping planes, and flat infographic insides w
 **Fidelity upgrade (air fryer v2, `videos/airfryer/AirFryerV2.tsx`)**: the user wants it "identical to Kurzgesagt, just
 in pixels" — flat shapes alone are NOT enough. Use `brand/kz.tsx` (`G` gradient shader on every shape, `Halo` bloom),
 render at `scale={2}` (finer pixels) with a 48-colour palette, cel-shadow shapes + gloss + rim lights, light cones,
-rich multi-layer scenes with props, and Kurzgesagt scale changes (dive into a single object). Music: `scripts/stereo.py`
+rich multi-layer scenes with props, and Kurzgesagt scale changes (dive into a single object).
+User's final pick for the air fryer: the CHUNKY 4x pixels + gradient shader look (`AirFryerVideo.tsx`, scale 4, 30-colour
+palette) with the v2 stereo music — prefer that chunkier pixel look over scale 2. Music: `scripts/stereo.py`
 stereo productions (layered drums, swing, bass, keys, pads, a hook), clean.
 
 ## Format that works (user-approved, chameleon 30 s — follow this)

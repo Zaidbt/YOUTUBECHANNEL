@@ -41,7 +41,7 @@ Light bounces off the apple into the lens, which bends it to focus it on the sen
 #camera #photography #howitworks #pixelart #shorts
 Tags: how does a camera work, camera, shutter, image sensor, lens, photography, how it works, science, pixel art, shorts
 
-## How does an air fryer actually work? (out/airfryer-v2.mp4)
+## How does an air fryer actually work? (out/airfryer.mp4 — chunky-pixel style + v2 music; same copy works for airfryer-v2.mp4)
 Title: Your air fryer doesn't fry. Here's what it really does 🍟🤯 #shorts
 Description:
 An air fryer is a tiny turbo oven: a heater gets up to 200°C and a fan blasts that hot air around the basket. The hot wind blows the water off the surface of the fries, and once the surface passes ~140°C the Maillard reaction turns it golden and crunchy. Sound on 🔊 every water molecule is a bloop, every golden fry is a note.

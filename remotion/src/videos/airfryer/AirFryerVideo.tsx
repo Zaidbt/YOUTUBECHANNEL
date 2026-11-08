@@ -64,7 +64,8 @@ const inside = (t: number) => t >= IN && t < OUT;
 const temp = (t: number) => (t < b(3) + 0.5 ? 20 : 20 + 180 * ease((t - b(3) - 0.5) / (b(5) - b(3) - 0.8)));     // °C
 const heat = (t: number) => (temp(t) - 20) / 180;
 const partK = (t: number, i: number) => Math.max(0.001, backOut((t - EV.parts[i]) / 0.3));
-const puffAge = (t: number) => { let a = 99; for (const p of EV.puffs) if (t >= p) a = Math.min(a, t - p); return a; };
+const wrapAge = (t: number, p: number) => (((t - p) % D) + D) % D;                       // loops: a puff near the end carries over
+const puffAge = (t: number) => Math.min(...EV.puffs.map((p) => wrapAge(t, p)));
 
 // ---------------- the night kitchen ----------------
 const WALL = new THREE.PlaneGeometry(90, 60);
@@ -135,7 +136,7 @@ const AirFryer: React.FC<{ t: number; map: THREE.Texture }> = ({ t }) => {
   const pa = puffAge(t), sq = pa < 0.4 ? 0.06 * Math.exp(-pa / 0.09) : 0;
   const hum = 0.012 * Math.sin(16 * LW * t);
   const drawer = t >= EV.ding && t < EV.ding + 1.4 ? backOut((t - EV.ding) / 0.35) * (1 - ease((t - EV.ding - 0.95) / 0.4)) : 0;
-  const golden = t >= b(11);
+  const golden = t >= b(11) && t < EV.ding + 1.4;                          // the cooked batch, then a fresh one (loop)
   const flick = 0.85 + 0.15 * Math.sin(12 * LW * t);
   return (
     <group position={[hum, 0, 0]}>
@@ -164,7 +165,7 @@ const AirFryer: React.FC<{ t: number; map: THREE.Texture }> = ({ t }) => {
         </group>
       </group>
       {/* steam puffs on the snares (soft round clouds) */}
-      {EV.puffs.map((p, i) => { const a = t - p; if (a < 0 || a > 1.3) return null; const k = backOut(a / 0.3), up = a * 1.3, o = 1 - a / 1.3; return (
+      {EV.puffs.map((p, i) => { const a = wrapAge(t, p); if (a > 1.3) return null; const k = backOut(a / 0.3), up = a * 1.3, o = 1 - a / 1.3; return (
         <group key={`p${i}`} position={[(i % 2 ? 0.3 : -0.3) + 0.2 * Math.sin(a * 4), 1.95 + up, 0.3]} scale={k * (0.6 + a * 0.6)}>
           {[[-0.25, 0, 0.28], [0.15, 0.1, 0.34], [0.0, 0.32, 0.26]].map(([x, y, r], j) => <G key={j} g={puffG} c0="#a9b0d8" c1="#ffffff" rad={[-0.3, 0.3, 1.4]} p={[x, y]} s={r} z={j * 0.001} o={o * 0.9} />)}
         </group>); })}
@@ -311,7 +312,7 @@ export const AirFryerVideo: React.FC = () => {
   const cam = camFor(t);
   return (
     <AbsoluteFill style={{ background: BG }}>
-      <Audio src={staticFile("videos/14-airfryer/music.wav")} />
+      <Audio src={staticFile("videos/14-airfryer/music_v2.wav")} />
       <PixelArtCanvas bg={BG} fov={FOV} palette={AF_PALETTE} outline={false} dither={0.07}>
         <CamSet p={cam.p} l={cam.l} />
         {ins ? <Inside t={t} map={glow} /> : <><Kitchen t={t} map={glow} /><AirFryer t={t} map={glow} /></>}
