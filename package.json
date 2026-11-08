@@ -29,7 +29,8 @@
     "video:airfryer": "python3 videos/14-airfryer/build.py && remotion render AirFryerVideo out/airfryer.mp4 --gl=swangle",
     "video:airfryer-v2": "python3 videos/14-airfryer/build.py && python3 videos/14-airfryer/build_v2.py && remotion render AirFryerV2 out/airfryer-v2.mp4 --gl=swangle",
     "video:airfryer-k": "python3 videos/14-airfryer/build.py && python3 videos/14-airfryer/build_v2.py && remotion render AirFryerK out/airfryer-k.mp4 --gl=swangle",
-    "video:lsd": "python3 videos/15-lsd/build.py && remotion render LsdVideo out/lsd.mp4 --gl=swangle"
+    "video:lsd": "python3 videos/15-lsd/build.py && remotion render LsdVideo out/lsd.mp4 --gl=swangle",
+    "video:bulb": "python3 videos/16-bulb/build.py && remotion render BulbVideo out/bulb.mp4 --gl=swangle"
   },
   "repository": {
     "type": "git",

@@ -25,6 +25,16 @@ Air fryer final: the user rejected both gradient versions and asked for the exac
 (`AirFryerK.tsx`, "pas mal") with the v2 stereo music. Default to the ChameleonK flat look. Music: `scripts/stereo.py`
 stereo productions (layered drums, swing, bass, keys, pads, a hook), clean.
 
+## THE reference now (user: "Love it. This is the style of art, explanations and music i love")
+`remotion/src/videos/lsd/LsdVideo.tsx` + `videos/15-lsd/build.py` (40.7 s, 112 BPM clean stereo afro house). Copy this:
+- **Hook object** on frame 0 that makes people think "what is that?" (the psychedelic blotter stamp), then a zoom callout.
+- **Explain step by step, cause → effect, one label per step** (~1.5-2 bars each): "NORMALLY X → Y", "LSD DOES Z → ...".
+  Smart viewers (30+) want real mechanism + real numbers (0.0001 g = 1/5000 of an aspirin, 5-HT2A, ECL2 lid 2017,
+  fMRI connectivity). Cartoon alone = "dessin animé, no plus for smart people". 40 s is fine when it needs it.
+- **Infographic instruments** in the scene: an oscilloscope trace (one spike per event vs nonstop), a fMRI matrix,
+  tags with the technical names. Cute flat Kurzgesagt drawing in the pixel pipeline.
+- Music: clean stereo production (scripts/stereo.py), each visual event = a note.
+
 ## Format that works (user-approved, chameleon 30 s — follow this)
 - **30 s** (not 48), seamless loop. Reference: `remotion/src/videos/chameleon/Chameleon30.tsx` + `videos/12-chameleon/build_30.py`.
 - **Frame 0 = the subject, whole and instantly recognisable** (clear hero shot), already doing the "wow" thing on the
