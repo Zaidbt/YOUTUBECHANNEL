@@ -22,14 +22,15 @@ beat = lambda b: r4(b * BEAT)
 
 G, Y, O, R = 0, 1, 2, 3
 cycle = [G, Y, O, R]
-colors = [[beat(0), G], [beat(2), R], [beat(4), Y], [beat(5), O], [beat(6), R], [beat(7), Y]]  # eye lock, DROP on beat 2, then a colour per beat
-colors += [[beat(8 + 2 * k), c] for k, c in enumerate([G, Y, O, R])] + [[beat(16), G]]  # skin: the crystals breathe, then calm
-colors += [[beat(24), Y], [beat(26), O], [beat(28), R]]                                 # excited: they spread -> red
-colors += [[beat(b), cycle[b % 4]] for b in range(32, 40)]                              # the drop: a colour every beat
-colors += [[beat(40), G], [beat(44), O], [beat(46), R]]                                 # back in the jungle
-colors += [[beat(b), [O, R][b % 2]] for b in range(48, 55)]                             # talking to a rival: flicker
+colors = [[beat(b), cycle[b % 4]] for b in range(8)]                                   # split screen: a colour every beat
+colors += [[beat(8), G], [beat(12), R]]                                                  # crystals close / spread
+colors += [[beat(16), G], [beat(18), R], [beat(20), G], [beat(22), R]]                  # close = green, spread = red
+colors += [[beat(24), G]]                                                               # full skin: blue + yellow = green
+colors += [[beat(b), cycle[b % 4]] for b in range(32, 40)]                              # the drop (split again)
+colors += [[beat(40), G], [beat(44), O], [beat(46), R]]                                 # jungle: it's to talk
+colors += [[beat(b), [O, R][b % 2]] for b in range(48, 55)]                             # rival flicker
 colors += [[beat(56), Y], [beat(60), G]]                                                # tongue on beat 58
-colors += [[beat(b), cycle[b % 4]] for b in range(65, 72)]                              # ramps back into beat 0 = green
+colors += [[beat(b), cycle[b % 4]] for b in range(64, 72)]                              # split again, ramps into beat 0
 tongue = beat(58)
 ev = {"duration": DUR, "bpm": BPM, "bar": BAR, "colors": colors, "tongue": tongue}
 (ROOT / "remotion/src/videos/chameleon/c30.json").write_text(json.dumps(ev))
@@ -77,10 +78,7 @@ for bar in range(BARS):
         c = state_at(bt(bar, half))
         for n in CHORD[c]:
             x = tri(n + 12, BEAT * 2, 0.018); k = np.linspace(0, 1, len(x)); sc.add(x * np.clip(k / 0.15, 0, 1) * np.clip((1 - k) / 0.2, 0, 1), bt(bar, half))
-main.add(riser(BAR, 0.16, seed=3), bt(1)); main.add(impact(0.95, seed=4), bt(2))   # crash-zoom into the skin
-main.add(impact(1.0, seed=2), beat(2)); main.add(b808(33, BEAT * 2, 0.5), beat(2))    # the opening drop (eye locks on you, red wave)
-n0 = int(0.45 * SR); t0 = np.arange(n0) / SR                                          # eye-swivel 'zip' into the drop
-main.add(np.sin(2 * np.pi * np.cumsum(500 + 2500 * (t0 / 0.45) ** 2) / SR) * 0.05 * np.clip(t0 / 0.05, 0, 1) * np.clip((0.45 - t0) / 0.05, 0, 1), beat(2) - 0.45)
+main.add(impact(0.85, seed=4), bt(6))                                              # full screen: into the skin
 main.add(riser(BAR, 0.18, seed=7), bt(7)); main.add(impact(1.0, seed=8), bt(8))    # the drop
 main.add(impact(0.8, seed=16), bt(10))                                             # back to the jungle
 n = int(0.25 * SR); tt_ = np.arange(n) / SR
