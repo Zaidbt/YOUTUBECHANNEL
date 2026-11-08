@@ -1,10 +1,11 @@
-"""Video 015 · What does LSD actually do to your brain? — 30 s seamless loop, 112 BPM melodic afro house (14 bars),
+"""Video 015 · What does LSD actually do to your brain? — 40.7 s seamless loop, 112 BPM melodic afro house (19 bars),
 clean stereo mix (scripts/stereo.py). Scientific explainer only (mechanism + effects + risks, no use guidance).
 
-Story (bars, 2.14 s each): 0-1 hero brain · 2 "active in millionths of a gram" + glide · 3 DIVE into a synapse:
-serotonin docks on 5-HT2A receptors (a mallet note per docking) · 5-6 LSD fits the receptor, the lid closes = the drop
-· 7 back out: brain regions start connecting (a rising arp note per new link) · 9-10 the "self" network (DMN) quiets,
-colour waves on the beat · 11-12 lasts 8-12 h, risks; links fade · 13 hook (loop).
+Story (bars, 2.14 s each): 0-2 blotter stamp hook -> LSD molecule (1/5000 of an aspirin) · 3 DIVE into a synapse:
+serotonin taps 5-HT2A -> one spike each (a mallet note per docking) · 5 LSD, same two-ring core, fits the lock ·
+6.5 the lid snaps shut = the drop · 6.5-9.5 the neuron fires on every 16th (a blip each) · 9.5 out to the brain: the
+cortex gets loud · 11 networks stay in their lane (fMRI matrix) · 12.5 cross-talk (a rising note per new link) ·
+14.5 the DMN falls apart (colour waves) · 16 lasts 8-12 h, risks · 17.85 back to the stamp (loop).
 Writes remotion/src/videos/lsd/lsd.json + public/videos/15-lsd/music.wav.
 """
 import json, sys
@@ -17,16 +18,16 @@ from chiptune import hz, noise  # noqa: E402
 from hyper import clap  # noqa: E402
 from stereo import StereoSong, SR  # noqa: E402
 
-BPM, BARS = 112, 14
+BPM, BARS = 112, 19
 BEAT = 60 / BPM; BAR = 4 * BEAT; DUR = BARS * BAR; S16 = BEAT / 4
 SW = S16 * 0.14
 bt = lambda bar, step=0: round(bar * BAR + step * S16 + (SW if step % 2 == 1 else 0), 5)
 rng = np.random.default_rng(15)
 
 sero = [bt(b, s) for b in (3, 4) for s in (2, 6, 10, 14)]                    # 8 serotonin dockings
-lsd_in, lsd_lock = bt(5, 0), bt(5, 8)                                        # LSD arrives, the lid closes
-links = [bt(b, s) for b in (7, 8) for s in range(0, 16, 2)]                 # 16 new long-range links
-waves = [bt(b, s) for b in (9, 10) for s in (0, 4, 8, 12)]                   # 8 colour waves on the beat
+lsd_in, lsd_lock = bt(5, 0), bt(6, 8)                                        # LSD arrives, the lid closes
+links = [bt(12 + (8 + 2 * k) // 16, (8 + 2 * k) % 16) for k in range(16)]     # 16 new long-range links (bars 12.5-14.5)
+waves = [bt(14, 8), bt(14, 12)] + [bt(15, s) for s in (0, 4, 8, 12)]          # 6 colour waves on the beat
 ev = {"duration": DUR, "bpm": BPM, "bar": BAR, "sero": sero, "lsdIn": lsd_in, "lsdLock": lsd_lock, "links": links, "waves": waves}
 (ROOT / "remotion/src/videos/lsd/lsd.json").write_text(json.dumps(ev))
 
@@ -84,11 +85,11 @@ def swell(dur, vol=0.04, seed=4):
 S = StereoSong(BPM, BARS)
 CH = [[57, 60, 64, 67, 71], [53, 57, 60, 64, 67], [55, 59, 62, 66, 69], [52, 55, 59, 62, 67]]   # Am9 Fmaj9 Gmaj7(#11) Em7
 ROOT_ = [45, 41, 43, 40]
-sec = lambda b: "hook" if b < 3 or b == 13 else "syn" if b < 5 else "lsd" if b < 7 else "net" if b < 9 else "drop" if b < 11 else "fade"
+sec = lambda b: "hook" if b < 3 or b >= 17 else "syn" if b < 5 else "lsd" if b < 8 else "fire" if b < 10 else "net" if b < 12 else "drop" if b < 16 else "fade"
 kicks = []
 for bar in range(BARS):
     s_ = sec(bar); r = ROOT_[bar % 4]; ch = CH[bar % 4]
-    four = s_ in ("hook", "net", "drop", "fade") or bar == 6
+    four = s_ in ("hook", "fire", "drop", "fade") or bar == 7
     for s in ((0, 4, 8, 12) if four else (0, 8)): S.add(kick(), bt(bar, s), 0, "drums", 0.9); kicks.append(bt(bar, s))
     for s in (4, 12): S.add(rim(0.2 if four else 0.14, seed=bar * 2 + s), bt(bar, s), -0.15, "drums")
     if four: S.add(clap(0.18, seed=bar), bt(bar, 12), 0.1, "drums")
@@ -97,23 +98,25 @@ for bar in range(BARS):
         if four: S.add(tom(f, 0.16), bt(bar, s), p, "drums")
     for s, ln in ((0, 3), (3, 3), (6, 2), (8, 3), (11, 2), (14, 2)):
         S.add(sub(r - 12 + (12 if s == 6 else 0), ln * S16 * 0.9, 0.36 if four else 0.28), bt(bar, s), 0, "bass")
-    S.add(pad(ch, BAR, 0.026 if s_ != "drop" else 0.034, lfo=1.0 if s_ in ("drop", "net") else 0.3), bt(bar), -0.35, "pads")
+    S.add(pad(ch, BAR, 0.026 if s_ != "drop" else 0.034, lfo=1.0 if s_ in ("drop", "fire") else 0.3), bt(bar), -0.35, "pads")
     S.add(pad([n + 12 for n in ch[:3]], BAR, 0.012, lfo=0.6), bt(bar), 0.35, "pads")
     if s_ in ("hook", "drop", "fade"):                                         # mallet arpeggio
         for s in range(0, 16, 2): S.add(mallet(ch[(s // 2) % 5] + 12, 0.055), bt(bar, s), [-0.4, 0.4][(s // 2) % 2], "keys")
 # flute hook (bars 0-1 and 13)
 HOOK = [(0, 76, 3), (3, 79, 3), (6, 81, 2), (8, 84, 4), (12, 83, 2), (14, 79, 2), (16, 81, 4), (20, 79, 2), (22, 76, 2), (24, 74, 4), (28, 76, 4)]
-for start in (0, 13):
+for start in (0, 17):
     for s, m, ln in HOOK:
         bar = start + s // 16
         if bar < BARS: S.add(flute(m, ln * S16 * 0.95, 0.085), bt(bar, s % 16), 0, "lead")
 S.delay("lead", BEAT * 0.75, fb=0.4, mix=0.3); S.delay("keys", BEAT * 0.5, fb=0.35, mix=0.25)
 # the events play the music
 for i, t in enumerate(ev["sero"]): S.add(mallet([69, 72, 76, 74, 69, 72, 79, 76][i], 0.11), t, [-0.3, 0.3][i % 2], "keys")
-S.add(swell(BAR, 0.04), bt(4)); S.add(boom(0.55), lsd_lock, 0, "fx"); S.add(mallet(57, 0.16, 1.2), lsd_lock, 0, "keys")
+S.add(swell(BAR, 0.04), lsd_lock - BAR); S.add(boom(0.55), lsd_lock, 0, "fx"); S.add(mallet(57, 0.16, 1.2), lsd_lock, 0, "keys")
 for i, t in enumerate(ev["links"]): S.add(mallet([64, 67, 69, 71, 72, 74, 76, 79, 81, 83, 84, 86, 88, 91, 93, 95][i], 0.075), t, [-0.5, -0.2, 0.2, 0.5][i % 4], "keys")
 for i, t in enumerate(ev["waves"]): S.add(mallet([81, 84, 88, 91][i % 4], 0.06, 0.9), t, [-0.6, 0.6][i % 2], "lead")
-S.add(swell(BAR, 0.05, seed=8), bt(8)); S.add(boom(0.4), bt(9), 0, "fx"); S.add(boom(0.3), bt(3), 0, "fx"); S.add(boom(0.3), bt(7), 0, "fx")
+S.add(swell(BAR, 0.05, seed=8), bt(11, 8)); S.add(boom(0.4), bt(12, 8), 0, "fx"); S.add(boom(0.3), bt(3), 0, "fx"); S.add(boom(0.3), bt(9, 8), 0, "fx")
+# every spike of the overfiring neuron (lock -> dive out) is a soft 16th blip
+for k in range(int(round((bt(9, 8) - lsd_lock) / S16))): S.add(mallet([93, 88, 91, 86][k % 4], 0.028, 0.2), lsd_lock + k * S16, [-0.5, 0.5][k % 2], "keys")
 S.sidechain("bass", kicks, 0.5); S.sidechain("pads", kicks, 0.55); S.sidechain("keys", kicks, 0.25)
 S.reverb("keys", 0.3, 1.8, 21); S.reverb("pads", 0.35, 2.4, 31); S.reverb("lead", 0.3, 2.0, 41); S.reverb("drums", 0.08, 0.8, 51); S.reverb("fx", 0.3, 1.5, 61)
 S.save(ROOT / "public/videos/15-lsd/music.wav", gains={"drums": 1.0, "bass": 1.0, "keys": 0.9, "pads": 0.8, "lead": 1.0, "fx": 0.9})

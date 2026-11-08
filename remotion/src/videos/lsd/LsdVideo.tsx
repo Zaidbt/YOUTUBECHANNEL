@@ -36,11 +36,11 @@ export const LSD_PALETTE = [
 const BG = "#090d2b";
 
 // ---------------- timing ----------------
-const IN = b(3), OUT = b(7), BACK = b(12.85), FADE = 0.3;                // BACK: return to the hook scene for the loop
+const IN = b(3), OUT = b(9.5), BACK = b(17.85), FADE = 0.3;                // BACK: return to the hook scene for the loop
 const scene = (t: number) => (t < IN || t >= BACK ? "hero" : t < OUT ? "syn" : "brain");
 const beatK = (t: number) => Math.exp(-((t % (BAR / 4)) / (BAR / 4)) * 6);
-const linkOn = (t: number, i: number) => { const on = EV.links[i]; if (t < on) return 0; const off = b(11) + (15 - i) * (BAR * 2 / 16); return t < off ? Math.min(1, backOut((t - on) / 0.25)) : 1 - ease((t - off) / 0.25); };
-const dmn = (t: number) => (t < b(9) ? 1 : t < b(11) ? 1 - 0.75 * ease((t - b(9)) / BAR) : 0.25 + 0.75 * ease((t - b(11)) / (BAR * 2)));
+const linkOn = (t: number, i: number) => { const on = EV.links[i]; if (t < on) return 0; const off = b(16) + (15 - i) * (BAR * 1.5 / 16); return t < off ? Math.min(1, backOut((t - on) / 0.25)) : 1 - ease((t - off) / 0.25); };
+const dmn = (t: number) => (t < b(14.5) ? 1 : t < b(16) ? 1 - 0.75 * ease((t - b(14.5)) / BAR) : 0.25 + 0.75 * ease((t - b(16)) / (BAR * 1.5)));
 
 /** cute Kurzgesagt-style eye: normal with blinks, or a spinning rainbow spiral when "tripping" */
 const TRIP_COLS = ["#ff4f8b", "#ffd23f", "#6ee6cf", "#7a4dff", "#ff8a1f", "#b48cff"];
@@ -81,18 +81,19 @@ const NODES: { p: P2; k: "dmn" | "vis" | "oth" }[] = [
 const LOCAL: [number, number][] = [[0, 1], [1, 2], [0, 2], [3, 4], [3, 5], [6, 7], [8, 10], [9, 0]];
 const LONG: [number, number][] = [[3, 6], [4, 7], [5, 8], [3, 10], [4, 9], [5, 11], [6, 11], [7, 4], [8, 3], [9, 6], [10, 5], [11, 7], [3, 1], [4, 8], [5, 6], [9, 11]];
 const arc = (a: P2, c: P2): P2[] => { const m: P2 = [(a[0] + c[0]) / 2, (a[1] + c[1]) / 2 + 0.6]; return curve([a, m, c], 24); };
+const CORTEX_PTS: P2[] = [[-2.0, 1.35], [-1.55, 2.0], [-0.95, 2.45], [-0.2, 2.7], [0.6, 2.7], [1.3, 2.45], [1.9, 2.0], [2.2, 1.4], [-1.2, 1.6], [0.2, 2.0], [1.2, 1.7], [-0.4, 1.2]];
 const NCOL = { dmn: "#b48cff", vis: "#6ee6cf", oth: "#ffd23f" };
 const HUES = [{ mid: "#ff8a7a", dark: "#ff4f8b", light: "#ffb3c9" }, { mid: "#b48cff", dark: "#7a4dff", light: "#c8cdf0" }, { mid: "#6ee6cf", dark: "#1fb5a8", light: "#bfe6ff" }, { mid: "#ffbf6a", dark: "#ff8a1f", light: "#fff08a" }];
 const WIPE = new THREE.Plane(new THREE.Vector3(1, 0, 0), 0);
 const Brain: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
   const k = beatK(t), sq = 0.03 * k;
   // psychedelic colour waves on the beat (bars 9-10): new hue wipes across from the front, like the chameleon
-  const w = EV.waves.filter((x) => t >= x).length, waving = w > 0 && t < b(11.5);
+  const w = EV.waves.filter((x) => t >= x).length, waving = w > 0 && t < b(16.5);
   const cur = waving ? HUES[w % 4] : HUES[0], prev = waving ? HUES[(w - 1) % 4] : HUES[0];
   const age = waving ? t - EV.waves[w - 1] : 9, edge = 2.6 - age * 14;
   WIPE.constant = -edge;
   const wiping = waving && edge > -2.6;
-  const settle = t >= b(11) && t < b(11.5) ? 1 : 0;
+  const settle = t >= b(16) && t < b(16.5) ? 1 : 0;
   const pal = waving && !settle ? cur : HUES[0], pPrev = waving && !settle ? prev : HUES[0];
   const layer = (g: THREE.BufferGeometry, role: "mid" | "dark" | "light", z: number, key: string) => (
     <React.Fragment key={key}>
@@ -100,7 +101,7 @@ const Brain: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
       <Flat g={g} c={pal[role]} z={z + 0.003} clip={wiping ? [WIPE] : undefined} />
     </React.Fragment>
   );
-  const dm = dmn(t), netK = t >= b(7) ? 1 : 0;
+  const dm = dmn(t), netK = t >= b(11) ? 1 : 0;
   return (
     <group position={[0, 0.03 * Math.sin(4 * LW * t), 0]}>
       <group scale={[1 + sq, 1 + sq * 0.7, 1]}>
@@ -112,6 +113,9 @@ const Brain: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
         {FOLDS.map((g, i) => layer(g, "dark", 0.02, `f${i}`))}
         {layer(RIM, "light", 0.03, "rim")}
         <Disc at={[-0.9, 2.1]} r={0.18} c="#ffffff" z={0.04} o={0.35} />
+        {/* the cortex lights up: 5-HT2A is densest there, its neurons fire on every 16th */}
+        {t < b(11.2) && CORTEX_PTS.map((q, i) => { const n = Math.floor(t / (BAR / 16)), on = (n + i * 3) % 4 === 0; return <Glow key={`cx${i}`} map={map} at={[q[0], q[1], 0.06]} size={on ? 1.1 : 0.6} color={i % 2 ? "#fff08a" : "#ffb3c9"} opacity={(on ? 0.95 : 0.35) * clamp01((b(11.2) - t) / 0.3)} />; })}
+        {t < b(11.2) && <Flat g={RIM} c="#fff08a" z={0.035} o={0.5 + 0.4 * beatK(t)} />}
         {/* network: local links always, long-range links pop in on the notes, then fade with the trip */}
         {netK > 0 && <>
           {LOCAL.map(([a, c], i) => <Flat key={`lo${i}`} g={ribbon(arc(NODES[a].p, NODES[c].p), () => 0.05)} c="#fff3b0" z={0.05} o={0.55} />)}
@@ -133,7 +137,7 @@ const Brain: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
 };
 const STARS = Array.from({ length: 70 }, (_, i) => ({ x: (rnd(i + 500) - 0.5) * 30, y: (rnd(i + 501) - 0.4) * 30, s: 0.04 + rnd(i + 502) * 0.07, ph: rnd(i + 503) * 6 }));
 const Space: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
-  const trip = t >= b(9) && t < b(11.5) ? 1 : 0;
+  const trip = t >= b(14.5) && t < b(16.5) ? 1 : 0;
   return (
     <group>
       {STARS.map((s, i) => <Disc key={`s${i}`} at={[s.x, s.y]} r={s.s * (0.7 + 0.3 * Math.sin(6 * LW * t + s.ph))} c="#fff3b0" z={-20} seg={6} />)}
@@ -164,14 +168,17 @@ const MOL = (() => {
   const bonds: [P2, P2][] = [];
   rings.forEach((R) => R.forEach((p, i) => bonds.push([p, R[(i + 1) % R.length]])));
   bonds.push([Dd[1], am], [am, O], [am, N2], [N2, e1[0]], [e1[0], e1[1]], [N2, e2[0]], [e2[0], e2[1]], [Dd[5], me]);
-  return { atoms, bonds, dbl: [[am, O]] as [P2, P2][] };
+  return { atoms, bonds, dbl: [[am, O]] as [P2, P2][], core: [A, pent] };
 })();
 const ECOL = { C: ["#7a88d6", "#c8cdf0"], N: ["#1f4abf", "#4a9aff"], O: ["#8a1414", "#ff3a2a"] };
-const Molecule: React.FC<{ t: number; s?: number }> = ({ t, s = 1 }) => {
+const poly = (pts: P2[]) => new THREE.ShapeGeometry(new THREE.Shape(pts.map(([x, y]) => new THREE.Vector2(x, y))));
+const CORE_G = MOL.core.map(poly);
+const Molecule: React.FC<{ t: number; s?: number; hi?: number }> = ({ t, s = 1, hi = 0 }) => {
   const k = beatK(t);
   const sticks = useMemo(() => MOL.bonds.map(([a, c]) => ribbon([a, c], () => 0.09)), []);
   return (
     <group scale={s * (1 + 0.04 * k)} rotation={[0, 0, 0.1 * Math.sin(2 * LW * t)]}>
+      {hi > 0 && CORE_G.map((g, i) => <Flat key={`cg${i}`} g={g} c="#ffd23f" z={-0.02} o={0.85 * hi} />)}
       {sticks.map((g, i) => <Flat key={i} g={g} c="#c8cdf0" z={-0.01} />)}
       {MOL.dbl.map(([a, c], i) => <Flat key={`d${i}`} g={ribbon([[a[0] + 0.1, a[1]], [c[0] + 0.1, c[1]]], () => 0.06)} c="#c8cdf0" z={-0.01} />)}
       {MOL.atoms.map((a, i) => { const [d, l] = ECOL[a.e], r = a.e === "C" ? 0.13 : 0.17; return (
@@ -261,11 +268,11 @@ const S16 = BAR / 16;
 /** an oscilloscope-style firing-rate trace: x = the last 2 s, a spike on every beat (normal), on every 16th (LSD bound) */
 const FiringTrace: React.FC<{ t: number }> = ({ t }) => {
   const X0 = -1.8, X1 = 1.8, Y = -3.45, WIN = 2, N = 240;
-  const fires = (n: number) => (n * S16 >= EV.lsdLock ? true : n % 4 === 0);
+  const spikeAt = (tt: number) => { if (tt >= EV.lsdLock) { const n = Math.round((tt - EV.lsdLock) / S16); return Math.abs(tt - EV.lsdLock - n * S16); } return Math.min(...EV.sero.map((x) => Math.abs(tt - x))); };
   const pts: P2[] = [];
   for (let i = 0; i <= N; i++) {
-    const tt = t - WIN + (i / N) * WIN, n = Math.round(tt / S16), d = Math.abs(tt - n * S16);
-    const h = tt >= 0 && fires(n) && d < 0.03 ? 0.55 * (1 - d / 0.03) : 0;
+    const tt = t - WIN + (i / N) * WIN, d = spikeAt(tt);
+    const h = tt >= IN && d < 0.03 ? 0.55 * (1 - d / 0.03) : 0;
     pts.push([X0 + (i / N) * (X1 - X0), Y + h]);
   }
   return (
@@ -282,7 +289,7 @@ const FiringTrace: React.FC<{ t: number }> = ({ t }) => {
 const LINK_IX = new Map<string, number>(LONG.flatMap(([a, c], i) => [[`${a}-${c}`, i], [`${c}-${a}`, i]] as [string, number][]));
 const MAT_C: P2 = [1.25, -2.1], CELL = 0.11;
 const Matrix: React.FC<{ t: number }> = ({ t }) => {
-  const k = Math.max(0.001, backOut((t - OUT - 0.6) / 0.35)), dm = dmn(t), n = NODES.length, o0 = -((n - 1) / 2) * CELL;
+  const k = Math.max(0.001, backOut((t - b(11)) / 0.35)), dm = dmn(t), n = NODES.length, o0 = -((n - 1) / 2) * CELL;
   return (
     <group position={[MAT_C[0], MAT_C[1], 0.3]} scale={k}>
       <Flat g={rrect(o0 - 0.3, o0 - 0.12, -o0 + 0.12, -o0 + 0.12, 0.05)} c="#05060f" z={-0.01} o={0.8} />
@@ -309,7 +316,9 @@ const SMILE = ribbon(curve([[-0.3, -3.55], [0, -3.72], [0.3, -3.55]], 12), () =>
 const SMILE_BIG = blob([[-0.4, -3.5], [0.4, -3.5], [0.25, -3.85], [0, -3.95], [-0.25, -3.85]], 16);
 const cupG = blob([[-0.55, 0.5], [-0.35, -0.35], [0.35, -0.35], [0.55, 0.5], [0.32, 0.5], [0.2, 0.0], [-0.2, 0.0], [-0.32, 0.5]], 16);
 const lidG = rrect(-1.05, -0.08, 0.05, 0.08, 0.07);
-const seroG = blob([[-0.14, 0.08], [0, 0.16], [0.14, 0.08], [0.14, -0.08], [0, -0.16], [-0.14, -0.08]], 6);
+const SHEX: P2[] = Array.from({ length: 6 }, (_, i) => [0.14 * Math.cos(Math.PI / 6 + (i * Math.PI) / 3), 0.14 * Math.sin(Math.PI / 6 + (i * Math.PI) / 3)]);
+const SPENT: P2[] = [144, 216, 288, 0, 72].map((d) => [0.217 + 0.119 * Math.cos((d * Math.PI) / 180), 0.119 * Math.sin((d * Math.PI) / 180)]);
+const seroG = poly(SHEX), seroP = poly(SPENT);
 const HEX = (cx: number, cy: number, r: number) => blob(Array.from({ length: 6 }, (_, i) => [cx + r * Math.cos(i * Math.PI / 3 + Math.PI / 6), cy + r * Math.sin(i * Math.PI / 3 + Math.PI / 6)] as P2), 6);
 const LSDG = [HEX(-0.28, 0.12, 0.17), HEX(0.0, 0.0, 0.17), HEX(0.0, 0.3, 0.17), HEX(0.28, 0.18, 0.17)];
 const lsdTail = ribbon([[0.28, 0.18], [0.55, 0.0], [0.7, 0.12]], () => 0.06);
@@ -349,20 +358,29 @@ const Synapse: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
           <Disc at={[0, 0.1]} r={0.2} c="#0f6e6a" z={-0.01} />
           {i === 1 && <group position={[0.5, 0.5, 0.05]} rotation={[0, 0, -(1 - lid) * (Math.PI * 0.5)]}><Flat g={lidG} c="#6ee6cf" /></group>}
         </group>); })}
+      {/* a serotonin parked in the left receptor while LSD arrives: compare the yellow two-ring cores */}
+      {t >= EV.lsdIn - 0.3 && t < EV.lsdLock + 0.5 && (() => { const k = Math.min(backOut((t - EV.lsdIn + 0.3) / 0.3), clamp01((EV.lsdLock + 0.5 - t) / 0.3)); return (
+        <group position={[RECX[0], -1.0, 0.2]} scale={Math.max(0.001, k) * 1.6}>
+          <Flat g={seroG} c="#ffd23f" /><Flat g={seroP} c="#ffd23f" z={0.0005} />
+          <Flat g={ribbon([SPENT[4], [0.42, 0.22], [0.55, 0.12]], () => 0.05)} c="#ffd23f" z={0.001} />
+          <Flat g={ribbon([SHEX[3], [-0.24, 0.0]], () => 0.05)} c="#ffd23f" z={0.001} />
+        </group>); })()}
       {/* serotonin: released, docks for a moment, leaves (a note each) */}
       {EV.sero.map((st, i) => { const a = t - st + 0.5; if (a < 0 || a > 1.4) return null; const rx = RECX[i % 3 === 1 && t > EV.lsdIn - 0.6 ? 0 : i % 3]; const from: P2 = [-1.0 + (i % 3) * 0.9, 1.6];
         const p: P2 = a < 0.5 ? [from[0] + (rx - from[0]) * ease(a / 0.5), from[1] + (-1.0 - from[1]) * ease(a / 0.5)] : a < 0.9 ? [rx, -1.0] : [rx + (a - 0.9) * 2, -1.0 + (a - 0.9) * 2.4];
         const pop = a >= 0.5 && a < 0.9 ? 1 + 0.25 * Math.sin(((a - 0.5) / 0.4) * Math.PI) : 1, o = a > 0.9 ? 1 - (a - 0.9) / 0.5 : 1; return (
         <group key={`se${i}`} position={[p[0], p[1], 0.2]} scale={pop * 1.4}>
           <Flat g={seroG} c="#ffd23f" o={o} />
-          <Flat g={ribbon([[0.14, 0], [0.32, 0.12]], () => 0.06)} c="#ffd23f" z={0.001} o={o} />
+          <Flat g={seroP} c="#ffd23f" o={o} z={0.0005} />
+          <Flat g={ribbon([SPENT[4], [0.42, 0.22], [0.55, 0.12]], () => 0.05)} c="#ffd23f" z={0.001} o={o} />
+          <Flat g={ribbon([SHEX[3], [-0.24, 0.0]], () => 0.05)} c="#ffd23f" z={0.001} o={o} />
           {a >= 0.5 && a < 0.7 && <Glow map={map} at={[0, 0, 0.1]} size={1.0} color="#fff08a" opacity={1 - (a - 0.5) / 0.2} />}
         </group>); })}
       {/* LSD: drifts in, fits the receptor, the lid closes over it */}
       {t >= EV.lsdIn - 0.5 && (
         <group position={[lsdP[0], lsdP[1], 0.25]} rotation={[0, 0, (1 - ease(lsdA)) * 1.5 + 0.1 * Math.sin(6 * LW * t)]} scale={1.1 * Math.max(0.001, backOut((t - EV.lsdIn + 0.5) / 0.35))}>
           <Glow map={map} at={[0, 0, -0.05]} size={1.6} color="#7a4dff" opacity={0.5} />
-          <group position={[0.05, -0.05, 0]}><Molecule t={t} s={0.22} /></group>
+          <group position={[0.05, -0.05, 0]}><Molecule t={t} s={0.27} hi={t < EV.lsdLock + 0.6 ? 1 : clamp01(1 - (t - EV.lsdLock - 0.6) / 0.4)} /></group>
         </group>
       )}
       {locked && t - EV.lsdLock < 0.8 && <mesh position={[RECX[1], -1.1, 0.3]} scale={0.3 + (t - EV.lsdLock) * 4}><ringGeometry args={[0.9, 1, 32]} /><meshBasicMaterial color="#b48cff" transparent opacity={1 - (t - EV.lsdLock) / 0.8} /></mesh>}
@@ -378,7 +396,9 @@ const TAGS: Tag[] = [
   { txt: "SEROTONIN", at: [-1.8, 0.4, 0.5], from: IN + 1.0, to: b(5), col: "#ffd23f" },
   { txt: "5-HT2A RECEPTOR", at: [0, -0.5, 0.5], from: IN + 0.8, to: EV.lsdLock, col: "#6ee6cf" },
   TRACE_TAG,
-  { txt: "LSD", at: (t) => { const p = lsdPos(t); return [Math.max(-1.6, p[0]), p[1] + 0.75, 0.5]; }, from: EV.lsdIn + 0.1, to: EV.lsdLock - 0.2, col: "#b48cff" },
+  { txt: "SAME 2-RING CORE", at: (t) => { const p = lsdPos(t); return [Math.max(-1.2, p[0]), p[1] + 0.75, 0.5]; }, from: EV.lsdIn + 0.1, to: EV.lsdLock - 0.2, col: "#ffd23f" },
+  { txt: "SEROTONIN", at: [RECX[0], -0.45, 0.5], from: EV.lsdIn + 0.1, to: EV.lsdLock - 0.2, col: "#ffd23f" },
+  { txt: "LSD", at: (t) => { const p = lsdPos(t); return [Math.max(-1.6, p[0]), p[1] + 0.75, 0.5]; }, from: 0, to: 0, col: "#b48cff" },
   { txt: "LID (ECL2) CLOSES 🔒", at: [0, -0.1, 0.5], from: EV.lsdLock + 0.1, to: OUT, col: "#b48cff" },
 ];
 const HERO_TAGS: Tag[] = [
@@ -387,9 +407,10 @@ const HERO_TAGS: Tag[] = [
   { txt: "LSD MOLECULE", at: [MOL_C[0], MOL_C[1] - 2.45, 0.5], from: SHRINK + 0.6, to: IN, col: "#b48cff" },
 ];
 const NET_TAGS: Tag[] = [
-  { txt: "VISION", at: [-1.85, 2.15, 0.5], from: b(7) + 0.4, to: b(9), col: "#6ee6cf" },
-  { txt: "FMRI: WHO TALKS TO WHO", at: [MAT_C[0] - 0.75, MAT_C[1] + 0.78, 0.5], from: OUT + 0.7, to: BACK, col: "#ff4f8b" },
-  { txt: "'SELF' NETWORK (DMN)", at: [0.3, 2.6, 0.5], from: b(9) + 0.2, to: b(11), col: "#b48cff" },
+  { txt: "CORTEX", at: [0.2, 2.95, 0.5], from: OUT + 0.6, to: b(11), col: "#fff08a" },
+  { txt: "VISION", at: [-1.85, 2.15, 0.5], from: b(12.5) + 0.3, to: b(14.5), col: "#6ee6cf" },
+  { txt: "FMRI: WHO TALKS TO WHO", at: [MAT_C[0] - 0.75, MAT_C[1] + 0.78, 0.5], from: b(11) + 0.3, to: BACK, col: "#ff4f8b" },
+  { txt: "'SELF' NETWORK (DMN)", at: [0.3, 2.6, 0.5], from: b(14.5) + 0.2, to: b(16), col: "#b48cff" },
 ];
 const TagsView: React.FC<{ t: number; cam: { p: V3; l: V3 }; tags: Tag[] }> = ({ t, cam, tags }) => (
   <>{tags.filter((g) => t >= g.from && t < g.to).map((g, i) => { const [x, y] = project(typeof g.at === "function" ? g.at(t) : g.at, cam, FOV); const k = g.from === 0 || g.from === BACK ? (g.to < D && t > g.to - 0.2 ? clamp01((g.to - t) / 0.2) : 1) : backOut((t - g.from) / 0.25); return (
@@ -414,7 +435,7 @@ const CAM_S: CamKey[] = [
 const CAM_B: CamKey[] = [
   { t: OUT, p: [0.55, 1.55, 2], l: [0.55, 1.55, 0] },
   { t: OUT + 0.9, p: [0, 0.85, 24], l: [0, 0.85, 0] },
-  { t: b(11), p: [0, 0.8, 25], l: [0, 0.8, 0] },
+  { t: b(16), p: [0, 0.8, 25], l: [0, 0.8, 0] },
   { t: BACK - 0.4, p: [0, 0.8, 27], l: [0, 0.8, 0] },
   { t: BACK, ...BRAINV },
 ];
@@ -429,11 +450,15 @@ const HOOK = [[{ t: "THIS TINY STAMP" }], [{ t: "OF " }, { t: "LSD", c: "#b48cff
 const LABELS: LabelDef[] = [
   Lb(0, b(2), "#b48cff", HOOK, true),
   Lb(b(2), IN + 0.3, "#ffffff", [[{ t: "A DOSE = 0.0001 G" }], [{ t: "1/5000 OF AN", c: "#ffd23f" }], [{ t: "ASPIRIN PILL 💊" }]]),
-  Lb(IN + 0.3, b(5), "#ffd23f", [[{ t: "IT HIJACKS 5-HT2A," }], [{ t: "SEROTONIN'S", c: "#ffd23f" }], [{ t: "OWN RECEPTOR", c: "#6ee6cf" }]]),
-  Lb(b(5), OUT, "#b48cff", [[{ t: "A LID TRAPS IT 🔒" }], [{ t: "FOR HOURS →", c: "#b48cff" }], [{ t: "CELL OVERFIRES ⚡", c: "#ffd23f" }]]),
-  Lb(OUT, b(9), "#6ee6cf", [[{ t: "VISUAL CORTEX TALKS" }], [{ t: "TO EVERY REGION", c: "#6ee6cf" }], [{ t: "→ HALLUCINATIONS", c: "#ff4f8b" }]]),
-  Lb(b(9), b(11), "#b48cff", [[{ t: "THE 'SELF' NETWORK," }], [{ t: "DMN FALLS APART", c: "#b48cff" }], [{ t: "→ EGO DISSOLVES" }]]),
-  Lb(b(11), BACK, "#ff3a2a", [[{ t: "LASTS 8–12 HOURS" }], [{ t: "RISK: PANIC &", c: "#ff8a7a" }], [{ t: "PSYCHOSIS ⚠️", c: "#ff8a7a" }]]),
+  Lb(IN + 0.3, b(5), "#ffd23f", [[{ t: "NORMALLY, SEROTONIN" }], [{ t: "TAPS A RECEPTOR", c: "#ffd23f" }], [{ t: "→ ONE SPIKE ⚡", c: "#6ee6cf" }]]),
+  Lb(b(5), EV.lsdLock, "#ffd23f", [[{ t: "LSD HAS THE SAME" }], [{ t: "TWO-RING CORE", c: "#ffd23f" }], [{ t: "→ FITS THE LOCK 🔑" }]]),
+  Lb(EV.lsdLock, b(8), "#b48cff", [[{ t: "THEN A LID SNAPS" }], [{ t: "SHUT OVER IT:", c: "#b48cff" }], [{ t: "STUCK FOR HOURS 🔒" }]]),
+  Lb(b(8), OUT, "#6ee6cf", [[{ t: "SO THE NEURON" }], [{ t: "FIRES NONSTOP ⚡", c: "#ffd23f" }]]),
+  Lb(OUT, b(11), "#fff08a", [[{ t: "5-HT2A IS PACKED" }], [{ t: "IN THE CORTEX", c: "#fff08a" }], [{ t: "→ IT GETS LOUD 🔊" }]]),
+  Lb(b(11), b(12.5), "#6ee6cf", [[{ t: "NORMALLY, BRAIN" }], [{ t: "NETWORKS STAY", c: "#6ee6cf" }], [{ t: "IN THEIR LANE" }]]),
+  Lb(b(12.5), b(14.5), "#ff4f8b", [[{ t: "ON LSD, THEY" }], [{ t: "ALL CROSS-TALK", c: "#ff4f8b" }], [{ t: "→ HALLUCINATIONS" }]]),
+  Lb(b(14.5), b(16), "#b48cff", [[{ t: "THE 'SELF' NETWORK," }], [{ t: "DMN FALLS APART", c: "#b48cff" }], [{ t: "→ EGO DISSOLVES" }]]),
+  Lb(b(16), BACK, "#ff3a2a", [[{ t: "LASTS 8–12 HOURS" }], [{ t: "RISK: PANIC &", c: "#ff8a7a" }], [{ t: "PSYCHOSIS ⚠️", c: "#ff8a7a" }]]),
   Lb(BACK, D + 0.01, "#b48cff", HOOK, true),
 ];
 const CamSet: React.FC<{ p: V3; l: V3 }> = ({ p, l }) => { const { camera } = useThree(); camera.position.set(...p); camera.lookAt(...l); camera.updateMatrixWorld(); return null; };

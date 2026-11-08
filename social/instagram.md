@@ -196,10 +196,11 @@ Extra tags (optional): #foodscience #kitchenhacks #maillardreaction #pixelart3d 
 This tiny stamp hacks your brain. 🧠🤯
 
 💊 a dose ≈ 0.0001 g, about 1/5000 of an aspirin pill
-🔑 it hijacks 5-HT2A, serotonin's own receptor
-🔒 a lid on the receptor (ECL2, seen in a 2017 crystal structure) closes over it → stuck for hours
-⚡ the neuron overfires
-👁️ fMRI: the visual cortex starts talking to the whole brain → hallucinations
+🔑 normally, serotonin taps its 5-HT2A receptor → the neuron fires once
+🧩 LSD has the same two-ring core → it fits the same lock
+🔒 then a lid (ECL2, seen in a 2017 crystal structure) snaps shut over it → stuck for hours
+⚡ so the neuron fires nonstop, and 5-HT2A is packed in the cortex
+🌈 fMRI: networks that normally stay in their lane all cross-talk → hallucinations
 🫥 the default mode network ("self" network) falls apart → ego dissolution
 
 ⚠️ Real risks: panic, and psychosis in vulnerable people. Science explainer, not advice.
