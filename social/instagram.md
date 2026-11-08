@@ -160,3 +160,18 @@ Sound on 🔊 every light wave is a note: blue high, red low.
 #chameleon #science #animals #pixelart #physics
 
 Extra tags (optional): #biology #animalfacts #structuralcolor #howitworks #pixelart3d #learnoninstagram
+
+## Post · Camera, Kurzgesagt x pixel + rave (out/camera-kz.mp4)
+What happens inside a camera when you press the button? 📸🤯
+
+🔍 the LENS bends the light to focus it on the sensor
+🚪 the SHUTTER is a tiny door that blocks the light…
+⚡ CLICK: it opens for 1/1000 of a second
+🟩 the SENSOR: millions of light catchers fill up, each one sees only red, green or blue
+🧠 a CHIP mixes them into your photo
+
+Sound on 🔊 every click is a hit, every pixel is a rave stab.
+
+#camera #photography #howitworks #pixelart #science
+
+Extra tags (optional): #tech #technology #photographytips #pixelart3d #learnoninstagram #stem

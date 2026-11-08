@@ -33,3 +33,10 @@ Description:
 White light is a mix of all colours. Inside a chameleon's skin, rows of tiny crystals bounce back only one colour: the gap between the rows picks it. Small gap = blue, and blue + its yellow pigment = green. When it gets excited, the cell stretches, the gap grows, and the light turns red. Sound on: every light wave is a note 🎧
 #chameleon #science #animals #pixelart #shorts
 Tags: chameleon, how chameleons change color, structural color, iridophores, chameleon skin, animal facts, biology, science, pixel art, shorts
+
+## How does a camera take a photo? · Kurzgesagt x pixel + rave (out/camera-kz.mp4)
+Title: What happens inside a camera when you press the button? 📸🤯 #shorts
+Description:
+Light bounces off the apple into the lens, which bends it to focus it on the sensor. The shutter is a tiny door that blocks the light… CLICK, it opens for 1/1000 of a second. Millions of light catchers on the sensor fill up, each one seeing only red, green or blue, and a chip mixes them into your photo. Sound on 🔊 every flash and click is a hit, every pixel is a rave stab.
+#camera #photography #howitworks #pixelart #shorts
+Tags: how does a camera work, camera, shutter, image sensor, lens, photography, how it works, science, pixel art, shorts

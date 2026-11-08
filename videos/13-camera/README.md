@@ -12,3 +12,10 @@ back: the photo is revealed on the screen on the cowbell → orbit back to the h
 Facts: a lens forms an inverted image on the sensor; a typical shutter speed on a bright day is ~1/1000 s; a sensor has
 millions of photosites; each sits under a red, green or blue filter (Bayer mosaic, 2 green : 1 red : 1 blue) and the
 image processor (demosaicing) fills in the missing colours.
+
+## Kurzgesagt x pixel restyle + rave (`npm run video:camera-kz`, `CameraKZ.tsx`, `build_rave.py`)
+The approved 3D camera video, same scenes and camera moves, restyled (flat two-tone shading, indigo palette, moon window
+with halo rings, bokeh discs, pink rim light, no outlines, bouncy pop-ins), 37.5 s with an extra shutter step (a door
+that blocks the light → CLICK, it opens for 1/1000 s). Music: 128 BPM rave (distorted four-on-the-floor, offbeat bass,
+supersaw stabs, hoover lead in the drop, acid 303 breakdown with a snare roll); stabs land on the cells / filters /
+photo rows, hits on every flash / shutter click. Timeline: camerak.json (build_k.py).

@@ -20,3 +20,7 @@ How does a camera take a photo? 📸🤯 Lens → shutter → millions of light 
 ## Chameleon, Kurzgesagt-style pixel remake (out/chameleon-k.mp4)
 How does a chameleon REALLY change color? 🦎🌈 Tiny crystals in its skin pick which colour bounces back 💎 sound on, every light wave is a note 🔊
 #chameleon #science #animalfacts #pixelart #learnontiktok #fyp
+
+## Camera, Kurzgesagt x pixel + rave (out/camera-kz.mp4)
+What happens inside a camera when you press the button? 📸🤯 Lens → shutter door → millions of light catchers → chip 🔊 sound on
+#camera #photography #howitworks #pixelart #learnontiktok #fyp
