@@ -51,6 +51,6 @@ Tags: air fryer, how does an air fryer work, air fryer science, maillard reactio
 ## What does LSD actually do to your brain? (out/lsd.mp4)
 Title: What LSD actually does to your brain 🧠🤯 #shorts
 Description:
-A single tab holds about 100 micrograms, a millionth of a gram, yet it lasts 8 to 12 hours. Why? LSD mimics serotonin and slots into the 5-HT2A receptor, where a tiny "lid" closes over it and traps it. Brain scans show regions that rarely talk start chatting, while the "self" network quiets down, which is linked to ego dissolution. Risks are real: panic, and psychosis in vulnerable people. Science explainer, not advice. Sound on 🔊
+A dose is about 100 micrograms (0.0001 g, roughly 1/5000 of an aspirin pill), yet it lasts 8 to 12 hours. Why? LSD hijacks 5-HT2A, serotonin's own receptor, and a lid on the receptor (extracellular loop 2, seen in a 2017 crystal structure) closes over it and traps it, so the neuron keeps overfiring. fMRI scans show the visual cortex suddenly talking to the whole brain (linked to hallucinations), while the default mode network, the brain's "self" network, falls apart (linked to ego dissolution). Risks are real: panic, and psychosis in vulnerable people. Science explainer, not advice. Sound on 🔊
 #neuroscience #brain #science #howitworks #shorts
 Tags: lsd brain, what does lsd do to the brain, neuroscience, serotonin, 5-HT2A receptor, psychedelics science, ego dissolution, default mode network, brain science, shorts

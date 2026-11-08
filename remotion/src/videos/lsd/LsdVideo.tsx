@@ -112,10 +112,6 @@ const Brain: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
         {FOLDS.map((g, i) => layer(g, "dark", 0.02, `f${i}`))}
         {layer(RIM, "light", 0.03, "rim")}
         <Disc at={[-0.9, 2.1]} r={0.18} c="#ffffff" z={0.04} o={0.35} />
-        {/* cute face on the frontal lobe: rainbow spiral eyes during the trip, blissed out while the 'self' fades */}
-        <Eye at={[1.05, 0.1]} r={0.17} t={t} trip={t >= b(9) && t < b(11) ? 1 : 0} z={0.045} />
-        <Eye at={[1.6, 0.18]} r={0.17} t={t} trip={t >= b(9) && t < b(11) ? 1 : 0} z={0.045} />
-        <Flat g={ribbon(curve([[1.15, -0.2], [1.38, -0.32], [1.6, -0.18]], 10), () => 0.045)} c="#05060f" z={0.045} />
         {/* network: local links always, long-range links pop in on the notes, then fade with the trip */}
         {netK > 0 && <>
           {LOCAL.map(([a, c], i) => <Flat key={`lo${i}`} g={ribbon(arc(NODES[a].p, NODES[c].p), () => 0.05)} c="#fff3b0" z={0.05} o={0.55} />)}
@@ -261,6 +257,47 @@ const Hero: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
   );
 };
 
+const S16 = BAR / 16;
+/** an oscilloscope-style firing-rate trace: x = the last 2 s, a spike on every beat (normal), on every 16th (LSD bound) */
+const FiringTrace: React.FC<{ t: number }> = ({ t }) => {
+  const X0 = -1.8, X1 = 1.8, Y = -3.45, WIN = 2, N = 240;
+  const fires = (n: number) => (n * S16 >= EV.lsdLock ? true : n % 4 === 0);
+  const pts: P2[] = [];
+  for (let i = 0; i <= N; i++) {
+    const tt = t - WIN + (i / N) * WIN, n = Math.round(tt / S16), d = Math.abs(tt - n * S16);
+    const h = tt >= 0 && fires(n) && d < 0.03 ? 0.55 * (1 - d / 0.03) : 0;
+    pts.push([X0 + (i / N) * (X1 - X0), Y + h]);
+  }
+  return (
+    <group>
+      <Flat g={rrect(X0 - 0.15, Y - 0.35, X1 + 0.15, Y + 0.8, 0.08)} c="#090d2b" z={0.08} o={0.7} />
+      <Flat g={rrectLine(X0 - 0.15, Y - 0.35, X1 + 0.15, Y + 0.8, 0.08, 0.035)} c="#6ee6cf" z={0.09} o={0.6} />
+      <Flat g={ribbon(pts, () => 0.035)} c={t >= EV.lsdLock ? "#ffd23f" : "#6ee6cf"} z={0.1} />
+      <Disc at={pts[N]} r={0.07} c="#ffffff" z={0.11} seg={8} />
+    </group>
+  );
+};
+/** fMRI-style functional connectivity matrix (12 regions, sorted by network): block-diagonal when sober;
+ * off-diagonal cells light up as the long-range links appear, the DMN block fades with the "self" network */
+const LINK_IX = new Map<string, number>(LONG.flatMap(([a, c], i) => [[`${a}-${c}`, i], [`${c}-${a}`, i]] as [string, number][]));
+const MAT_C: P2 = [1.25, -2.1], CELL = 0.11;
+const Matrix: React.FC<{ t: number }> = ({ t }) => {
+  const k = Math.max(0.001, backOut((t - OUT - 0.6) / 0.35)), dm = dmn(t), n = NODES.length, o0 = -((n - 1) / 2) * CELL;
+  return (
+    <group position={[MAT_C[0], MAT_C[1], 0.3]} scale={k}>
+      <Flat g={rrect(o0 - 0.3, o0 - 0.12, -o0 + 0.12, -o0 + 0.12, 0.05)} c="#05060f" z={-0.01} o={0.8} />
+      {NODES.map((ni, i) => <Flat key={`lg${i}`} g={rrect(o0 - 0.26, -o0 - i * CELL - 0.055, o0 - 0.13, -o0 - i * CELL + 0.055, 0.02)} c={NCOL[ni.k]} />)}
+      {NODES.map((ni, i) => NODES.map((nj, j) => {
+        let c = "#1c2a6e";
+        if (i === j) c = "#c8cdf0";
+        else if (ni.k === nj.k) c = ni.k === "dmn" ? (dm > 0.6 ? NCOL.dmn : "#4a2a5a") : NCOL[ni.k];
+        else { const l = LINK_IX.get(`${i}-${j}`); if (l !== undefined && linkOn(t, l) > 0.5) c = "#ff4f8b"; }
+        return <Flat key={`c${i}-${j}`} g={rrect(o0 + j * CELL - 0.055, -o0 - i * CELL - 0.047, o0 + j * CELL + 0.047, -o0 - i * CELL + 0.047, 0.012)} c={c} />;
+      }))}
+    </group>
+  );
+};
+
 // ================= the synapse (flat infographic) =================
 const TERMINAL = blob([[-3.4, 4.5], [3.4, 4.5], [3.0, 2.2], [1.8, 1.3], [0, 1.0], [-1.8, 1.3], [-3.0, 2.2]], 30);
 const MEMB = (() => { const pts: P2[] = []; for (let i = 0; i <= 60; i++) { const x = -4 + i * (8 / 60); pts.push([x, -1.6 + 0.08 * Math.sin(x * 2.2)]); } return pts; })();
@@ -300,11 +337,9 @@ const Synapse: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
       <Flat g={NEURON2B} c="#1fb5a8" z={-0.34} />
       <Disc at={[2.3, -3.6]} r={0.55} c="#6ee6cf" z={-0.33} o={0.6} />
       <Disc at={[2.3, -3.6]} r={0.25} c="#0f6e6a" z={-0.32} />
-      <Eye at={[-0.6, -3.05]} r={0.26} t={t} trip={locked ? 1 : 0} />
-      <Eye at={[0.6, -3.05]} r={0.26} t={t} trip={locked ? 1 : 0} />
-      <Flat g={locked ? SMILE_BIG : SMILE} c="#05060f" z={0.15} />
-      <Disc at={[-1.15, -3.45]} r={0.17} c="#ff4f8b" z={0.14} o={0.6} /><Disc at={[1.15, -3.45]} r={0.17} c="#ff4f8b" z={0.14} o={0.6} />
-      {locked && <Glow map={map} at={[0, -3.0, 0.1]} size={4} color={TRIP_COLS[Math.floor(t * 4) % 6]} opacity={0.25 + 0.2 * beatK(t)} />}
+      {/* firing-rate trace inside the receiving neuron: spikes on the beat, then on every 16th once LSD locks in */}
+      <FiringTrace t={t} />
+      {locked && Array.from({ length: 10 }, (_, i) => { const u = ((t - EV.lsdLock) * 1.3 + i / 10) % 1; return <Disc key={`ca${i}`} at={[RECX[1] + (rnd(i + 900) - 0.5) * 2.6 * u, -1.9 - u * 0.7]} r={0.06 * (1 - u) + 0.02} c="#ffd23f" z={0.12} seg={6} o={1 - u} />; })}
       {/* the receiving membrane with receptors (the middle one is 5-HT2A with its lid) */}
       <Flat g={membG} c="#4a2a5a" z={-0.3} />
       <Flat g={membTop} c="#7a4a6a" z={-0.29} />
@@ -338,11 +373,13 @@ const Synapse: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
 
 // ================= tags, camera, labels =================
 type Tag = { txt: string; at: V3 | ((t: number) => V3); from: number; to: number; col: string };
+const TRACE_TAG: Tag = { txt: "NEURON FIRING ⚡", at: [-0.9, -2.55, 0.5], from: IN + 1.2, to: OUT, col: "#6ee6cf" };
 const TAGS: Tag[] = [
   { txt: "SEROTONIN", at: [-1.8, 0.4, 0.5], from: IN + 1.0, to: b(5), col: "#ffd23f" },
   { txt: "5-HT2A RECEPTOR", at: [0, -0.5, 0.5], from: IN + 0.8, to: EV.lsdLock, col: "#6ee6cf" },
+  TRACE_TAG,
   { txt: "LSD", at: (t) => { const p = lsdPos(t); return [Math.max(-1.6, p[0]), p[1] + 0.75, 0.5]; }, from: EV.lsdIn + 0.1, to: EV.lsdLock - 0.2, col: "#b48cff" },
-  { txt: "LID CLOSES 🔒", at: [0, -0.1, 0.5], from: EV.lsdLock + 0.1, to: OUT, col: "#b48cff" },
+  { txt: "LID (ECL2) CLOSES 🔒", at: [0, -0.1, 0.5], from: EV.lsdLock + 0.1, to: OUT, col: "#b48cff" },
 ];
 const HERO_TAGS: Tag[] = [
   { txt: "1 TAB OF LSD", at: [STAMP_C[0], STAMP_C[1] - SH - 0.15, 0.5], from: 0, to: SHRINK, col: "#ff4f8b" },
@@ -351,7 +388,8 @@ const HERO_TAGS: Tag[] = [
 ];
 const NET_TAGS: Tag[] = [
   { txt: "VISION", at: [-1.85, 2.15, 0.5], from: b(7) + 0.4, to: b(9), col: "#6ee6cf" },
-  { txt: "'SELF' NETWORK", at: [0.3, 2.6, 0.5], from: b(9) + 0.2, to: b(11), col: "#b48cff" },
+  { txt: "FMRI: WHO TALKS TO WHO", at: [MAT_C[0] - 0.75, MAT_C[1] + 0.78, 0.5], from: OUT + 0.7, to: BACK, col: "#ff4f8b" },
+  { txt: "'SELF' NETWORK (DMN)", at: [0.3, 2.6, 0.5], from: b(9) + 0.2, to: b(11), col: "#b48cff" },
 ];
 const TagsView: React.FC<{ t: number; cam: { p: V3; l: V3 }; tags: Tag[] }> = ({ t, cam, tags }) => (
   <>{tags.filter((g) => t >= g.from && t < g.to).map((g, i) => { const [x, y] = project(typeof g.at === "function" ? g.at(t) : g.at, cam, FOV); const k = g.from === 0 || g.from === BACK ? (g.to < D && t > g.to - 0.2 ? clamp01((g.to - t) / 0.2) : 1) : backOut((t - g.from) / 0.25); return (
@@ -390,11 +428,11 @@ const Lb = (from: number, to: number, border: string, lines: LabelDef["lines"], 
 const HOOK = [[{ t: "THIS TINY STAMP" }], [{ t: "OF " }, { t: "LSD", c: "#b48cff" }, { t: " HACKS" }], [{ t: "YOUR BRAIN 🤯", c: "#ff8a7a" }]];
 const LABELS: LabelDef[] = [
   Lb(0, b(2), "#b48cff", HOOK, true),
-  Lb(b(2), IN + 0.3, "#ffffff", [[{ t: "IT WORKS IN" }], [{ t: "MILLIONTHS", c: "#ffd23f" }], [{ t: "OF A GRAM 🤏" }]]),
-  Lb(IN + 0.3, b(5), "#ffd23f", [[{ t: "NEURONS TALK" }], [{ t: "WITH SEROTONIN", c: "#ffd23f" }], [{ t: "VIA RECEPTORS" }]]),
-  Lb(b(5), OUT, "#b48cff", [[{ t: "LSD MIMICS IT," }], [{ t: "GETS LOCKED IN", c: "#b48cff" }], [{ t: "FOR HOURS 🔒" }]]),
-  Lb(OUT, b(9), "#6ee6cf", [[{ t: "BRAIN REGIONS" }], [{ t: "THAT RARELY TALK", c: "#6ee6cf" }], [{ t: "START CHATTING" }]]),
-  Lb(b(9), b(11), "#b48cff", [[{ t: "THE 'SELF' NETWORK" }], [{ t: "QUIETS DOWN →", c: "#b48cff" }], [{ t: "EGO DISSOLUTION" }]]),
+  Lb(b(2), IN + 0.3, "#ffffff", [[{ t: "A DOSE = 0.0001 G" }], [{ t: "1/5000 OF AN", c: "#ffd23f" }], [{ t: "ASPIRIN PILL 💊" }]]),
+  Lb(IN + 0.3, b(5), "#ffd23f", [[{ t: "IT HIJACKS 5-HT2A," }], [{ t: "SEROTONIN'S", c: "#ffd23f" }], [{ t: "OWN RECEPTOR", c: "#6ee6cf" }]]),
+  Lb(b(5), OUT, "#b48cff", [[{ t: "A LID TRAPS IT 🔒" }], [{ t: "FOR HOURS →", c: "#b48cff" }], [{ t: "CELL OVERFIRES ⚡", c: "#ffd23f" }]]),
+  Lb(OUT, b(9), "#6ee6cf", [[{ t: "VISUAL CORTEX TALKS" }], [{ t: "TO EVERY REGION", c: "#6ee6cf" }], [{ t: "→ HALLUCINATIONS", c: "#ff4f8b" }]]),
+  Lb(b(9), b(11), "#b48cff", [[{ t: "THE 'SELF' NETWORK," }], [{ t: "DMN FALLS APART", c: "#b48cff" }], [{ t: "→ EGO DISSOLVES" }]]),
   Lb(b(11), BACK, "#ff3a2a", [[{ t: "LASTS 8–12 HOURS" }], [{ t: "RISK: PANIC &", c: "#ff8a7a" }], [{ t: "PSYCHOSIS ⚠️", c: "#ff8a7a" }]]),
   Lb(BACK, D + 0.01, "#b48cff", HOOK, true),
 ];
@@ -411,7 +449,7 @@ export const LsdVideo: React.FC = () => {
       <PixelArtCanvas bg={BG} fov={FOV} palette={LSD_PALETTE} outline={false} dither={0.05}>
         <ClipOn />
         <CamSet p={cam.p} l={cam.l} />
-        {s === "hero" ? <Hero t={t} map={glow} /> : s === "brain" ? <><Space t={t} map={glow} /><Brain t={t} map={glow} /></> : <Synapse t={t} map={glow} />}
+        {s === "hero" ? <Hero t={t} map={glow} /> : s === "brain" ? <><Space t={t} map={glow} /><Brain t={t} map={glow} /><Matrix t={t} /></> : <Synapse t={t} map={glow} />}
       </PixelArtCanvas>
       <AbsoluteFill style={{ background: diveCol(t), opacity: diveAt(t) }} />
       <div style={{ ...tag, position: "absolute", right: 48, top: 60, color: "#b48cff" }}>@HOWTOWITHZAY</div>

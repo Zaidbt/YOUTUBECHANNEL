@@ -195,11 +195,12 @@ Extra tags (optional): #foodscience #kitchenhacks #maillardreaction #pixelart3d 
 ## Post · What does LSD actually do to your brain? (out/lsd.mp4)
 This tiny stamp hacks your brain. 🧠🤯
 
-🤏 one tab is ~100 micrograms: a millionth of a gram
-🔑 LSD mimics serotonin and slots into the 5-HT2A receptor
-🔒 a tiny "lid" closes over it and traps it → 8–12 hours
-🌈 brain regions that rarely talk start chatting
-🫥 the "self" network quiets down → ego dissolution
+💊 a dose ≈ 0.0001 g, about 1/5000 of an aspirin pill
+🔑 it hijacks 5-HT2A, serotonin's own receptor
+🔒 a lid on the receptor (ECL2, seen in a 2017 crystal structure) closes over it → stuck for hours
+⚡ the neuron overfires
+👁️ fMRI: the visual cortex starts talking to the whole brain → hallucinations
+🫥 the default mode network ("self" network) falls apart → ego dissolution
 
 ⚠️ Real risks: panic, and psychosis in vulnerable people. Science explainer, not advice.
 
