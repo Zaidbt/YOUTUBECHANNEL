@@ -5,7 +5,7 @@
  * snares → the sensor cells fill up on the cowbell (the drop) → red/green/blue filters → out through the back: the
  * photo appears on the screen → orbit back to the hero shot (loop). Timing from camera.json (videos/13-camera/build.py).
  */
-import React, { useMemo } from "react";
+import React, { useLayoutEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
@@ -14,7 +14,7 @@ import EV from "./camera.json";
 import { PixelArtCanvas } from "../../brand/PixelPipeline";
 import { glowTexture, Glow } from "../watch/CinematicPreview";
 import { camAt, CamKey } from "../teasers/Majestic";
-import { Labels, LabelDef } from "../../brand/Labels";
+import { Labels, LabelDef, project } from "../../brand/Labels";
 import { rnd } from "../../brand/pixels";
 
 export const FPS = 60;
@@ -91,7 +91,7 @@ const flashK = (t: number) => { const k = Math.max(0, ...EV.flashes.map((f) => (
 const ORDER = Array.from({ length: 96 }, (_, k) => k).sort((p, q) => { const d = (k: number) => Math.hypot((k % 8) - 3.5, Math.floor(k / 8) - 5.5); return d(p) - d(q) || p - q; });
 const RANK = ORDER.reduce((m, k, i) => { m[k] = i; return m; }, {} as Record<number, number>);
 const cellLit = (k: number) => EV.cells[Math.floor(RANK[k] / 4)] ?? 1e9;
-const IN = b(4), OUT = b(12), FADE = 0.28;
+const IN = b(8), OUT = b(12), FADE = 0.28;                       // inside = the sensor close-up
 const inside = (t: number) => t >= IN && t < OUT;
 /** shutter curtains: c1 covers the sensor, opens downward on the snare; c2 drops to close; then both reset */
 function curtains(t: number): [number, number] {
@@ -107,12 +107,81 @@ const shutterOpen = (t: number) => EV.shutter.some(([o, c]) => t >= o && t < c);
 
 // ---------------- the camera (outside) ----------------
 const LENS_FRONT = 2.2;
+// ---------------- the cutaway: the near half of the camera is sliced off so we see inside ----------------
+const APPLE: V3 = [0, -0.64, 5.2];
+const CUT = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 10);
+const cutOpen = (t: number) => (t < b(4) ? 0 : t < b(13) ? ease((t - b(4)) / 0.7) : 1 - ease((t - b(13)) / 0.6));
+const ClipOn: React.FC = () => { const { gl } = useThree(); gl.localClippingEnabled = true; return null; };
+const SHUT_Z = 0.28, SENS_Z = -0.1, BOARD_Z = -0.3, CHIP: V3 = [0, -0.2, -0.4];
+const bladeY = (t: number) => { let y = 0; for (const [o, c] of EV.shutter) if (t >= o && t < c + 0.1) y = -1.25 * (ease((t - o) / 0.07) - ease((t - c) / 0.07)); return y; };
+const hl = (t: number, from: number, to: number) => (t >= from && t < to ? 0.5 + 0.5 * Math.sin(t * 8) : 0);
+const along = (pts: V3[], u: number): V3 => {
+  const L: number[] = []; let tot = 0;
+  for (let i = 1; i < pts.length; i++) { const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1], pts[i][2] - pts[i - 1][2]); L.push(d); tot += d; }
+  let s = u * tot;
+  for (let i = 1; i < pts.length; i++) { if (s <= L[i - 1]) { const k = s / L[i - 1]; return [pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * k, pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * k, pts[i - 1][2] + (pts[i][2] - pts[i - 1][2]) * k]; } s -= L[i - 1]; }
+  return pts[pts.length - 1];
+};
+/** light from the apple: into the lens (bars 2-3), then focused onto the shutter, or the sensor while the door is open */
+const Light: React.FC<{ t: number }> = ({ t }) => {
+  const a = useAssets();
+  if (t < b(2) || t >= b(8)) return null;
+  const opened = cutOpen(t) > 0.5, through = EV.shutter.some(([o, c]) => t >= o + 0.03 && t < c);
+  return <>{Array.from({ length: 8 }, (_, i) => {
+    const yl = -0.5 + (i / 7) * 1.0, ya = APPLE[1] + 0.55 - (i / 7) * 0.9;
+    const pts: V3[] = [[0, ya, APPLE[2] - 0.7], [0, yl, LENS_FRONT]];
+    if (opened) pts.push(through ? [0, -0.45 * yl + 0.05, SENS_Z + 0.04] : [0, -0.45 * yl + 0.05, SHUT_Z + 0.05]);
+    return Array.from({ length: 4 }, (_, k) => <Glow key={`${i}-${k}`} map={a.glow} at={along(pts, (k / 4 + t * 0.8 + i * 0.11) % 1)} size={0.22} color={i % 3 === 0 ? "#4ac04a" : i % 3 === 1 ? "#ff5a4a" : "#fff2a8"} opacity={0.95} />);
+  })}</>;
+};
+const Interior: React.FC<{ t: number }> = ({ t }) => {
+  const a = useAssets();
+  const by = bladeY(t), lit = EV.shutter.some(([o, c]) => t >= o + 0.03 && t < c + 0.15);
+  const hLens = hl(t, b(4), b(6)), hShut = hl(t, b(6), b(8)), hChip = hl(t, b(12), b(13.5));
+  return (
+    <group>
+      {/* the lens: three glass elements */}
+      {[2.0, 1.5, 1.0].map((z, i) => <mesh key={i} position={[0, 0, z]} rotation={[Math.PI / 2, 0, 0]}><cylinderGeometry args={[0.74 - i * 0.06, 0.74 - i * 0.06, 0.12, 24]} /><Toon c="#a8e0ff" e={0.15 + 0.6 * hLens} /></mesh>)}
+      {/* the shutter: a tiny door (rails + a blade that drops on the snare) */}
+      <mesh position={[0, 0.72, SHUT_Z]}><boxGeometry args={[1.5, 0.12, 0.14]} /><Toon c="#4a5268" /></mesh>
+      <mesh position={[0, -0.72, SHUT_Z]}><boxGeometry args={[1.5, 0.12, 0.14]} /><Toon c="#4a5268" /></mesh>
+      <mesh position={[0, by, SHUT_Z]}><boxGeometry args={[1.4, 1.3, 0.05]} /><Toon c={hShut > 0 ? "#ffd23f" : "#7a849e"} e={0.3 * hShut} /></mesh>
+      {/* the sensor chip on its board, and the processor chip behind */}
+      <mesh position={[0, 0.05, SENS_Z - 0.02]}><boxGeometry args={[1.45, 1.15, 0.04]} /><Toon c="#ffd23f" /></mesh>
+      <mesh position={[0, 0.05, SENS_Z + 0.02]}><boxGeometry args={[1.25, 0.95, 0.04]} /><Toon c={lit ? "#fff2a8" : "#2040c0"} e={lit ? 1.0 : 0.25} /></mesh>
+      {lit && <Glow map={a.glow} at={[0, 0.05, SENS_Z + 0.2]} size={1.8} color="#fff2a8" opacity={0.8} />}
+      <mesh position={[0, 0.05, BOARD_Z]}><boxGeometry args={[1.6, 1.4, 0.05]} /><Toon c="#1f6a2a" /></mesh>
+      <mesh position={CHIP}><boxGeometry args={[0.5, 0.5, 0.1]} /><Toon c="#12141c" /></mesh>
+      {[-0.18, -0.06, 0.06, 0.18].map((d) => <React.Fragment key={d}><mesh position={[d, CHIP[1] + 0.29, CHIP[2]]}><boxGeometry args={[0.05, 0.08, 0.04]} /><Toon c="#ffd23f" /></mesh><mesh position={[d, CHIP[1] - 0.29, CHIP[2]]}><boxGeometry args={[0.05, 0.08, 0.04]} /><Toon c="#ffd23f" /></mesh></React.Fragment>)}
+      {hChip > 0 && <Glow map={a.glow} at={[CHIP[0], CHIP[1], CHIP[2] - 0.1]} size={1.2 + 0.6 * hChip} color="#ffd23f" opacity={0.8} />}
+      {/* the photo travels: sensor -> chip -> screen */}
+      {t >= b(12) && t < b(13.6) && Array.from({ length: 8 }, (_, k) => <Glow key={`d${k}`} map={a.glow} at={along([[0, 0.05, SENS_Z], [CHIP[0], CHIP[1], CHIP[2]], [-0.3, 0.12, -0.6]], (k / 8 + t * 1.2) % 1)} size={0.16} color="#ffd23f" opacity={0.95} />)}
+    </group>
+  );
+};
+type Tag = { txt: string; at: V3; from: number; col: string };
+const TAGS: Tag[] = [
+  { txt: "LENS", at: [0, 1.0, 1.55], from: b(4) + 0.4, col: "#4aa0e0" },
+  { txt: "SHUTTER", at: [0, -0.95, SHUT_Z], from: b(6), col: "#ffd23f" },
+  { txt: "SENSOR", at: [0, 0.95, SENS_Z], from: b(6) + 0.5, col: "#e8ecf4" },
+  { txt: "CHIP", at: [CHIP[0], CHIP[1] - 0.5, CHIP[2]], from: b(12), col: "#ffd23f" },
+];
+const Tags: React.FC<{ t: number; cam: { p: V3; l: V3 } }> = ({ t, cam }) => {
+  if (inside(t) || cutOpen(t) < 0.85) return null;
+  return <>{TAGS.filter((g) => t >= g.from).map((g) => { const [x, y] = project(g.at, cam); return (
+    <div key={g.txt} style={{ position: "absolute", left: x, top: y, transform: "translate(-50%, -100%)", fontFamily: "PressStart2P", fontSize: 30, color: "#ffffff", background: "rgba(5,6,10,0.9)", border: `6px solid ${g.col}`, boxShadow: "6px 6px 0 #000", padding: "12px 14px 8px", whiteSpace: "nowrap" }}>{g.txt}</div>); })}</>;
+};
+
 const CameraBody: React.FC<{ t: number }> = ({ t }) => {
   const a = useAssets();
+  const ref = useRef<THREE.Group>(null);
+  const co = cutOpen(t);
+  CUT.constant = co > 0.001 ? 2.0 - 2.0 * co : 10;
+  useLayoutEffect(() => { ref.current?.traverse((o) => { const m = (o as THREE.Mesh).material as THREE.Material | undefined; if (m && !m.clippingPlanes?.length) { m.clippingPlanes = [CUT]; m.side = THREE.DoubleSide; m.needsUpdate = true; } }); });
   const fk = flashK(t);
   // reveal the back-screen photo on the cowbell hits of bars 12-13 (scan lines)
-  const hits = EV.screen.filter((s) => t >= s).length, shown = t >= b(14) || t < b(12) ? (t < b(4) || t >= b(14) ? 0 : 0) : Math.round((hits / EV.screen.length) * a.PW * a.PH);
-  const px = t >= b(12) && t < b(14) ? shown : 0;
+  const hits = EV.screen.filter((s) => t >= s).length;
+  const px = t >= b(13) && t < b(14.5) ? Math.round((hits / EV.screen.length) * a.PW * a.PH) : 0;
   const d = a.photo.image.data as Uint8Array;
   for (let i = 0; i < a.PW * a.PH; i++) {
     const x = i % a.PW, y = Math.floor(i / a.PW);
@@ -122,7 +191,7 @@ const CameraBody: React.FC<{ t: number }> = ({ t }) => {
   }
   a.photo.needsUpdate = true;
   return (
-    <group>
+    <group ref={ref}>
       <RB s={[3.4, 2.1, 1.3]} p={[0, 0.15, 0]} r={0.22} c="#1e2230" map={a.leather} />
       <RB s={[3.44, 0.42, 1.34]} p={[0, 1.08, 0]} r={0.14} c="#7a849e" />
       {/* viewfinder hump */}
@@ -171,7 +240,7 @@ const Room: React.FC<{ t: number }> = ({ t }) => {
       <mesh position={[0, 4, -12]}><planeGeometry args={[60, 20]} /><Toon c="#2a1a10" /></mesh>
       {BOKEH.map((k, i) => <Glow key={i} map={a.glow} at={k.p} size={k.s * (1 + 0.12 * Math.sin(3 * LW * t + i))} color={k.c} opacity={0.5} />)}
       {/* the apple being photographed */}
-      <group position={[-2.7, -0.62, 4.0]}>
+      <group position={APPLE}>
         <mesh scale={[1, 0.92, 1]}><sphereGeometry args={[0.72, 18, 14]} /><Toon c="#c8202a" /></mesh>
         <mesh position={[0, 0.72, 0]} rotation={[0, 0, 0.2]}><cylinderGeometry args={[0.04, 0.05, 0.3, 6]} /><Toon c="#4a2e1a" /></mesh>
         <mesh position={[0.22, 0.78, 0]} rotation={[0, 0, -0.5]} scale={[0.3, 0.1, 0.16]}><sphereGeometry args={[1, 10, 6]} /><Toon c="#4ac04a" /></mesh>
@@ -235,30 +304,31 @@ const Inside: React.FC<{ t: number }> = ({ t }) => {
 // ---------------- camera moves, labels ----------------
 const HOME = { p: [5.7, 2.3, 9.7] as V3, l: [-0.45, 0.45, 0] as V3 };
 const SCREEN: V3 = [-0.3, 0.12, -0.66];
+const SIDE = { p: [7.1, 1.5, 3.6] as V3, l: [0, 1.0, 0.75] as V3 };     // 3/4 side view of the cut-open camera
 const CAM_A: CamKey[] = [
   { t: 0, ...HOME }, { t: 0.4, ...HOME },
-  { t: b(2), p: [4.8, 2.0, 9.2], l: [-0.3, 0.45, 0] },
-  { t: IN - 0.35, p: [0.6, 0.35, 4.0], l: [0, 0.1, LENS_FRONT] },
-  { t: IN, p: [0, 0.05, LENS_FRONT + 0.5], l: [0, 0, 0] },
+  { t: b(2), p: [7.6, 2.0, 7.4], l: [-0.2, 0.55, 0.6] },
+  { t: b(3.6), ...SIDE },
+  { t: IN - 0.6, p: [6.7, 1.4, 3.3], l: [0, 0.95, 0.7] },
+  { t: IN, p: [1.3, 0.1, 0.3], l: [0, 0.05, SENS_Z] },                 // push into the sensor
 ];
 const CAM_I: CamKey[] = [
-  { t: IN, p: [0, 0.4, 1.2], l: [0, 0.4, CURTAIN_Z] },          // one straight, slow push, always front-on
-  { t: b(6), p: [0, 0.4, -0.6], l: [0, 0.4, CURTAIN_Z] },
-  { t: b(8), p: [0, 0.4, -2.2], l: [0, 0.4, SENSOR_Z] },
+  { t: IN, p: [0, 0.4, -2.2], l: [0, 0.4, SENSOR_Z] },
   { t: b(11), p: [0, 0.4, -2.45], l: [0, 0.4, SENSOR_Z] },
   { t: OUT - 0.45, p: [0, 0.4, -2.75], l: [0, 0.4, SENSOR_Z] },
   { t: OUT, p: [0, 0, SENSOR_Z + 0.7], l: [0, 0, SENSOR_Z] },
 ];
 const CAM_B: CamKey[] = [
-  { t: OUT, p: [SCREEN[0], SCREEN[1], -1.3], l: SCREEN },
-  { t: OUT + 0.9, p: [0.6, 0.7, -4.4], l: [SCREEN[0], SCREEN[1] + 0.5, SCREEN[2]] },
-  { t: b(14), p: [1.6, 1.0, -5.0], l: [SCREEN[0], SCREEN[1] + 0.5, SCREEN[2]] },
+  { t: OUT, p: [6.7, 1.4, 3.3], l: [0, 0.95, 0.7] },
+  { t: b(13), p: [6.6, 1.4, 1.6], l: [0, 0.8, 0.1] },
+  { t: b(13.6), p: [2.2, 1.1, -5.0], l: [SCREEN[0], SCREEN[1] + 0.5, SCREEN[2]] },
+  { t: b(14.2), p: [1.8, 1.1, -5.1], l: [SCREEN[0], SCREEN[1] + 0.5, SCREEN[2]] },
   { t: b(15), p: [7.4, 1.9, 0.8], l: [0, 0.3, 0] },
   { t: 29.0, ...HOME }, { t: D, ...HOME },
 ];
 const camFor = (t: number) => (t < IN ? camAt(CAM_A, t) : inside(t) ? camAt(CAM_I, t) : camAt(CAM_B, t));
 const fillAt = (t: number) => Math.max(...[IN, OUT].map((x) => (t < x ? 1 - Math.min(1, (x - t) / FADE) : 1 - Math.min(1, (t - x) / FADE))));
-const fillColor = (t: number) => (Math.abs(t - IN) < 1 ? "#0e2a4a" : "#07080c");
+const fillColor = (_t: number) => "#12141c";
 
 const TOPZ: [number, number] = [540, 420];
 const L = (from: number, to: number, border: string, lines: LabelDef["lines"], hold = false): LabelDef => ({ from, to, anchor: [0, 0, 0], screen: TOPZ, border, lines, hold });
@@ -266,11 +336,11 @@ const HOOK = [[{ t: "HOW DOES A" }], [{ t: "CAMERA", c: "#ffd23f" }], [{ t: "TAK
 const LABELS: LabelDef[] = [
   L(0, b(2), "#ffd23f", HOOK, true),
   L(b(2), b(4), "#ff5a4a", [[{ t: "LIGHT BOUNCES OFF" }], [{ t: "THE APPLE", c: "#ff5a4a" }], [{ t: "INTO THE LENS" }]]),
-  L(b(4), b(6), "#4aa0e0", [[{ t: "THE LENS FOCUSES" }], [{ t: "THE LIGHT", c: "#4aa0e0" }], [{ t: "INTO AN IMAGE" }]]),
-  L(b(6), b(8), "#ffffff", [[{ t: "THE SHUTTER OPENS" }], [{ t: "FOR 1/1000", c: "#ffd23f" }], [{ t: "OF A SECOND" }]]),
-  L(b(8), b(10), "#e8ecf4", [[{ t: "MILLIONS OF" }], [{ t: "LIGHT SENSORS", c: "#fff2a8" }], [{ t: "CATCH IT" }]]),
+  L(b(4), b(6), "#4aa0e0", [[{ t: "INSIDE, THE LENS" }], [{ t: "FOCUSES", c: "#4aa0e0" }], [{ t: "THE LIGHT" }]]),
+  L(b(6), b(8), "#ffd23f", [[{ t: "THE SHUTTER:" }], [{ t: "A TINY DOOR", c: "#ffd23f" }], [{ t: "OPEN 1/1000 SEC" }]]),
+  L(b(8), b(10), "#e8ecf4", [[{ t: "THE SENSOR:" }], [{ t: "MILLIONS OF", c: "#fff2a8" }], [{ t: "LIGHT CATCHERS" }]]),
   L(b(10), b(12), "#ffffff", [[{ t: "EACH ONE SEES" }], [{ t: "RED", c: "#ff5a4a" }, { t: ", " }, { t: "GREEN", c: "#4ac04a" }], [{ t: "OR " }, { t: "BLUE", c: "#4a7aff" }]]),
-  L(b(12), b(14), "#ffd23f", [[{ t: "A CHIP MIXES THEM" }], [{ t: "INTO YOUR" }], [{ t: "PHOTO 📸", c: "#ffd23f" }]]),
+  L(b(12), b(14), "#ffd23f", [[{ t: "A CHIP TURNS IT" }], [{ t: "INTO YOUR" }], [{ t: "PHOTO 📸", c: "#ffd23f" }]]),
   L(b(14), D + 0.01, "#ffd23f", HOOK, true),
 ];
 
@@ -289,11 +359,13 @@ export const CameraVideo: React.FC = () => {
         <ambientLight intensity={ins ? 0.7 : 0.55} color={ins ? "#e8ecf4" : "#e0a860"} />
         <directionalLight position={[-6, 9, 8]} intensity={1.8} color="#fff2a8" />
         <directionalLight position={[8, 3, -8]} intensity={0.9} color="#4aa0e0" />
-        {ins ? <Inside t={t} /> : <><Room t={t} /><CameraBody t={t} /></>}
+        <ClipOn />
+        {ins ? <Inside t={t} /> : <><Room t={t} /><CameraBody t={t} />{cutOpen(t) > 0 && <Interior t={t} />}<Light t={t} /></>}
       </PixelArtCanvas>
       <AbsoluteFill style={{ background: fillColor(t), opacity: fillAt(t) }} />
       <AbsoluteFill style={{ background: "#ffffff", opacity: ins ? 0 : 0.3 * flashK(t) }} />
       <div style={{ ...tag, position: "absolute", right: 48, top: 60, color: "#ffd23f" }}>@HOWTOWITHZAY</div>
+      <Tags t={t} cam={cam} />
       <Labels t={t} cam={cam} labels={LABELS} />
     </AbsoluteFill>
   );

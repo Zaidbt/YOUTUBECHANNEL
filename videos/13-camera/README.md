@@ -4,9 +4,9 @@
 Build: `npm run video:camera`.
 
 The camera plays the music: every flash / shutter click is the snare, every group of sensor cells that lights up is a
-cowbell note. One scene at a time, one smooth camera: hero shot (flash on the snares) → glide + dive into the lens →
-coloured sparks converge into the image of the apple on the closed shutter (one straight front-on push, kept simple) → the shutter opens on the snares →
-the drop: the sensor cells fill from the centre (the apple appears) → red/green/blue (Bayer) filters → out through the
+cowbell note. One scene at a time, one smooth camera: hero shot (flash on the snares) → glide to a 3/4 side view and the camera is sliced open
+(clipping plane) with tags LENS / SHUTTER / SENSOR / CHIP → the light goes through the lens onto the shutter (a tiny
+door that drops on each snare) and lights the sensor → dive into the sensor for the drop: the sensor cells fill from the centre (the apple appears) → red/green/blue (Bayer) filters → out through the
 back: the photo is revealed on the screen on the cowbell → orbit back to the hero shot (loop).
 
 Facts: a lens forms an inverted image on the sensor; a typical shutter speed on a bright day is ~1/1000 s; a sensor has

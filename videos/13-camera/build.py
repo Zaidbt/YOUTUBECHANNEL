@@ -27,7 +27,7 @@ shutter = [[bt(b, s), r4(bt(b, s) + 3 * S16)] for b in (6, 7) for s in (4, 12)] 
 STEPS = (0, 3, 6, 8, 11, 14)                                                 # phonk cowbell rhythm
 MEL = [[69, 69, 72, 69, 67, 64], [69, 69, 72, 74, 72, 67]]
 cells = [[bt(b, s), MEL[(b - 8) % 2][i]] for b in range(8, 12) for i, s in enumerate(STEPS)]   # 24 hits x 4 cells = 96
-screen = [[bt(b, s), MEL[(b - 12) % 2][i]] for b in (12, 13) for i, s in enumerate(STEPS)]     # 12 hits reveal the photo
+screen = [[bt(13, s), MEL[1][i]] for i, s in enumerate(STEPS)]                          # 6 hits reveal the photo on the back screen
 ev = {"duration": DUR, "bpm": BPM, "bar": BAR, "flashes": flashes, "shutter": shutter, "cells": [c[0] for c in cells], "screen": [c[0] for c in screen]}
 (ROOT / "remotion/src/videos/camera/camera.json").write_text(json.dumps(ev))
 
