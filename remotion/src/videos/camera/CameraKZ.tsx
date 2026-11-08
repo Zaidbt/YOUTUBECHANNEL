@@ -378,7 +378,7 @@ export const CameraKZ: React.FC = () => {
   const cam = camFor(t);
   return (
     <AbsoluteFill style={{ background: ins ? BG_IN : BG_ROOM }}>
-      <Audio src={staticFile("videos/13-camera/camerak_rave.wav")} />
+      <Audio src={staticFile("videos/13-camera/camerak_clean.wav")} />
       <PixelArtCanvas bg={ins ? BG_IN : BG_ROOM} fov={42} palette={KZ_PALETTE} outline={false} dither={0.05}>
         <CamSet p={cam.p} l={cam.l} />
         <ambientLight intensity={0.65} color="#9aa8ff" />

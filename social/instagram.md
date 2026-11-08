@@ -170,7 +170,7 @@ What happens inside a camera when you press the button? 📸🤯
 🟩 the SENSOR: millions of light catchers fill up, each one sees only red, green or blue
 🧠 a CHIP mixes them into your photo
 
-Sound on 🔊 every click is a hit, every pixel is a rave stab.
+Sound on 🔊 every click is a hit, every pixel is a note.
 
 #camera #photography #howitworks #pixelart #science
 

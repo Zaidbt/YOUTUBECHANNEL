@@ -19,3 +19,5 @@ with halo rings, bokeh discs, pink rim light, no outlines, bouncy pop-ins), 37.5
 that blocks the light → CLICK, it opens for 1/1000 s). Music: 128 BPM rave (distorted four-on-the-floor, offbeat bass,
 supersaw stabs, hoover lead in the drop, acid 303 breakdown with a snare roll); stabs land on the cells / filters /
 photo rows, hits on every flash / shutter click. Timeline: camerak.json (build_k.py).
+
+Music v3 (`build_clean.py`, used now): clean 128 BPM melodic house — the rave version was too noisy. Bell notes on the cells / filters / photo rows, clap + tick on every flash / click.

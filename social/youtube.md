@@ -37,6 +37,6 @@ Tags: chameleon, how chameleons change color, structural color, iridophores, cha
 ## How does a camera take a photo? · Kurzgesagt x pixel + rave (out/camera-kz.mp4)
 Title: What happens inside a camera when you press the button? 📸🤯 #shorts
 Description:
-Light bounces off the apple into the lens, which bends it to focus it on the sensor. The shutter is a tiny door that blocks the light… CLICK, it opens for 1/1000 of a second. Millions of light catchers on the sensor fill up, each one seeing only red, green or blue, and a chip mixes them into your photo. Sound on 🔊 every flash and click is a hit, every pixel is a rave stab.
+Light bounces off the apple into the lens, which bends it to focus it on the sensor. The shutter is a tiny door that blocks the light… CLICK, it opens for 1/1000 of a second. Millions of light catchers on the sensor fill up, each one seeing only red, green or blue, and a chip mixes them into your photo. Sound on 🔊 every flash and click is a hit, every pixel is a note.
 #camera #photography #howitworks #pixelart #shorts
 Tags: how does a camera work, camera, shutter, image sensor, lens, photography, how it works, science, pixel art, shorts
