@@ -28,6 +28,7 @@ import { CameraVideo, DURATION as CAMV_DURATION, FPS as CAMV_FPS } from "./video
 import { ChameleonK, DURATION as CHAMK_DURATION, FPS as CHAMK_FPS } from "./videos/chameleon/ChameleonK";
 import { CameraK, DURATION as CAMK_DURATION, FPS as CAMK_FPS } from "./videos/camera/CameraK";
 import { CameraKZ, DURATION as CAMKZ_DURATION, FPS as CAMKZ_FPS } from "./videos/camera/CameraKZ";
+import { AirFryerVideo, DURATION as AF_DURATION, FPS as AF_FPS } from "./videos/airfryer/AirFryerVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -88,5 +89,6 @@ export const Root = () => (
     <Composition id="CameraK" component={CameraK} durationInFrames={CAMK_DURATION} fps={CAMK_FPS} width={1080} height={1920} />
     <Composition id="CameraKZ" component={CameraKZ} durationInFrames={CAMKZ_DURATION} fps={CAMKZ_FPS} width={1080} height={1920} />
     <Composition id="KlininPost" component={KlininPost} durationInFrames={270} fps={30} width={1080} height={1350} />
+    <Composition id="AirFryerVideo" component={AirFryerVideo} durationInFrames={AF_DURATION} fps={AF_FPS} width={1080} height={1920} />
   </>
 );

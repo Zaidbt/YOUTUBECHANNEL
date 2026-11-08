@@ -25,7 +25,8 @@
     "video:camera": "python3 videos/13-camera/build.py && remotion render CameraVideo out/camera.mp4 --gl=swangle",
     "video:chameleon-k": "python3 videos/12-chameleon/build_k.py && remotion render ChameleonK out/chameleon-k.mp4 --gl=swangle",
     "video:camera-k": "python3 videos/13-camera/build_k.py && remotion render CameraK out/camera-k.mp4 --gl=swangle",
-    "video:camera-kz": "python3 videos/13-camera/build_k.py && python3 videos/13-camera/build_clean.py && remotion render CameraKZ out/camera-kz.mp4 --gl=swangle"
+    "video:camera-kz": "python3 videos/13-camera/build_k.py && python3 videos/13-camera/build_clean.py && remotion render CameraKZ out/camera-kz.mp4 --gl=swangle",
+    "video:airfryer": "python3 videos/14-airfryer/build.py && remotion render AirFryerVideo out/airfryer.mp4 --gl=swangle"
   },
   "repository": {
     "type": "git",
