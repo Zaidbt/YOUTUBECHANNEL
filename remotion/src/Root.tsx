@@ -5,6 +5,7 @@ import { Watch3DPreview } from "./videos/watch/Watch3D";
 import { KlininPreviews } from "./clients/klinin/KlininPreviews";
 import { KlininAdPreviews } from "./clients/klinin/KlininAdPreviews";
 import { KlininCreative } from "./clients/klinin/KlininCreative";
+import { KlininPost } from "./clients/klinin/KlininPost";
 import { CinematicPreview } from "./videos/watch/CinematicPreview";
 import { FirefliesTeaser, WatchTeaser, TEASER_FRAMES } from "./videos/teasers/Teasers";
 import { FirefliesMajestic, WatchMajestic, MAJESTIC_FRAMES, FPS60 } from "./videos/teasers/Majestic";
@@ -86,5 +87,6 @@ export const Root = () => (
     <Composition id="ChameleonK" component={ChameleonK} durationInFrames={CHAMK_DURATION} fps={CHAMK_FPS} width={1080} height={1920} />
     <Composition id="CameraK" component={CameraK} durationInFrames={CAMK_DURATION} fps={CAMK_FPS} width={1080} height={1920} />
     <Composition id="CameraKZ" component={CameraKZ} durationInFrames={CAMKZ_DURATION} fps={CAMKZ_FPS} width={1080} height={1920} />
+    <Composition id="KlininPost" component={KlininPost} durationInFrames={270} fps={30} width={1080} height={1350} />
   </>
 );
