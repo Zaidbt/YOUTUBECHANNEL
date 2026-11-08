@@ -12,3 +12,7 @@ How does a chameleon change color? 🦎 It's not paint, it's tiny crystals bounc
 ## How does a chameleon change color? · 30 s (out/chameleon30.mp4)
 How does a chameleon change color? 🦎🤯 The secret: tiny crystals in its skin 💎 sound on, every colour is a chord 🔊
 #chameleon #animalfacts #science #pixelart #learnontiktok #fyp
+
+## How does a camera take a photo? (out/camera.mp4)
+How does a camera take a photo? 📸🤯 Lens → upside-down image → shutter → millions of sensors 🔊 sound on, the camera plays phonk
+#camera #photography #howitworks #pixelart #learnontiktok #fyp

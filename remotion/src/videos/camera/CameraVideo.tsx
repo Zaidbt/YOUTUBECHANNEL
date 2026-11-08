@@ -86,7 +86,7 @@ const Ring: React.FC<{ z: number; r: number; len: number; c: string; map?: THREE
 );
 
 // ---------------- timing helpers ----------------
-const flashK = (t: number) => Math.max(0, ...EV.flashes.map((f) => (t >= f ? Math.exp(-(t - f) / 0.12) : 0)));
+const flashK = (t: number) => { const k = Math.max(0, ...EV.flashes.map((f) => (t >= f ? Math.exp(-(t - f) / 0.09) : 0))); return k < 0.03 ? 0 : k; };
 /** cells fill from the centre outwards (the apple appears first), 4 cells per cowbell hit */
 const ORDER = Array.from({ length: 96 }, (_, k) => k).sort((p, q) => { const d = (k: number) => Math.hypot((k % 8) - 3.5, Math.floor(k / 8) - 5.5); return d(p) - d(q) || p - q; });
 const RANK = ORDER.reduce((m, k, i) => { m[k] = i; return m; }, {} as Record<number, number>);
@@ -272,8 +272,8 @@ const CAM_I: CamKey[] = [
 ];
 const CAM_B: CamKey[] = [
   { t: OUT, p: [SCREEN[0], SCREEN[1], -1.3], l: SCREEN },
-  { t: OUT + 0.9, p: [0.6, 0.6, -4.4], l: SCREEN },
-  { t: b(14), p: [1.6, 0.9, -5.0], l: SCREEN },
+  { t: OUT + 0.9, p: [0.6, 0.7, -4.4], l: [SCREEN[0], SCREEN[1] + 0.5, SCREEN[2]] },
+  { t: b(14), p: [1.6, 1.0, -5.0], l: [SCREEN[0], SCREEN[1] + 0.5, SCREEN[2]] },
   { t: b(15), p: [7.4, 1.9, 0.8], l: [0, 0.3, 0] },
   { t: 29.0, ...HOME }, { t: D, ...HOME },
 ];

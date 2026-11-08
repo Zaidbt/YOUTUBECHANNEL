@@ -129,3 +129,18 @@ Sound on 🔊 every colour is a chord.
 #chameleon #animals #nature #pixelart #science
 
 Extra tags (optional): #reptiles #animalfacts #biology #howitworks #pixelart3d #learnoninstagram
+
+## Post · How does a camera take a photo? (out/camera.mp4)
+How does a camera take a photo? 📸🤯
+In a blink, this happens:
+
+🔍 the lens bends the light into a tiny image… upside down
+⚡ the shutter opens for about 1/1000 of a second
+🟩 millions of light sensors catch the light, each one sees only red, green or blue
+🧠 a chip mixes them into your photo
+
+Sound on 🔊 every flash is the snare, every sensor lighting up is a cowbell.
+
+#camera #photography #howitworks #pixelart #science
+
+Extra tags (optional): #photographytips #tech #technology #pixelart3d #learnoninstagram #stem
