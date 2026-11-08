@@ -42,6 +42,25 @@ const beatK = (t: number) => Math.exp(-((t % (BAR / 4)) / (BAR / 4)) * 6);
 const linkOn = (t: number, i: number) => { const on = EV.links[i]; if (t < on) return 0; const off = b(11) + (15 - i) * (BAR * 2 / 16); return t < off ? Math.min(1, backOut((t - on) / 0.25)) : 1 - ease((t - off) / 0.25); };
 const dmn = (t: number) => (t < b(9) ? 1 : t < b(11) ? 1 - 0.75 * ease((t - b(9)) / BAR) : 0.25 + 0.75 * ease((t - b(11)) / (BAR * 2)));
 
+/** cute Kurzgesagt-style eye: normal with blinks, or a spinning rainbow spiral when "tripping" */
+const TRIP_COLS = ["#ff4f8b", "#ffd23f", "#6ee6cf", "#7a4dff", "#ff8a1f", "#b48cff"];
+const Eye: React.FC<{ at: P2; r: number; t: number; trip: number; z?: number }> = ({ at, r, t, trip, z = 0.15 }) => {
+  const blink = (t % (BAR * 2)) > BAR * 2 - 0.12 && trip < 0.5;
+  if (blink) return <Flat g={ribbon([[at[0] - r, at[1]], [at[0] + r, at[1]]], () => r * 0.25)} c="#05060f" z={z} />;
+  if (trip > 0.5) return (
+    <group position={[at[0], at[1], z]} rotation={[0, 0, -t * 6 * LW * 4]}>
+      <Disc at={[0, 0]} r={r * 1.15} c="#ffffff" />
+      {[1, 0.78, 0.56, 0.34].map((f, i) => <Disc key={i} at={[(1 - f) * r * 0.25, 0]} r={r * f} c={TRIP_COLS[(i + Math.floor(t * 4)) % 6]} z={0.001 * (i + 1)} seg={20} />)}
+      <Disc at={[r * 0.2, 0]} r={r * 0.14} c="#05060f" z={0.006} seg={10} />
+    </group>);
+  const lx = 0.2 * r * Math.sin(2 * LW * t), ly = 0.12 * r * Math.cos(3 * LW * t);
+  return (
+    <group position={[at[0], at[1], z]}>
+      <Disc at={[0, 0]} r={r * 1.15} c="#ffffff" seg={20} />
+      <Disc at={[lx, ly]} r={r * 0.62} c="#05060f" z={0.001} seg={16} />
+      <Disc at={[lx - r * 0.2, ly + r * 0.2]} r={r * 0.2} c="#ffffff" z={0.002} seg={8} />
+    </group>);
+};
 // ================= the brain (flat, side view) =================
 const BRAIN = blob([[-2.3, 0.2], [-2.2, 1.3], [-1.6, 2.2], [-0.6, 2.75], [0.6, 2.8], [1.6, 2.4], [2.25, 1.6], [2.4, 0.6], [2.0, -0.2], [1.2, -0.45], [0.4, -0.3], [-0.6, -0.55], [-1.6, -0.45]], 40);
 const SHADE = blob([[-2.25, 0.15], [-1.6, -0.45], [-0.6, -0.55], [0.4, -0.3], [1.2, -0.45], [2.0, -0.2], [2.38, 0.5], [1.4, 0.15], [0.2, 0.25], [-1.2, 0.1]], 30);
@@ -93,6 +112,10 @@ const Brain: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
         {FOLDS.map((g, i) => layer(g, "dark", 0.02, `f${i}`))}
         {layer(RIM, "light", 0.03, "rim")}
         <Disc at={[-0.9, 2.1]} r={0.18} c="#ffffff" z={0.04} o={0.35} />
+        {/* cute face on the frontal lobe: rainbow spiral eyes during the trip, blissed out while the 'self' fades */}
+        <Eye at={[1.05, 0.1]} r={0.17} t={t} trip={t >= b(9) && t < b(11) ? 1 : 0} z={0.045} />
+        <Eye at={[1.6, 0.18]} r={0.17} t={t} trip={t >= b(9) && t < b(11) ? 1 : 0} z={0.045} />
+        <Flat g={ribbon(curve([[1.15, -0.2], [1.38, -0.32], [1.6, -0.18]], 10), () => 0.045)} c="#05060f" z={0.045} />
         {/* network: local links always, long-range links pop in on the notes, then fade with the trip */}
         {netK > 0 && <>
           {LOCAL.map(([a, c], i) => <Flat key={`lo${i}`} g={ribbon(arc(NODES[a].p, NODES[c].p), () => 0.05)} c="#fff3b0" z={0.05} o={0.55} />)}
@@ -243,8 +266,12 @@ const TERMINAL = blob([[-3.4, 4.5], [3.4, 4.5], [3.0, 2.2], [1.8, 1.3], [0, 1.0]
 const MEMB = (() => { const pts: P2[] = []; for (let i = 0; i <= 60; i++) { const x = -4 + i * (8 / 60); pts.push([x, -1.6 + 0.08 * Math.sin(x * 2.2)]); } return pts; })();
 const membG = ribbon(MEMB, () => 0.5), membTop = ribbon(MEMB.map(([x, y]) => [x, y + 0.22] as P2), () => 0.08);
 const RECX = [-2.0, 0, 2.0];
+const NEURON2 = blob([[-4.5, -1.7], [4.5, -1.7], [4.0, -4.2], [2.0, -5.6], [-2.0, -5.6], [-4.0, -4.2]], 30);
+const NEURON2B = blob([[-3.6, -1.9], [3.6, -1.9], [3.0, -3.0], [0, -3.4], [-3.0, -3.0]], 24);
+const SMILE = ribbon(curve([[-0.3, -3.55], [0, -3.72], [0.3, -3.55]], 12), () => 0.06);
+const SMILE_BIG = blob([[-0.4, -3.5], [0.4, -3.5], [0.25, -3.85], [0, -3.95], [-0.25, -3.85]], 16);
 const cupG = blob([[-0.55, 0.5], [-0.35, -0.35], [0.35, -0.35], [0.55, 0.5], [0.32, 0.5], [0.2, 0.0], [-0.2, 0.0], [-0.32, 0.5]], 16);
-const lidG = rrect(-0.5, -0.07, 0.05, 0.07, 0.06);
+const lidG = rrect(-1.05, -0.08, 0.05, 0.08, 0.07);
 const seroG = blob([[-0.14, 0.08], [0, 0.16], [0.14, 0.08], [0.14, -0.08], [0, -0.16], [-0.14, -0.08]], 6);
 const HEX = (cx: number, cy: number, r: number) => blob(Array.from({ length: 6 }, (_, i) => [cx + r * Math.cos(i * Math.PI / 3 + Math.PI / 6), cy + r * Math.sin(i * Math.PI / 3 + Math.PI / 6)] as P2), 6);
 const LSDG = [HEX(-0.28, 0.12, 0.17), HEX(0.0, 0.0, 0.17), HEX(0.0, 0.3, 0.17), HEX(0.28, 0.18, 0.17)];
@@ -268,6 +295,16 @@ const Synapse: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
           <Disc at={[0, 0]} r={0.36} c="#7a4dff" />
           {[[-0.12, 0.08], [0.1, -0.06], [0.05, 0.15]].map(([a, c], j) => <Disc key={j} at={[a, c]} r={0.07} c="#ffd23f" z={0.01} seg={6} />)}
         </group>); })}
+      {/* the receiving neuron's body (cute face: eyes go rainbow once LSD locks in) */}
+      <Flat g={NEURON2} c="#0f6e6a" z={-0.35} />
+      <Flat g={NEURON2B} c="#1fb5a8" z={-0.34} />
+      <Disc at={[2.3, -3.6]} r={0.55} c="#6ee6cf" z={-0.33} o={0.6} />
+      <Disc at={[2.3, -3.6]} r={0.25} c="#0f6e6a" z={-0.32} />
+      <Eye at={[-0.6, -3.05]} r={0.26} t={t} trip={locked ? 1 : 0} />
+      <Eye at={[0.6, -3.05]} r={0.26} t={t} trip={locked ? 1 : 0} />
+      <Flat g={locked ? SMILE_BIG : SMILE} c="#05060f" z={0.15} />
+      <Disc at={[-1.15, -3.45]} r={0.17} c="#ff4f8b" z={0.14} o={0.6} /><Disc at={[1.15, -3.45]} r={0.17} c="#ff4f8b" z={0.14} o={0.6} />
+      {locked && <Glow map={map} at={[0, -3.0, 0.1]} size={4} color={TRIP_COLS[Math.floor(t * 4) % 6]} opacity={0.25 + 0.2 * beatK(t)} />}
       {/* the receiving membrane with receptors (the middle one is 5-HT2A with its lid) */}
       <Flat g={membG} c="#4a2a5a" z={-0.3} />
       <Flat g={membTop} c="#7a4a6a" z={-0.29} />
@@ -275,7 +312,7 @@ const Synapse: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
         <group key={`r${i}`} position={[x, -1.25, -0.2]} scale={k}>
           <Flat g={cupG} c={glow ? "#6ee6cf" : "#1fb5a8"} />
           <Disc at={[0, 0.1]} r={0.2} c="#0f6e6a" z={-0.01} />
-          {i === 1 && <group position={[0.5, 0.5, 0.05]} rotation={[0, 0, -lid * (Math.PI * 0.5) + (1 - lid) * 0.2]}><Flat g={lidG} c="#6ee6cf" /></group>}
+          {i === 1 && <group position={[0.5, 0.5, 0.05]} rotation={[0, 0, -(1 - lid) * (Math.PI * 0.5)]}><Flat g={lidG} c="#6ee6cf" /></group>}
         </group>); })}
       {/* serotonin: released, docks for a moment, leaves (a note each) */}
       {EV.sero.map((st, i) => { const a = t - st + 0.5; if (a < 0 || a > 1.4) return null; const rx = RECX[i % 3 === 1 && t > EV.lsdIn - 0.6 ? 0 : i % 3]; const from: P2 = [-1.0 + (i % 3) * 0.9, 1.6];
@@ -289,13 +326,12 @@ const Synapse: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
       {/* LSD: drifts in, fits the receptor, the lid closes over it */}
       {t >= EV.lsdIn - 0.5 && (
         <group position={[lsdP[0], lsdP[1], 0.25]} rotation={[0, 0, (1 - ease(lsdA)) * 1.5 + 0.1 * Math.sin(6 * LW * t)]} scale={1.1 * Math.max(0.001, backOut((t - EV.lsdIn + 0.5) / 0.35))}>
-          {LSDG.map((g, i) => <Flat key={i} g={g} c={i % 2 ? "#7a4dff" : "#b48cff"} />)}
-          <Flat g={lsdTail} c="#7a4dff" z={0.001} />
-          <Disc at={[-0.05, 0.38]} r={0.05} c="#ffffff" z={0.01} o={0.7} />
+          <Glow map={map} at={[0, 0, -0.05]} size={1.6} color="#7a4dff" opacity={0.5} />
+          <group position={[0.05, -0.05, 0]}><Molecule t={t} s={0.22} /></group>
         </group>
       )}
       {locked && t - EV.lsdLock < 0.8 && <mesh position={[RECX[1], -1.1, 0.3]} scale={0.3 + (t - EV.lsdLock) * 4}><ringGeometry args={[0.9, 1, 32]} /><meshBasicMaterial color="#b48cff" transparent opacity={1 - (t - EV.lsdLock) / 0.8} /></mesh>}
-      {locked && Array.from({ length: 4 }, (_, k) => { const u = ((t - EV.lsdLock) * 0.9 + k / 4) % 1; return <Flat key={`sg${k}`} g={ribbon(curve([[-0.6 - u, -1.9 - u * 1.4], [0, -2.1 - u * 1.6], [0.6 + u, -1.9 - u * 1.4]], 16), () => 0.07)} c="#b48cff" z={0.1} o={1 - u} />; })}
+      {locked && Array.from({ length: 4 }, (_, k) => { const u = ((t - EV.lsdLock) * 0.9 + k / 4) % 1; return <Flat key={`sg${k}`} g={ribbon(curve([[-0.6 - u, -1.9 - u * 0.5], [0, -2.0 - u * 0.6], [0.6 + u, -1.9 - u * 0.5]], 16), () => 0.07)} c={TRIP_COLS[k % 6]} z={0.1} o={1 - u} />; })}
     </group>
   );
 };
@@ -304,7 +340,7 @@ const Synapse: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
 type Tag = { txt: string; at: V3 | ((t: number) => V3); from: number; to: number; col: string };
 const TAGS: Tag[] = [
   { txt: "SEROTONIN", at: [-1.8, 0.4, 0.5], from: IN + 1.0, to: b(5), col: "#ffd23f" },
-  { txt: "RECEPTOR", at: [0, -0.5, 0.5], from: IN + 0.8, to: EV.lsdLock, col: "#6ee6cf" },
+  { txt: "5-HT2A RECEPTOR", at: [0, -0.5, 0.5], from: IN + 0.8, to: EV.lsdLock, col: "#6ee6cf" },
   { txt: "LSD", at: (t) => { const p = lsdPos(t); return [Math.max(-1.6, p[0]), p[1] + 0.75, 0.5]; }, from: EV.lsdIn + 0.1, to: EV.lsdLock - 0.2, col: "#b48cff" },
   { txt: "LID CLOSES 🔒", at: [0, -0.1, 0.5], from: EV.lsdLock + 0.1, to: OUT, col: "#b48cff" },
 ];
@@ -333,8 +369,8 @@ const CAM_S: CamKey[] = [
   { t: IN, p: [0, 0.6, 6], l: [0, 0.6, 0] },
   { t: IN + 0.9, p: [0, 0.6, 28], l: [0, 0.6, 0] },
   { t: b(5), p: [-0.3, 0.4, 25], l: [-0.3, 0.4, 0] },
-  { t: EV.lsdLock, p: [0, -0.3, 18], l: [0, -0.3, 0] },
-  { t: OUT - 0.4, p: [0, -0.5, 9], l: [0, -0.5, 0] },
+  { t: EV.lsdLock, p: [0, -1.2, 21], l: [0, -1.2, 0] },
+  { t: OUT - 0.5, p: [0, -1.2, 19], l: [0, -1.2, 0] },
   { t: OUT, p: [0, -1.0, 2.5], l: [0, -1.0, 0] },
 ];
 const CAM_B: CamKey[] = [

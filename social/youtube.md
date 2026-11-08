@@ -47,3 +47,10 @@ Description:
 An air fryer is a tiny turbo oven: a heater gets up to 200°C and a fan blasts that hot air around the basket. The hot wind blows the water off the surface of the fries, and once the surface passes ~140°C the Maillard reaction turns it golden and crunchy. Sound on 🔊 every water molecule is a bloop, every golden fry is a note.
 #airfryer #cooking #science #howitworks #shorts
 Tags: air fryer, how does an air fryer work, air fryer science, maillard reaction, convection oven, cooking science, kitchen, how it works, pixel art, shorts
+
+## What does LSD actually do to your brain? (out/lsd.mp4)
+Title: What LSD actually does to your brain 🧠🤯 #shorts
+Description:
+A single tab holds about 100 micrograms, a millionth of a gram, yet it lasts 8 to 12 hours. Why? LSD mimics serotonin and slots into the 5-HT2A receptor, where a tiny "lid" closes over it and traps it. Brain scans show regions that rarely talk start chatting, while the "self" network quiets down, which is linked to ego dissolution. Risks are real: panic, and psychosis in vulnerable people. Science explainer, not advice. Sound on 🔊
+#neuroscience #brain #science #howitworks #shorts
+Tags: lsd brain, what does lsd do to the brain, neuroscience, serotonin, 5-HT2A receptor, psychedelics science, ego dissolution, default mode network, brain science, shorts

@@ -28,3 +28,7 @@ What happens inside a camera when you press the button? 📸🤯 Lens → shutte
 ## How does an air fryer actually work? (out/airfryer-v2.mp4)
 Your air fryer doesn't fry 🍟🤯 It's a mini turbo oven: 200°C + a hurricane of hot air 🌪️ sound on 🔊
 #airfryer #cooking #science #foodscience #learnontiktok #fyp
+
+## What does LSD actually do to your brain? (out/lsd.mp4)
+This tiny stamp hacks your brain 🧠🤯 A millionth of a gram, locked in a receptor for 8–12 h 🔒 science, not advice ⚠️ sound on 🔊
+#neuroscience #brain #science #howitworks #learnontiktok #fyp

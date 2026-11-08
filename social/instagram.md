@@ -191,3 +191,20 @@ Sound on 🔊 every water molecule is a bloop, every golden fry is a note.
 #airfryer #cooking #science #howitworks #pixelart
 
 Extra tags (optional): #foodscience #kitchenhacks #maillardreaction #pixelart3d #learnoninstagram #stem
+
+## Post · What does LSD actually do to your brain? (out/lsd.mp4)
+This tiny stamp hacks your brain. 🧠🤯
+
+🤏 one tab is ~100 micrograms: a millionth of a gram
+🔑 LSD mimics serotonin and slots into the 5-HT2A receptor
+🔒 a tiny "lid" closes over it and traps it → 8–12 hours
+🌈 brain regions that rarely talk start chatting
+🫥 the "self" network quiets down → ego dissolution
+
+⚠️ Real risks: panic, and psychosis in vulnerable people. Science explainer, not advice.
+
+Sound on 🔊
+
+#neuroscience #brain #science #howitworks #pixelart
+
+Extra tags (optional): #psychedelicscience #serotonin #brainscience #learnoninstagram #stem #kurzgesagt

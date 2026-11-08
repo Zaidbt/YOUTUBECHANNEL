@@ -58,7 +58,7 @@ stereo productions (layered drums, swing, bass, keys, pads, a hook), clean.
   `PixelArtCanvas`. 1–3 short lines, one label per ~2 bars (≥ 2.5 s), colour-code words to match what's on screen.
 - **Every video gets a different hyped rhythm/genre** (done so far: 120 BPM chiptune, 150 BPM four-on-the-floor
   hyper, 170 BPM drum & bass, 140 BPM jersey club / trap with 808s, 130 BPM UK garage 2-step,
-  130 BPM funk carioca, 144 BPM "funk 150", 128 BPM phonk, 128 BPM clean melodic house, 120 BPM stereo nu-disco. User wants bold but NOT noisy: they hated a distorted rave mix (hoover, acid, noise sweeps,
+  130 BPM funk carioca, 144 BPM "funk 150", 128 BPM phonk, 128 BPM clean melodic house, 120 BPM stereo nu-disco, 112 BPM melodic afro house. User wants bold but NOT noisy: they hated a distorted rave mix (hoover, acid, noise sweeps,
   master saturation) as "so noisy" — keep mixes clean: punchy clean kick, warm filtered chords, round bass, quiet hats, bell leads). Pick a BPM where `48 s × BPM / 240` is a whole number of bars.
 - **The animation plays the music**: map visual events to instruments/notes (parts = drums, colours/letters = notes)
   from the shared timeline, so what you see is what you hear.
