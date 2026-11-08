@@ -25,6 +25,7 @@ import { ChameleonVideo, DURATION as CHAM_DURATION, FPS as CHAM_FPS } from "./vi
 import { Chameleon30, DURATION as CHAM30_DURATION, FPS as CHAM30_FPS } from "./videos/chameleon/Chameleon30";
 import { CameraVideo, DURATION as CAMV_DURATION, FPS as CAMV_FPS } from "./videos/camera/CameraVideo";
 import { ChameleonK, DURATION as CHAMK_DURATION, FPS as CHAMK_FPS } from "./videos/chameleon/ChameleonK";
+import { CameraK, DURATION as CAMK_DURATION, FPS as CAMK_FPS } from "./videos/camera/CameraK";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -82,5 +83,6 @@ export const Root = () => (
     <Composition id="Chameleon30" component={Chameleon30} durationInFrames={CHAM30_DURATION} fps={CHAM30_FPS} width={1080} height={1920} />
     <Composition id="CameraVideo" component={CameraVideo} durationInFrames={CAMV_DURATION} fps={CAMV_FPS} width={1080} height={1920} />
     <Composition id="ChameleonK" component={ChameleonK} durationInFrames={CHAMK_DURATION} fps={CHAMK_FPS} width={1080} height={1920} />
+    <Composition id="CameraK" component={CameraK} durationInFrames={CAMK_DURATION} fps={CAMK_FPS} width={1080} height={1920} />
   </>
 );
