@@ -9,6 +9,17 @@ Put every copy-paste piece (YouTube title, YouTube description, YouTube tags, In
 in its own fenced code block so the user can copy it with one click. Save the copy in `social/youtube.md`,
 `social/instagram.md`, `social/tiktok.md`.
 
+## Format that works (user-approved, chameleon 30 s — follow this)
+- **30 s** (not 48), seamless loop. Reference: `remotion/src/videos/chameleon/Chameleon30.tsx` + `videos/12-chameleon/build_30.py`.
+- **Frame 0 = the subject, whole and instantly recognisable** (clear hero shot), already doing the "wow" thing on the
+  beat, with a simple question hook ("HOW DOES A CHAMELEON CHANGE COLOR? 🤯"). Never open on an extreme close-up/zoom,
+  never split-screen or two scenes at once (user: confusing / awkward).
+- **One scene at a time, one smooth continuous camera, no hard cuts.** Go inside the mechanism with a smooth "dive"
+  (glide in, screen fills with the surface colour, open on the inside), and come back out the same way.
+- **Labels always at the same spot at the top** (`screen` position in `LabelDef`), one idea at a time, ≤ 3 short lines.
+- Make every inside/mechanism scene beautiful too (glows, sparkles, real biological/mechanical detail).
+- Show 10 s sneak peeks (`--frames=0-599`) before rendering the full video.
+
 ## Hard rules for every video
 - **Seamless loop.** The last frame must be identical to the first frame, and the music's last bar must flow
   into its first bar (no fade-out, no ending hit, no fade to black). Shorts/Reels loop forever, so the end is
@@ -31,7 +42,7 @@ in its own fenced code block so the user can copy it with one click. Save the co
   `PixelArtCanvas`. 1–3 short lines, one label per ~2 bars (≥ 2.5 s), colour-code words to match what's on screen.
 - **Every video gets a different hyped rhythm/genre** (done so far: 120 BPM chiptune, 150 BPM four-on-the-floor
   hyper, 170 BPM drum & bass, 140 BPM jersey club / trap with 808s, 130 BPM UK garage 2-step,
-  130 BPM funk carioca). Pick a BPM where `48 s × BPM / 240` is a whole number of bars.
+  130 BPM funk carioca, 144 BPM "funk 150"). Pick a BPM where `48 s × BPM / 240` is a whole number of bars.
 - **The animation plays the music**: map visual events to instruments/notes (parts = drums, colours/letters = notes)
   from the shared timeline, so what you see is what you hear.
 
