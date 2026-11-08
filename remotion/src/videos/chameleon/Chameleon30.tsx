@@ -1,9 +1,9 @@
 /**
  * Video 012 · 30 s retention cut of the chameleon video. 144 BPM funk, 18 bars, seamless loop @ 60 fps.
- * SPLIT SCREEN from frame 0: top = the whole chameleon changing colour on every beat (a colour wave rolls head → tail),
- * bottom = inside its skin, in sync (crystals close = green, spread = red). Full-screen moments in between:
- * the skin close-up (bars 6-7), the jungle "it's to talk" + tongue (bars 10-15). Split again for the drop and the loop.
- * Timing from c30.json (build_30.py).
+ * ONE scene at a time, one continuous camera: a big clear chameleon changing colour on every beat (a colour wave
+ * rolls head → tail) → the camera glides into its skin and dives through (screen fills with the skin colour) →
+ * the crystals (close = green, spread = red) → back out for the drop → it's to talk → tongue → hero again (loop).
+ * Labels always at the same spot at the top. Timing from c30.json (build_30.py).
  */
 import React from "react";
 import { useThree } from "@react-three/fiber";
@@ -21,83 +21,77 @@ const D = HK.duration, BAR = HK.bar;
 const b = (n: number) => n * BAR;
 const TL: Timeline = { colors: HK.colors, tongue: HK.tongue, flyBack: HK.tongue + 1.0, lw: (2 * Math.PI) / D, beamN: 30, dur: D };
 const BG = "#06110a";
-const W = (2 * Math.PI) / D;
 
-type Mode = "split" | "skin" | "jungle";
-const modeAt = (t: number): Mode => (t >= b(6) && t < b(8) ? "skin" : t >= b(10) && t < b(16) ? "jungle" : "split");
+const IN = b(3), OUT = b(7), FADE = 0.28;                 // dive into the skin / come back out
+const inSkin = (t: number) => t >= IN && t < OUT;
 
-// split-screen layout (px)
-const TOP_Y = 310, PANEL_H = 780, DIV_Y = TOP_Y + PANEL_H, DIV_H = 40, BOT_Y = DIV_Y + DIV_H;
-const topCam = (t: number) => ({ p: [-0.6 + 0.3 * Math.sin(W * t), 2.4, 9.3] as V3, l: [-0.6, 1.5, 0] as V3 });
-const botCam = (t: number) => ({ p: [0.3 * Math.sin(W * t + 1), 1.6, 6.2] as V3, l: [0, 1.4, 0] as V3 });
-const SKINCAM: CamKey[] = [{ t: b(6), p: [0, 2.0, 10], l: [0, 1.4, 0] }, { t: b(8), p: [0.4, 1.7, 8.6], l: [0, 1.2, 0] }];
-const JCAM: CamKey[] = [
-  { t: b(10), p: [3, 2.8, 12], l: [1.5, 1.6, 0] },
-  { t: 20, p: [-1, 2.6, 14], l: [0.5, 1.5, 0] },
-  { t: 23.0, p: [4.4, 3, 16], l: [4.4, 2.4, 0] },
-  { t: b(16), p: [4.4, 3, 15.5], l: [4.4, 2.4, 0] },
+const HOME = { p: [8.5, 3.1, 12.5] as V3, l: [0.2, 2.0, 0] as V3 };
+const FLANK = { p: [0.0, 1.8, 1.3] as V3, l: [-0.2, 1.75, 0] as V3 };
+const CAM_A: CamKey[] = [                                  // hero → glide into the flank
+  { t: 0, ...HOME }, { t: 0.4, ...HOME },
+  { t: b(2), p: [6.5, 2.9, 12.0], l: [0.1, 1.6, 0] },
+  { t: IN - 0.3, p: [1.6, 2.2, 5.6], l: [-0.1, 1.7, 0] },
+  { t: IN, ...FLANK },
 ];
+const CAM_S: CamKey[] = [                                  // inside the skin: pull back from the surface, drift, push back up
+  { t: IN, p: [0, 3.1, 3.4], l: [0, 2.7, 0] },
+  { t: IN + 0.9, p: [0, 1.8, 7.0], l: [0, 1.4, 0] },
+  { t: b(5), p: [-1.0, 1.9, 7.4], l: [-0.2, 1.4, 0] },
+  { t: OUT - 0.7, p: [0.8, 1.8, 7.0], l: [0, 1.4, 0] },
+  { t: OUT, p: [0, 3.1, 3.4], l: [0, 2.7, 0] },
+];
+const CAM_B: CamKey[] = [                                  // back out of the flank → drop → talk → tongue → home
+  { t: OUT, ...FLANK },
+  { t: OUT + 0.35, p: [1.6, 2.2, 5.6], l: [-0.1, 1.7, 0] },
+  { t: OUT + 1.3, p: [7.0, 3.0, 12.5], l: [0.2, 1.6, 0] },
+  { t: b(10), p: [8.0, 3.0, 12.0], l: [0.3, 1.6, 0] },
+  { t: 20, p: [-1.2, 2.7, 13.5], l: [0.4, 1.6, 0] },
+  { t: 23.0, p: [4.4, 3, 15.5], l: [4.4, 2.5, 0] },
+  { t: 25.6, p: [4.4, 3, 15.0], l: [4.4, 2.5, 0] },
+  { t: 28.4, ...HOME }, { t: D, ...HOME },
+];
+const camFor = (t: number) => (t < IN ? camAt(CAM_A, t) : inSkin(t) ? camAt(CAM_S, t) : camAt(CAM_B, t));
+/** the dive: the screen fills with the skin colour right at the surface, then clears on the other side */
+const diveAt = (t: number) => Math.max(...[IN, OUT].map((x) => (t < x ? 1 - Math.min(1, (x - t) / FADE) : 1 - Math.min(1, (t - x) / FADE))));
 
 const S = STATE;
-const TOPZ: [number, number] = [540, 290];
-const HOOK = [[{ t: "HOW IT ACTUALLY" }], [{ t: "CHANGES COLOR", c: S[0].mid }, { t: " 🤯" }]];
+const TOPZ: [number, number] = [540, 420];
+const L = (from: number, to: number, border: string, lines: LabelDef["lines"], hold = false): LabelDef => ({ from, to, anchor: [0, 0, 0], screen: TOPZ, border, lines, hold });
+const HOOK = [[{ t: "HOW DOES A" }], [{ t: "CHAMELEON", c: S[0].mid }], [{ t: "CHANGE COLOR? 🤯" }]];
 const LABELS: LabelDef[] = [
-  { from: 0, to: b(2), anchor: [0, 0, 0], screen: TOPZ, border: S[0].mid, lines: HOOK, hold: true },
-  { from: b(2), to: b(4), anchor: [0, 0, 0], screen: TOPZ, border: "#bfe6ff", lines: [[{ t: "ITS SKIN IS FULL OF" }], [{ t: "TINY CRYSTALS", c: "#bfe6ff" }]] },
-  { from: b(4), to: b(6), anchor: [0, 0, 0], screen: TOPZ, border: "#ffffff", lines: [[{ t: "CLOSE = " }, { t: "GREEN", c: S[0].mid }], [{ t: "SPREAD = " }, { t: "RED", c: S[3].mid }]] },
-  { from: b(6), to: b(8), anchor: [0, 5.2, 0], border: S[0].mid, lines: [[{ t: "CLOSE = " }, { t: "BLUE LIGHT", c: "#4a9aff" }], [{ t: "+ " }, { t: "YELLOW", c: "#ffd23f" }], [{ t: "= GREEN", c: S[0].mid }]] },
-  { from: b(8), to: b(10), anchor: [0, 0, 0], screen: TOPZ, border: "#ffffff", lines: [[{ t: "CALM", c: S[0].mid }, { t: " → GREEN" }], [{ t: "EXCITED", c: S[3].mid }, { t: " → RED" }]] },
-  { from: b(10), to: b(12), anchor: [1.5, 3.4, 0], border: S[0].mid, lines: [[{ t: "NOT TO HIDE..." }], [{ t: "IT'S TO TALK", c: S[3].mid }]] },
-  { from: b(12), to: b(14), anchor: [1.0, 3.4, 0], border: S[3].mid, lines: [[{ t: "TO RIVALS", c: S[3].mid }], [{ t: "& MATES" }]] },
-  { from: b(14), to: b(16), anchor: [4.4, 4.6, 0], border: "#ff8a7a", lines: [[{ t: "BONUS: ITS TONGUE" }], [{ t: "UP TO 2X", c: "#ff8a7a" }], [{ t: "ITS BODY" }]] },
-  { from: b(16), to: D + 0.01, anchor: [0, 0, 0], screen: TOPZ, border: S[0].mid, lines: HOOK, hold: true },
+  L(0, b(2), S[0].mid, HOOK, true),
+  L(b(2), b(4), "#bfe6ff", [[{ t: "THE SECRET:" }], [{ t: "TINY CRYSTALS", c: "#bfe6ff" }], [{ t: "IN ITS SKIN" }]]),
+  L(b(4), b(7), "#ffffff", [[{ t: "CRYSTALS CLOSE" }], [{ t: "= " }, { t: "GREEN", c: S[0].mid }], [{ t: "SPREAD = " }, { t: "RED", c: S[3].mid }]]),
+  L(b(7), b(10), "#ffffff", [[{ t: "CALM", c: S[0].mid }, { t: " → GREEN" }], [{ t: "EXCITED", c: S[3].mid }, { t: " → RED" }]]),
+  L(b(10), b(12), S[0].mid, [[{ t: "NOT TO HIDE..." }], [{ t: "IT'S TO TALK", c: S[3].mid }]]),
+  L(b(12), b(14), S[3].mid, [[{ t: "TO RIVALS", c: S[3].mid }], [{ t: "& MATES" }]]),
+  L(b(14), b(16), "#ff8a7a", [[{ t: "BONUS: ITS TONGUE" }], [{ t: "UP TO 2X", c: "#ff8a7a" }], [{ t: "ITS BODY" }]]),
+  L(b(16), D + 0.01, S[0].mid, HOOK, true),
 ];
 
 const CamSet: React.FC<{ p: V3; l: V3 }> = ({ p, l }) => { const { camera } = useThree(); camera.position.set(...p); camera.lookAt(...l); camera.updateMatrixWorld(); return null; };
-const JungleLights: React.FC = () => (<><ambientLight intensity={0.55} color="#a8e05a" /><directionalLight position={[-6, 14, 10]} intensity={1.9} color="#fff8d0" /><directionalLight position={[8, -2, -6]} intensity={0.6} color="#4a9aff" /></>);
-const SkinLights: React.FC = () => (<><ambientLight intensity={0.8} color="#ffffff" /><directionalLight position={[-6, 14, 10]} intensity={1.9} color="#fff8d0" /><directionalLight position={[8, -2, -6]} intensity={0.6} color="#4a9aff" /></>);
 const tag: React.CSSProperties = { fontFamily: "PressStart2P", fontSize: 22, textShadow: "4px 4px 0 #05080a, -4px 0 0 #05080a, 0 -4px 0 #05080a" };
 
 export const Chameleon30: React.FC = () => {
   setTimeline(TL);
   const t = useCurrentFrame() / FPS;
   const a = useAssets();
-  const mode = modeAt(t);
+  const skin = inSkin(t);
+  const cam = camFor(t);
   const st = STATE[stateAt(t).s];
-  if (mode === "split") {
-    const tc = topCam(t), bc = botCam(t);
-    return (
-      <AbsoluteFill style={{ background: BG }}>
-        <Audio src={staticFile("videos/12-chameleon/c30.wav")} />
-        <div style={{ position: "absolute", left: 0, top: TOP_Y, width: 1080, height: PANEL_H, overflow: "hidden" }}>
-          <PixelArtCanvas width={1080} height={PANEL_H} bg={BG} fov={42} palette={JUNGLE_PALETTE} outlineColor="#05080a">
-            <CamSet p={tc.p} l={tc.l} /><JungleLights /><Jungle t={t} map={a.glow} /><Chameleon t={t} map={a.glow} />
-          </PixelArtCanvas>
-        </div>
-        <div style={{ position: "absolute", left: 0, top: BOT_Y, width: 1080, height: PANEL_H, overflow: "hidden" }}>
-          <PixelArtCanvas width={1080} height={PANEL_H} bg={BG} fov={42} palette={JUNGLE_PALETTE} outlineColor="#05080a">
-            <CamSet p={bc.p} l={bc.l} /><SkinLights /><Skin t={t} map={a.glow} />
-          </PixelArtCanvas>
-        </div>
-        {/* divider: OUTSIDE / INSIDE THE SKIN, in the current colour */}
-        <div style={{ position: "absolute", left: 0, top: DIV_Y, width: 1080, height: DIV_H, background: "#05080a", borderTop: `6px solid ${st.mid}`, borderBottom: `6px solid ${st.mid}`, boxSizing: "border-box" }} />
-        <div style={{ ...tag, position: "absolute", left: 36, top: DIV_Y + 9, color: "#ffffff" }}>▲ OUTSIDE</div>
-        <div style={{ ...tag, position: "absolute", right: 36, top: DIV_Y + 9, color: "#bfe6ff" }}>INSIDE ITS SKIN ▼</div>
-        <div style={{ ...tag, fontSize: 18, position: "absolute", right: 30, top: 1920 - 50, color: "#fff08a" }}>@HOWTOWITHZAY</div>
-        <Labels t={t} cam={tc} labels={LABELS} />
-      </AbsoluteFill>
-    );
-  }
-  const cam = mode === "skin" ? camAt(SKINCAM, t) : camAt(JCAM, t);
   return (
     <AbsoluteFill style={{ background: BG }}>
       <Audio src={staticFile("videos/12-chameleon/c30.wav")} />
       <PixelArtCanvas bg={BG} fov={42} palette={JUNGLE_PALETTE} outlineColor="#05080a">
         <CamSet p={cam.p} l={cam.l} />
-        {mode === "skin" ? <><SkinLights /><Skin t={t} map={a.glow} /></> : <><JungleLights /><Jungle t={t} map={a.glow} /><Chameleon t={t} map={a.glow} /></>}
+        <ambientLight intensity={skin ? 0.8 : 0.6} color={skin ? "#ffffff" : "#a8e05a"} />
+        <directionalLight position={[-6, 14, 10]} intensity={1.9} color="#fff8d0" />
+        <directionalLight position={[8, -2, -6]} intensity={0.6} color="#4a9aff" />
+        {skin ? <Skin t={t} map={a.glow} /> : <><Jungle t={t} map={a.glow} /><Chameleon t={t} map={a.glow} /></>}
       </PixelArtCanvas>
-      <div style={{ ...tag, position: "absolute", left: 48, top: 72, color: st.mid }}>● {st.name}</div>
-      <div style={{ ...tag, position: "absolute", right: 48, top: 72, color: "#fff08a" }}>@HOWTOWITHZAY</div>
+      <AbsoluteFill style={{ background: st.mid, opacity: diveAt(t) }} />
+      <div style={{ ...tag, position: "absolute", left: 48, top: 60, color: st.mid }}>● {st.name}</div>
+      <div style={{ ...tag, position: "absolute", right: 48, top: 60, color: "#fff08a" }}>@HOWTOWITHZAY</div>
       <Labels t={t} cam={cam} labels={LABELS} />
     </AbsoluteFill>
   );
