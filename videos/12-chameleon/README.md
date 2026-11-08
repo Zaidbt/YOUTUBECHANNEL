@@ -23,3 +23,9 @@ signalling (rivals, mates) and temperature, not camouflage. The tongue can reach
 wave rolls head → tail on every beat) → glide + dive into the skin (screen fills with the skin colour) → hexagonal
 guanine crystals (close = green, spread = red) → back out for the drop → it's to talk → tongue → hero (loop).
 Labels always at the same spot at the top. The colour timeline wraps, so frame 0 continues the last colour.
+
+## Kurzgesagt-style pixel remake (`npm run video:chameleon-k`, `build_k.py` + `ChameleonK.tsx`) — user: "Perfection !!"
+Flat 2D vector-style drawing and bouncy animation through the pixel pipeline (no outlines). The inside explains it in
+4 steps: white light = all colours (waves) → the gap between crystal rows picks the colour that bounces back → small
+gap: blue, through the yellow pigment = green → excited: the cell stretches, big gap = red. Every light wave is a pluck
+note (blue high, red low). Facts: Teyssier et al. 2015 (guanine nanocrystal lattice in iridophores, tuned by spacing).

@@ -144,3 +144,19 @@ Sound on 🔊 every flash is the snare, every sensor lighting up is a cowbell.
 #camera #photography #howitworks #pixelart #science
 
 Extra tags (optional): #photographytips #tech #technology #pixelart3d #learnoninstagram #stem
+
+## Post · Chameleon, Kurzgesagt-style pixel remake (out/chameleon-k.mp4)
+How does a chameleon REALLY change color? 🦎🌈
+It's not paint. It's physics.
+
+☀️ white light = a mix of all colours
+💎 under its skin, rows of tiny crystals bounce back just ONE colour: the gap between the rows picks which
+🔵 small gap → blue light + its yellow pigment = GREEN
+🔴 excited → the cell stretches → bigger gap → RED
+🗣️ and it's not to hide… it's to talk
+
+Sound on 🔊 every light wave is a note: blue high, red low.
+
+#chameleon #science #animals #pixelart #physics
+
+Extra tags (optional): #biology #animalfacts #structuralcolor #howitworks #pixelart3d #learnoninstagram

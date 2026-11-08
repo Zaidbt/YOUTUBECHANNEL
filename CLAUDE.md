@@ -9,6 +9,14 @@ Put every copy-paste piece (YouTube title, YouTube description, YouTube tags, In
 in its own fenced code block so the user can copy it with one click. Save the copy in `social/youtube.md`,
 `social/instagram.md`, `social/tiktok.md`.
 
+## Art direction that works best (user: "Perfection !!")
+**Kurzgesagt-style drawing + animation, rendered through our pixel pipeline** — reference
+`remotion/src/videos/chameleon/ChameleonK.tsx`: flat 2D vector-style shapes (spline blobs + ribbons, `meshBasicMaterial`,
+no outlines: `outline={false}`, low dither 0.05), side-on near-orthographic camera (fov ~20), parallax layers (gradient sky,
+stars, moon with halo rings, rounded silhouettes, framing leaves), cute rounded characters (big eye, lighter belly,
+darker back, light rim), vivid indigo/teal/pink palette, bouncy animation (squash on beats, back-ease pop-ins, idle
+wobbles), crisp colour wipes via clipping planes, and flat infographic insides with pop-in tags explaining step by step.
+
 ## Format that works (user-approved, chameleon 30 s — follow this)
 - **30 s** (not 48), seamless loop. Reference: `remotion/src/videos/chameleon/Chameleon30.tsx` + `videos/12-chameleon/build_30.py`.
 - **Frame 0 = the subject, whole and instantly recognisable** (clear hero shot), already doing the "wow" thing on the

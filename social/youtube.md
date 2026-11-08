@@ -26,3 +26,10 @@ Description:
 Light bounces off the apple into the lens, which focuses it into an image. The shutter opens for 1/1000 of a second, millions of light sensors catch it, each one seeing only red, green or blue, and a chip mixes them into your photo. Sound on: every flash is the snare, every sensor is a cowbell 🎧
 #camera #photography #howitworks #pixelart #shorts
 Tags: how does a camera work, camera, photography, image sensor, shutter, lens, how it works, science, pixel art, shorts
+
+## How does a chameleon change color? · Kurzgesagt-style pixel remake (out/chameleon-k.mp4)
+Title: How does a chameleon REALLY change color? 🦎🌈 #shorts
+Description:
+White light is a mix of all colours. Inside a chameleon's skin, rows of tiny crystals bounce back only one colour: the gap between the rows picks it. Small gap = blue, and blue + its yellow pigment = green. When it gets excited, the cell stretches, the gap grows, and the light turns red. Sound on: every light wave is a note 🎧
+#chameleon #science #animals #pixelart #shorts
+Tags: chameleon, how chameleons change color, structural color, iridophores, chameleon skin, animal facts, biology, science, pixel art, shorts

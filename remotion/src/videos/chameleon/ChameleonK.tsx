@@ -121,7 +121,7 @@ const Chameleon2D: React.FC<{ t: number }> = ({ t }) => {
   const edge = 4.2 - front;                                                 // world x of the colour edge
   WAVE_NEW.constant = -edge; EDGE_HI.constant = edge + 0.28;
   const waving = edge > -6.5;
-  const pop = age < 1 ? Math.exp(-age / 0.12) : 0;                          // squash on every change
+  const pop = age < 1 && at > 0 ? Math.exp(-age / 0.12) : 0;               // squash on every change (not on the loop seam)
   const bob = 0.035 * Math.sin(8 * LW * t);
   const yaw = 0.16 * Math.sin(7 * LW * t), pit = 0.12 * Math.sin(5 * LW * t + 1);
   const L = tongueLen(t), fly = flyPos(t), tip: P2 = [MOUTH[0] + (fly[0] - MOUTH[0]) * L, MOUTH[1] + (fly[1] - MOUTH[1]) * L];

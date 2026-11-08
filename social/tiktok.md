@@ -16,3 +16,7 @@ How does a chameleon change color? 🦎🤯 The secret: tiny crystals in its ski
 ## How does a camera take a photo? (out/camera.mp4)
 How does a camera take a photo? 📸🤯 Lens → shutter → millions of light sensors 🔊 sound on, the camera plays phonk
 #camera #photography #howitworks #pixelart #learnontiktok #fyp
+
+## Chameleon, Kurzgesagt-style pixel remake (out/chameleon-k.mp4)
+How does a chameleon REALLY change color? 🦎🌈 Tiny crystals in its skin pick which colour bounces back 💎 sound on, every light wave is a note 🔊
+#chameleon #science #animalfacts #pixelart #learnontiktok #fyp
