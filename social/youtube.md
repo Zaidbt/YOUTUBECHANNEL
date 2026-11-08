@@ -40,3 +40,10 @@ Description:
 Light bounces off the apple into the lens, which bends it to focus it on the sensor. The shutter is a tiny door that blocks the light… CLICK, it opens for 1/1000 of a second. Millions of light catchers on the sensor fill up, each one seeing only red, green or blue, and a chip mixes them into your photo. Sound on 🔊 every flash and click is a hit, every pixel is a note.
 #camera #photography #howitworks #pixelart #shorts
 Tags: how does a camera work, camera, shutter, image sensor, lens, photography, how it works, science, pixel art, shorts
+
+## How does an air fryer actually work? (out/airfryer-v2.mp4)
+Title: Your air fryer doesn't fry. Here's what it really does 🍟🤯 #shorts
+Description:
+An air fryer is a tiny turbo oven: a heater gets up to 200°C and a fan blasts that hot air around the basket. The hot wind blows the water off the surface of the fries, and once the surface passes ~140°C the Maillard reaction turns it golden and crunchy. Sound on 🔊 every water molecule is a bloop, every golden fry is a note.
+#airfryer #cooking #science #howitworks #shorts
+Tags: air fryer, how does an air fryer work, air fryer science, maillard reaction, convection oven, cooking science, kitchen, how it works, pixel art, shorts

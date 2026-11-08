@@ -17,7 +17,7 @@ export const HIVE_PALETTE = [
   "#1e1a14", "#3a2c1c", "#a0522d", "#ffffff",
 ];
 
-const MAX_PAL = 32;
+const MAX_PAL = 48;
 const frag = /* glsl */ `
 uniform sampler2D tColor; uniform sampler2D tDepth; uniform vec2 res; uniform vec3 pal[${MAX_PAL}]; uniform int palN;
 uniform float near; uniform float far; uniform float dither; uniform vec3 outlineCol; uniform float outline;

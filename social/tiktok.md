@@ -24,3 +24,7 @@ How does a chameleon REALLY change color? 🦎🌈 Tiny crystals in its skin pic
 ## Camera, Kurzgesagt x pixel + rave (out/camera-kz.mp4)
 What happens inside a camera when you press the button? 📸🤯 Lens → shutter door → millions of light catchers → chip 🔊 sound on
 #camera #photography #howitworks #pixelart #learnontiktok #fyp
+
+## How does an air fryer actually work? (out/airfryer-v2.mp4)
+Your air fryer doesn't fry 🍟🤯 It's a mini turbo oven: 200°C + a hurricane of hot air 🌪️ sound on 🔊
+#airfryer #cooking #science #foodscience #learnontiktok #fyp

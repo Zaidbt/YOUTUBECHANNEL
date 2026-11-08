@@ -175,3 +175,19 @@ Sound on 🔊 every click is a hit, every pixel is a note.
 #camera #photography #howitworks #pixelart #science
 
 Extra tags (optional): #tech #technology #photographytips #pixelart3d #learnoninstagram #stem
+
+## Post · How does an air fryer actually work? (out/airfryer-v2.mp4)
+Your air fryer doesn't fry. 🍟🤯
+
+🔥 a heater gets up to 200°C
+🌪️ a fan blasts that hot air around the basket, fast
+💧 the hot wind blows the water off the surface of the fries
+✨ above ~140°C, the Maillard reaction turns them golden and crunchy
+
+So it's not a fryer… it's a mini turbo oven.
+
+Sound on 🔊 every water molecule is a bloop, every golden fry is a note.
+
+#airfryer #cooking #science #howitworks #pixelart
+
+Extra tags (optional): #foodscience #kitchenhacks #maillardreaction #pixelart3d #learnoninstagram #stem

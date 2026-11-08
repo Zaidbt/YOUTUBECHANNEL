@@ -17,6 +17,12 @@ stars, moon with halo rings, rounded silhouettes, framing leaves), cute rounded 
 darker back, light rim), vivid indigo/teal/pink palette, bouncy animation (squash on beats, back-ease pop-ins, idle
 wobbles), crisp colour wipes via clipping planes, and flat infographic insides with pop-in tags explaining step by step.
 
+**Fidelity upgrade (air fryer v2, `videos/airfryer/AirFryerV2.tsx`)**: the user wants it "identical to Kurzgesagt, just
+in pixels" — flat shapes alone are NOT enough. Use `brand/kz.tsx` (`G` gradient shader on every shape, `Halo` bloom),
+render at `scale={2}` (finer pixels) with a 48-colour palette, cel-shadow shapes + gloss + rim lights, light cones,
+rich multi-layer scenes with props, and Kurzgesagt scale changes (dive into a single object). Music: `scripts/stereo.py`
+stereo productions (layered drums, swing, bass, keys, pads, a hook), clean.
+
 ## Format that works (user-approved, chameleon 30 s — follow this)
 - **30 s** (not 48), seamless loop. Reference: `remotion/src/videos/chameleon/Chameleon30.tsx` + `videos/12-chameleon/build_30.py`.
 - **Frame 0 = the subject, whole and instantly recognisable** (clear hero shot), already doing the "wow" thing on the
@@ -50,7 +56,7 @@ wobbles), crisp colour wipes via clipping planes, and flat infographic insides w
   `PixelArtCanvas`. 1–3 short lines, one label per ~2 bars (≥ 2.5 s), colour-code words to match what's on screen.
 - **Every video gets a different hyped rhythm/genre** (done so far: 120 BPM chiptune, 150 BPM four-on-the-floor
   hyper, 170 BPM drum & bass, 140 BPM jersey club / trap with 808s, 130 BPM UK garage 2-step,
-  130 BPM funk carioca, 144 BPM "funk 150", 128 BPM phonk, 128 BPM clean melodic house. User wants bold but NOT noisy: they hated a distorted rave mix (hoover, acid, noise sweeps,
+  130 BPM funk carioca, 144 BPM "funk 150", 128 BPM phonk, 128 BPM clean melodic house, 120 BPM stereo nu-disco. User wants bold but NOT noisy: they hated a distorted rave mix (hoover, acid, noise sweeps,
   master saturation) as "so noisy" — keep mixes clean: punchy clean kick, warm filtered chords, round bass, quiet hats, bell leads). Pick a BPM where `48 s × BPM / 240` is a whole number of bars.
 - **The animation plays the music**: map visual events to instruments/notes (parts = drums, colours/letters = notes)
   from the shared timeline, so what you see is what you hear.
