@@ -32,3 +32,7 @@ Your air fryer doesn't fry 🍟🤯 It's a mini turbo oven: 200°C + a hurricane
 ## What does LSD actually do to your brain? (out/lsd.mp4)
 This tiny stamp hacks your brain 🧠🤯 A millionth of a gram, locked in a receptor for 8–12 h 🔒 science, not advice ⚠️ sound on 🔊
 #neuroscience #brain #science #howitworks #learnontiktok #fyp
+
+## How does a light bulb make light? (out/bulb.mp4)
+How a light bulb ACTUALLY makes light 💡🤯 electrons fall into holes and every fall is a photon ✨ sound on 🔊 every flash is a note
+#physics #science #howitworks #led #learnontiktok #fyp

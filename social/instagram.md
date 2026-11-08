@@ -210,3 +210,22 @@ Sound on 🔊
 #neuroscience #brain #science #howitworks #pixelart
 
 Extra tags (optional): #psychedelicscience #serotonin #brainscience #learnoninstagram #stem #kurzgesagt
+
+## Post · How does a light bulb make light? (out/bulb.mp4)
+How does a bulb turn electricity into light? 💡🤯
+
+✨ a 10 W LED fires ~10 quintillion photons a second
+🧱 inside its 1 mm chip: 2 crystals, one with extra electrons (N), one with holes (P)
+⚡ 3 volts push them to the edge
+⬇️ an electron falls into a hole → its extra energy flies out as 1 photon
+🌈 bigger fall (energy gap) = bluer light: red → green → blue
+🏆 blue was so hard to make it won the 2014 Nobel Prize
+🟡 white LED = blue chip + a yellow phosphor coat
+🔥 old bulbs: a wire at ~2,500°C, ~90% of the power wasted as heat
+💚 LEDs: same light, 75% less power, last up to 25x longer
+
+Sound on 🔊 every flash of light is a note.
+
+#physics #science #howitworks #led #pixelart
+
+Extra tags (optional): #lightbulb #semiconductor #nobelprize #learnoninstagram #stem #kurzgesagt

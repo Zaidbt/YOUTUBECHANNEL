@@ -54,3 +54,10 @@ Description:
 A dose is about 100 micrograms (0.0001 g, roughly 1/5000 of an aspirin pill), yet it lasts 8 to 12 hours. Normally serotonin taps its 5-HT2A receptor for an instant and the neuron fires once. LSD has the same two-ring core, so it fits the same lock, and then a lid on the receptor (extracellular loop 2, seen in a 2017 crystal structure) snaps shut over it. Stuck for hours, the neuron fires nonstop. 5-HT2A is packed in the cortex, so the cortex gets loud: fMRI shows brain networks that normally stay in their lane all cross-talking (linked to hallucinations), while the default mode network, the brain's "self" network, falls apart (linked to ego dissolution). Risks are real: panic, and psychosis in vulnerable people. Science explainer, not advice. Sound on 🔊
 #neuroscience #brain #science #howitworks #shorts
 Tags: lsd brain, what does lsd do to the brain, neuroscience, serotonin, 5-HT2A receptor, psychedelics science, ego dissolution, default mode network, brain science, shorts
+
+## How does a light bulb make light? (out/bulb.mp4)
+Title: How a light bulb ACTUALLY makes light 💡🤯 #shorts
+Description:
+A 10 W LED fires about 10 quintillion photons every second. Inside its 1 mm chip sit two crystals: one with extra electrons (N), one with "holes", missing electrons (P). Switch on 3 volts and they're pushed to the edge, where an electron falls into a hole and its extra energy flies out as one photon. The bigger the fall (the energy gap), the bluer the light: blue was so hard to make it won the 2014 Nobel Prize. White LEDs are a blue chip under a yellow phosphor coat. Old bulbs heated a wire to ~2,500°C and turned ~90% of the power into heat; LEDs give the same light with 75% less power and last up to 25x longer. Sound on 🔊 every flash of light is a note.
+#physics #science #howitworks #led #shorts
+Tags: how does a light bulb work, how do leds work, led, light bulb, photons, semiconductor, band gap, blue led nobel prize, physics, how it works, shorts
