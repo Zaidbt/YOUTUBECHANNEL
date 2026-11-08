@@ -50,7 +50,7 @@ function photoPix(u: number, v: number, asp = 1.5): THREE.Color {
 }
 const GW = 8, GH = 12, CELL = 0.24, SENSOR_Z = -7.3, CURTAIN_Z = -6.95, APERTURE_Z = -1.9; // a portrait sensor, like a phone
 /** sensor cell (col, row) → its colour: the image lands upside down */
-const cellPix = (c: number, r: number) => photoPix(1 - (c + 0.5) / GW, 1 - (r + 0.5) / GH, GW / GH);
+const cellPix = (c: number, r: number) => photoPix((c + 0.5) / GW, (r + 0.5) / GH, GW / GH);
 const cellXY = (c: number, r: number): [number, number] => [(c - (GW - 1) / 2) * CELL, ((GH - 1) / 2 - r) * CELL];
 const bayer = (c: number, r: number) => (r % 2 === 0 ? (c % 2 === 0 ? 1 : 0) : (c % 2 === 0 ? 2 : 1)); // 0 R, 1 G, 2 B
 const FILTER = ["#c8202a", "#4ac04a", "#2040c0"];
@@ -186,7 +186,7 @@ const Room: React.FC<{ t: number }> = ({ t }) => {
 };
 
 // ---------------- inside the camera ----------------
-const RAYS = Array.from({ length: 14 }, (_, i) => { const c = (i * 3 + 1) % GW, r = (i * 5 + 2) % GH; return { c, r, col: "#" + cellPix(c, r).getHexString() }; });
+const SPARKS = Array.from({ length: 30 }, (_, i) => { const c = (i * 3 + 1) % GW, r = (i * 5 + 2) % GH; return { c, r, col: "#" + cellPix(c, r).getHexString() }; });
 const Inside: React.FC<{ t: number }> = ({ t }) => {
   const a = useAssets();
   const [c1, c2] = curtains(t);
@@ -195,36 +195,19 @@ const Inside: React.FC<{ t: number }> = ({ t }) => {
   const showImage = t < b(8) && !open;
   return (
     <group>
-      {/* the lens barrel (inner walls only, so it works as a cutaway) */}
-      <mesh position={[0, 0, -3.5]} rotation={[Math.PI / 2, 0, 0]}><cylinderGeometry args={[3.0, 3.0, 9, 32, 1, true]} /><meshBasicMaterial color="#12141c" side={THREE.BackSide} /></mesh>
-      {[1, -0.5, -2.5, -5.2].map((z) => <mesh key={z} position={[0, 0, z]}><torusGeometry args={[2.9, 0.08, 6, 40]} /><Toon c="#2e3446" /></mesh>)}
-      {/* glass elements */}
-      {[[0.4, 2.3], [-0.4, 2.0], [-1.2, 1.7]].map(([z, r], i) => (
-        <group key={i} position={[0, 0, z]}>
-          <mesh><torusGeometry args={[r, 0.09, 6, 40]} /><Toon c="#7a849e" /></mesh>
-          <Glow map={a.glow} at={[-r * 0.4, r * 0.45, 0.2]} size={0.5} color="#ffffff" opacity={0.6} />
-        </group>
-      ))}
-      {/* aperture (iris) */}
-      <mesh position={[0, 0, APERTURE_Z]}><torusGeometry args={[0.9, 0.07, 6, 7]} /><Toon c="#7a849e" /></mesh>
-      <Glow map={a.glow} at={[0, 0, APERTURE_Z]} size={1.2} color="#fff2a8" opacity={0.5} />
-      {/* light rays: from the apple, through the aperture, landing upside down */}
-      {RAYS.map((R, i) => {
-        const [ex, ey] = cellXY(R.c, R.r);
-        const S: V3 = [-ex * 4, -ey * 4, 6], A: V3 = [0, 0, APERTURE_Z], E: V3 = [ex, ey, (t >= b(8) || open) ? SENSOR_Z + 0.15 : CURTAIN_Z + 0.03];
-        const l1 = Math.hypot(S[0], S[1], S[2] - A[2]), l2 = Math.hypot(E[0], E[1], E[2] - A[2]);
-        return Array.from({ length: 6 }, (_, k) => {
-          const u = ((k / 6 + (D / D) * t * 1.0 + i * 0.13) % 1) * (l1 + l2);
-          const P: V3 = u < l1 ? [S[0] + (A[0] - S[0]) * u / l1, S[1] + (A[1] - S[1]) * u / l1, S[2] + (A[2] - S[2]) * u / l1] : [A[0] + (E[0] - A[0]) * (u - l1) / l2, A[1] + (E[1] - A[1]) * (u - l1) / l2, A[2] + (E[2] - A[2]) * (u - l1) / l2];
-          if (t >= b(8) && P[2] > -4.2) return null;                       // keep photons away from the lens of our view
-          return <Glow key={`${i}-${k}`} map={a.glow} at={P} size={0.24} color={R.col} opacity={0.95} />;
+      {/* the focused light: coloured sparks fly in from all around and land on their spot of the image */}
+      {SPARKS.map((R, i) => {
+        const [ex, ey] = cellXY(R.c, R.r), end = t >= b(8) || open ? SENSOR_Z + 0.15 : CURTAIN_Z + 0.04;
+        const ang = i * 2.4, S: V3 = [Math.cos(ang) * 2.6, Math.sin(ang) * 3.4, -2.7];
+        return Array.from({ length: 3 }, (_, k) => {
+          const u = (k / 3 + t * 0.9 + i * 0.37) % 1, e = u * u;
+          const P: V3 = [S[0] + (ex - S[0]) * e, S[1] + (ey - S[1]) * e, S[2] + (end - S[2]) * u];
+          if (t >= b(8) && P[2] > -4.6) return null;
+          return <Glow key={`${i}-${k}`} map={a.glow} at={P} size={0.2 + 0.12 * u} color={R.col} opacity={0.95} />;
         });
       })}
-      {RAYS.map((R, i) => { const [ex, ey] = cellXY(R.c, R.r); const end = (t >= b(8) || open) ? SENSOR_Z + 0.15 : CURTAIN_Z + 0.03;
-        const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-ex * 4, -ey * 4, 6), new THREE.Vector3(0, 0, APERTURE_Z), new THREE.Vector3(ex, ey, end)]);
-        return t < b(8) ? <primitive key={`ln${i}`} object={new THREE.Line(g, new THREE.LineBasicMaterial({ color: R.col, transparent: true, opacity: 0.55 }))} /> : null; })}
-      {/* the tiny upside-down image, projected on the closed shutter */}
-      {showImage && Array.from({ length: GW * GH }, (_, k) => { const c = k % GW, r = Math.floor(k / GW), [x, y] = cellXY(c, r); return <mesh key={`im${k}`} position={[x, y, CURTAIN_Z + 0.04]}><planeGeometry args={[CELL * 0.92, CELL * 0.92]} /><meshBasicMaterial color={"#" + cellPix(c, r).getHexString()} transparent opacity={0.85} /></mesh>; })}
+      {/* the image it forms, on the closed shutter */}
+      {showImage && Array.from({ length: GW * GH }, (_, k) => { const c = k % GW, r = Math.floor(k / GW), [x, y] = cellXY(c, r); return <mesh key={`im${k}`} position={[x, y, CURTAIN_Z + 0.04]}><planeGeometry args={[CELL * 0.92, CELL * 0.92]} /><meshBasicMaterial color={"#" + cellPix(c, r).getHexString()} transparent opacity={0.9} /></mesh>; })}
       {/* shutter curtains */}
       <mesh position={[0, c1, CURTAIN_Z]}><boxGeometry args={[2.6, 3.6, 0.05]} /><Toon c="#1e2230" /></mesh>
       <mesh position={[0, c2, CURTAIN_Z + 0.08]}><boxGeometry args={[2.6, 3.6, 0.05]} /><Toon c="#2e3446" /></mesh>
@@ -235,7 +218,7 @@ const Inside: React.FC<{ t: number }> = ({ t }) => {
         const c = k % GW, r = Math.floor(k / GW), [x, y] = cellXY(c, r), lt = cellLit(k), fill = ease((t - lt) / 0.15);
         const pix = cellPix(c, r), sp = pix.clone().convertLinearToSRGB(), lum = 0.3 * sp.r + 0.6 * sp.g + 0.1 * sp.b;
         const grey = C("#2e3446").lerp(C("#ffffff"), Math.min(1, lum * 1.8)), ch = [pix.r, pix.g, pix.b][bayer(c, r)];
-        const col = fill <= 0 || t < b(8) ? C("#12141c") : filt > 0 ? grey.clone().lerp(C(FILTER[bayer(c, r)]).multiplyScalar(0.12 + 2.4 * Math.min(1, ch * 1.6)), filt) : grey;
+        const col = open && t < b(8) ? grey : fill <= 0 || t < b(8) ? C("#12141c") : filt > 0 ? grey.clone().lerp(C(FILTER[bayer(c, r)]).multiplyScalar(0.12 + 2.4 * Math.min(1, ch * 1.6)), filt) : grey;
         const hex = "#" + col.getHexString();
         return (
           <group key={`c${k}`} position={[x, y, SENSOR_Z]}>
@@ -244,7 +227,7 @@ const Inside: React.FC<{ t: number }> = ({ t }) => {
           </group>
         );
       })}
-      {open && <Glow map={a.glow} at={[0, 0, SENSOR_Z + 0.4]} size={5} color="#fff2a8" opacity={0.6} />}
+      {open && <Glow map={a.glow} at={[0, 0, SENSOR_Z + 0.4]} size={3} color="#ffffff" opacity={0.35} />}
     </group>
   );
 };
@@ -259,15 +242,11 @@ const CAM_A: CamKey[] = [
   { t: IN, p: [0, 0.05, LENS_FRONT + 0.5], l: [0, 0, 0] },
 ];
 const CAM_I: CamKey[] = [
-  { t: IN, p: [0, 0, 5.4], l: [0, 0, 0] },
-  { t: IN + 1.4, p: [0.6, 0.5, 1.2], l: [0, 0, -5] },
-  { t: b(5) + 0.6, p: [1.0, 0.6, 1.4], l: [0, 0, -4.0] },
-  { t: b(6) + 0.3, p: [1.2, 0.8, -2.6], l: [0, 0, CURTAIN_Z] },
-  { t: b(7) + 1.2, p: [1.6, 0.9, -2.7], l: [0, 0, CURTAIN_Z] },
-  { t: b(8), p: [0.3, 0.0, -2.2], l: [0, -0.35, SENSOR_Z] },
-  { t: b(9), p: [0, -0.1, -2.25], l: [0, -0.35, SENSOR_Z] },
-  { t: b(11), p: [0.2, -0.05, -2.4], l: [0, -0.35, SENSOR_Z] },
-  { t: OUT - 0.45, p: [0.1, -0.1, -2.7], l: [0, -0.3, SENSOR_Z] },
+  { t: IN, p: [0, 0.4, 1.2], l: [0, 0.4, CURTAIN_Z] },          // one straight, slow push, always front-on
+  { t: b(6), p: [0, 0.4, -0.6], l: [0, 0.4, CURTAIN_Z] },
+  { t: b(8), p: [0, 0.4, -2.2], l: [0, 0.4, SENSOR_Z] },
+  { t: b(11), p: [0, 0.4, -2.45], l: [0, 0.4, SENSOR_Z] },
+  { t: OUT - 0.45, p: [0, 0.4, -2.75], l: [0, 0.4, SENSOR_Z] },
   { t: OUT, p: [0, 0, SENSOR_Z + 0.7], l: [0, 0, SENSOR_Z] },
 ];
 const CAM_B: CamKey[] = [
@@ -287,7 +266,7 @@ const HOOK = [[{ t: "HOW DOES A" }], [{ t: "CAMERA", c: "#ffd23f" }], [{ t: "TAK
 const LABELS: LabelDef[] = [
   L(0, b(2), "#ffd23f", HOOK, true),
   L(b(2), b(4), "#ff5a4a", [[{ t: "LIGHT BOUNCES OFF" }], [{ t: "THE APPLE", c: "#ff5a4a" }], [{ t: "INTO THE LENS" }]]),
-  L(b(4), b(6), "#4aa0e0", [[{ t: "THE LENS MAKES A" }], [{ t: "TINY IMAGE", c: "#4aa0e0" }], [{ t: "UPSIDE DOWN 🙃" }]]),
+  L(b(4), b(6), "#4aa0e0", [[{ t: "THE LENS FOCUSES" }], [{ t: "THE LIGHT", c: "#4aa0e0" }], [{ t: "INTO AN IMAGE" }]]),
   L(b(6), b(8), "#ffffff", [[{ t: "THE SHUTTER OPENS" }], [{ t: "FOR 1/1000", c: "#ffd23f" }], [{ t: "OF A SECOND" }]]),
   L(b(8), b(10), "#e8ecf4", [[{ t: "MILLIONS OF" }], [{ t: "LIGHT SENSORS", c: "#fff2a8" }], [{ t: "CATCH IT" }]]),
   L(b(10), b(12), "#ffffff", [[{ t: "EACH ONE SEES" }], [{ t: "RED", c: "#ff5a4a" }, { t: ", " }, { t: "GREEN", c: "#4ac04a" }], [{ t: "OR " }, { t: "BLUE", c: "#4a7aff" }]]),

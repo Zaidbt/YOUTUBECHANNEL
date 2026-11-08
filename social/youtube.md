@@ -23,6 +23,6 @@ Tags: chameleon, how chameleons change color, chameleon color change, animal fac
 ## How does a camera take a photo? (out/camera.mp4)
 Title: How does a camera take a photo? 📸🤯 #shorts
 Description:
-Light bounces off the apple into the lens, which makes a tiny upside-down image. The shutter opens for 1/1000 of a second, millions of light sensors catch it, each one seeing only red, green or blue, and a chip mixes them into your photo. Sound on: every flash is the snare, every sensor is a cowbell 🎧
+Light bounces off the apple into the lens, which focuses it into an image. The shutter opens for 1/1000 of a second, millions of light sensors catch it, each one seeing only red, green or blue, and a chip mixes them into your photo. Sound on: every flash is the snare, every sensor is a cowbell 🎧
 #camera #photography #howitworks #pixelart #shorts
 Tags: how does a camera work, camera, photography, image sensor, shutter, lens, how it works, science, pixel art, shorts

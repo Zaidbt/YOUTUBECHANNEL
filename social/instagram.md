@@ -134,7 +134,7 @@ Extra tags (optional): #reptiles #animalfacts #biology #howitworks #pixelart3d #
 How does a camera take a photo? 📸🤯
 In a blink, this happens:
 
-🔍 the lens bends the light into a tiny image… upside down
+🔍 the lens focuses the light into an image
 ⚡ the shutter opens for about 1/1000 of a second
 🟩 millions of light sensors catch the light, each one sees only red, green or blue
 🧠 a chip mixes them into your photo

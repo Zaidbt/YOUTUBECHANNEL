@@ -5,7 +5,7 @@ Build: `npm run video:camera`.
 
 The camera plays the music: every flash / shutter click is the snare, every group of sensor cells that lights up is a
 cowbell note. One scene at a time, one smooth camera: hero shot (flash on the snares) → glide + dive into the lens →
-rays cross at the aperture and form an upside-down image on the closed shutter → the shutter opens on the snares →
+coloured sparks converge into the image of the apple on the closed shutter (one straight front-on push, kept simple) → the shutter opens on the snares →
 the drop: the sensor cells fill from the centre (the apple appears) → red/green/blue (Bayer) filters → out through the
 back: the photo is revealed on the screen on the cowbell → orbit back to the hero shot (loop).
 
