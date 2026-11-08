@@ -11,3 +11,5 @@ hook with ping-pong delay, events as notes (`scripts/stereo.py` = stereo bus mix
 
 Facts: air fryers are small convection ovens (heater + fan, typically up to ~200°C); fast air strips the boundary
 layer and dries the surface; the Maillard reaction browns food quickly above ~140°C.
+
+Final (`AirFryerK.tsx`, `npm run video:airfryer-k`): the same story in the exact flat ChameleonK style (night window, moon halo rings, silhouettes, fireflies, bouncy pop-ins, golden crust as a clipping-plane wipe) with music_v2.wav.
