@@ -17,7 +17,7 @@ import { glowTexture, Glow } from "../watch/CinematicPreview";
 import { camAt, CamKey } from "../teasers/Majestic";
 import { Labels, LabelDef, project } from "../../brand/Labels";
 import { rnd } from "../../brand/pixels";
-import { P2, clamp01, ease, backOut, blob, rrect, ribbon, curve, Flat, Disc, ClipOn } from "../../brand/flat";
+import { P2, clamp01, ease, backOut, blob, rrect, rrectLine, ribbon, curve, Flat, Disc, ClipOn } from "../../brand/flat";
 
 export const FPS = 60;
 export const DURATION = Math.round(EV.duration * FPS);
@@ -36,8 +36,8 @@ export const LSD_PALETTE = [
 const BG = "#090d2b";
 
 // ---------------- timing ----------------
-const IN = b(3), OUT = b(7), FADE = 0.3;
-const scene = (t: number) => (t >= IN && t < OUT ? "syn" : "brain");
+const IN = b(3), OUT = b(7), BACK = b(12.85), FADE = 0.3;                // BACK: return to the hook scene for the loop
+const scene = (t: number) => (t < IN || t >= BACK ? "hero" : t < OUT ? "syn" : "brain");
 const beatK = (t: number) => Math.exp(-((t % (BAR / 4)) / (BAR / 4)) * 6);
 const linkOn = (t: number, i: number) => { const on = EV.links[i]; if (t < on) return 0; const off = b(11) + (15 - i) * (BAR * 2 / 16); return t < off ? Math.min(1, backOut((t - on) / 0.25)) : 1 - ease((t - off) / 0.25); };
 const dmn = (t: number) => (t < b(9) ? 1 : t < b(11) ? 1 - 0.75 * ease((t - b(9)) / BAR) : 0.25 + 0.75 * ease((t - b(11)) / (BAR * 2)));
@@ -126,6 +126,73 @@ const Space: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
   );
 };
 
+// ================= HOOK: a tiny paper square → zoom → the LSD molecule =================
+const MOL_C: P2 = [0.3, 1.25];
+/** a stylised LSD molecule (ergoline rings + diethylamide), ball-and-stick */
+const MOL = (() => {
+  const r = 0.42, hex = (cx: number, cy: number): P2[] => Array.from({ length: 6 }, (_, i) => [cx + r * Math.cos(Math.PI / 6 + (i * Math.PI) / 3), cy + r * Math.sin(Math.PI / 6 + (i * Math.PI) / 3)]);
+  const A = hex(-0.73, -0.2), Cc = hex(-0.365, 0.43), Dd = hex(0.0, -0.2);
+  const pent: P2[] = Array.from({ length: 5 }, (_, i) => [-1.25 + 0.36 * Math.cos(Math.PI + (i * 2 * Math.PI) / 5), -0.6 + 0.36 * Math.sin(Math.PI + (i * 2 * Math.PI) / 5)]);
+  const rings = [A, Cc, Dd, pent];
+  const atoms: { p: P2; e: "C" | "N" | "O" }[] = [];
+  const add = (p: P2, e: "C" | "N" | "O" = "C") => { const f = atoms.find((a) => Math.hypot(a.p[0] - p[0], a.p[1] - p[1]) < 0.08); if (!f) atoms.push({ p, e }); else if (e !== "C") f.e = e; };
+  rings.forEach((R) => R.forEach((p) => add(p)));
+  add(pent[0], "N"); add(Dd[5], "N");
+  const am: P2 = [Dd[1][0] + 0.45, Dd[1][1] + 0.28], O: P2 = [am[0] + 0.05, am[1] + 0.55], N2: P2 = [am[0] + 0.5, am[1] - 0.22];
+  const e1: P2[] = [[N2[0] + 0.42, N2[1] + 0.28], [N2[0] + 0.85, N2[1] + 0.05]], e2: P2[] = [[N2[0] + 0.1, N2[1] - 0.48], [N2[0] + 0.55, N2[1] - 0.7]];
+  const me: P2 = [Dd[5][0] + 0.32, Dd[5][1] - 0.35];
+  [am, me, ...e1, ...e2].forEach((p) => add(p)); add(O, "O"); add(N2, "N");
+  const bonds: [P2, P2][] = [];
+  rings.forEach((R) => R.forEach((p, i) => bonds.push([p, R[(i + 1) % R.length]])));
+  bonds.push([Dd[1], am], [am, O], [am, N2], [N2, e1[0]], [e1[0], e1[1]], [N2, e2[0]], [e2[0], e2[1]], [Dd[5], me]);
+  return { atoms, bonds, dbl: [[am, O]] as [P2, P2][] };
+})();
+const ECOL = { C: ["#7a88d6", "#c8cdf0"], N: ["#1f4abf", "#4a9aff"], O: ["#8a1414", "#ff3a2a"] };
+const Molecule: React.FC<{ t: number; s?: number }> = ({ t, s = 1 }) => {
+  const k = beatK(t);
+  const sticks = useMemo(() => MOL.bonds.map(([a, c]) => ribbon([a, c], () => 0.09)), []);
+  return (
+    <group scale={s * (1 + 0.04 * k)} rotation={[0, 0, 0.1 * Math.sin(2 * LW * t)]}>
+      {sticks.map((g, i) => <Flat key={i} g={g} c="#c8cdf0" z={-0.01} />)}
+      {MOL.dbl.map(([a, c], i) => <Flat key={`d${i}`} g={ribbon([[a[0] + 0.1, a[1]], [c[0] + 0.1, c[1]]], () => 0.06)} c="#c8cdf0" z={-0.01} />)}
+      {MOL.atoms.map((a, i) => { const [d, l] = ECOL[a.e], r = a.e === "C" ? 0.13 : 0.17; return (
+        <group key={`a${i}`} position={[a.p[0], a.p[1], 0]}>
+          <Disc at={[0, 0]} r={r} c={d} />
+          <Disc at={[-r * 0.15, r * 0.15]} r={r * 0.78} c={l} z={0.001} />
+          <Disc at={[-r * 0.35, r * 0.35]} r={r * 0.25} c="#ffffff" z={0.002} o={0.8} />
+        </group>); })}
+    </group>
+  );
+};
+const fingerG = rrect(-0.32, -4.5, 0.32, 0, 0.32), nailG = rrect(-0.2, -0.55, 0.2, -0.08, 0.16);
+const paperG = rrect(-0.16, -0.16, 0.16, 0.16, 0.02);
+const PAPER: P2 = [-1.45, -2.15];
+const tang = (deg: number): P2 => [MOL_C[0] + 2.3 * Math.cos((deg * Math.PI) / 180), MOL_C[1] + 2.3 * Math.sin((deg * Math.PI) / 180)];
+const Hero: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => (
+  <group>
+    {STARS.map((s, i) => <Disc key={`s${i}`} at={[s.x, s.y]} r={s.s * (0.7 + 0.3 * Math.sin(6 * LW * t + s.ph))} c="#fff3b0" z={-20} seg={6} />)}
+    {[5.2, 4.2, 3.4].map((r, i) => <Disc key={`h${i}`} at={MOL_C} r={r * (1 + 0.03 * beatK(t) * (i + 1))} c="#b48cff" z={-10 + i * 0.1} o={0.07 + i * 0.05} seg={56} />)}
+    {/* the zoom callout: from the tiny square to the molecule */}
+    {[200, 285].map((d, i) => <Flat key={`zl${i}`} g={ribbon([PAPER, tang(d)], () => 0.04)} c="#bfe6ff" z={-0.3} o={0.55} />)}
+    <Disc at={MOL_C} r={2.3} c="#1c2a6e" z={-0.25} o={0.85} seg={64} />
+    <mesh position={[MOL_C[0], MOL_C[1], -0.2]}><ringGeometry args={[2.26, 2.36, 64]} /><meshBasicMaterial color="#bfe6ff" /></mesh>
+    <Glow map={map} at={[MOL_C[0], MOL_C[1], -0.15]} size={4.5} color="#7a4dff" opacity={0.5 + 0.2 * beatK(t)} />
+    <group position={[MOL_C[0] + 0.15, MOL_C[1] + 0.05, 0]}><Molecule t={t} s={1.05} /></group>
+    {/* a fingertip holding the tiny paper square */}
+    <group position={[PAPER[0] + 0.2, PAPER[1] - 0.15, 0.2]} rotation={[0, 0, 0.35 + 0.03 * Math.sin(3 * LW * t)]}>
+      <Flat g={fingerG} c="#ffbf6a" />
+      <Flat g={rrect(0.05, -4.5, 0.32, -0.3, 0.2)} c="#ff8a7a" z={0.001} o={0.5} />
+      <Flat g={nailG} c="#fff3b0" z={0.002} />
+    </group>
+    <group position={[PAPER[0], PAPER[1], 0.3]} scale={1 + 0.1 * beatK(t)}>
+      <Flat g={paperG} c="#fff3b0" />
+      <Flat g={rrectLine(-0.16, -0.16, 0.16, 0.16, 0.02, 0.025)} c="#c8cdf0" z={0.001} />
+    </group>
+    <Glow map={map} at={[PAPER[0], PAPER[1], 0.35]} size={0.9} color="#fff08a" opacity={0.6 + 0.3 * beatK(t)} />
+    {Array.from({ length: 16 }, (_, i) => { const a = (i / 16) * Math.PI * 2 + LW * t * 2, r = 2.75 + 0.15 * Math.sin(3 * LW * t + i); return <Disc key={`o${i}`} at={[MOL_C[0] + Math.cos(a) * r, MOL_C[1] + Math.sin(a) * r]} r={0.05} c={i % 3 ? "#bfe6ff" : "#ffd23f"} z={-0.1} seg={6} />; })}
+  </group>
+);
+
 // ================= the synapse (flat infographic) =================
 const TERMINAL = blob([[-3.4, 4.5], [3.4, 4.5], [3.0, 2.2], [1.8, 1.3], [0, 1.0], [-1.8, 1.3], [-3.0, 2.2]], 30);
 const MEMB = (() => { const pts: P2[] = []; for (let i = 0; i <= 60; i++) { const x = -4 + i * (8 / 60); pts.push([x, -1.6 + 0.08 * Math.sin(x * 2.2)]); } return pts; })();
@@ -196,20 +263,25 @@ const TAGS: Tag[] = [
   { txt: "LSD", at: (t) => { const p = lsdPos(t); return [Math.max(-1.6, p[0]), p[1] + 0.75, 0.5]; }, from: EV.lsdIn + 0.1, to: EV.lsdLock - 0.2, col: "#b48cff" },
   { txt: "LID CLOSES 🔒", at: [0, -0.1, 0.5], from: EV.lsdLock + 0.1, to: OUT, col: "#b48cff" },
 ];
+const HERO_TAGS: Tag[] = [
+  { txt: "LSD MOLECULE", at: [MOL_C[0], MOL_C[1] - 2.45, 0.5], from: 0, to: IN, col: "#b48cff" },
+  { txt: "LSD MOLECULE", at: [MOL_C[0], MOL_C[1] - 2.45, 0.5], from: BACK, to: D + 1, col: "#b48cff" },
+];
 const NET_TAGS: Tag[] = [
   { txt: "VISION", at: [-1.85, 2.15, 0.5], from: b(7) + 0.4, to: b(9), col: "#6ee6cf" },
   { txt: "'SELF' NETWORK", at: [0.3, 2.6, 0.5], from: b(9) + 0.2, to: b(11), col: "#b48cff" },
 ];
 const TagsView: React.FC<{ t: number; cam: { p: V3; l: V3 }; tags: Tag[] }> = ({ t, cam, tags }) => (
-  <>{tags.filter((g) => t >= g.from && t < g.to).map((g, i) => { const [x, y] = project(typeof g.at === "function" ? g.at(t) : g.at, cam, FOV); const k = backOut((t - g.from) / 0.25); return (
+  <>{tags.filter((g) => t >= g.from && t < g.to).map((g, i) => { const [x, y] = project(typeof g.at === "function" ? g.at(t) : g.at, cam, FOV); const k = g.from === 0 || g.from === BACK ? 1 : backOut((t - g.from) / 0.25); return (
     <div key={i} style={{ position: "absolute", left: x, top: y, transform: `translate(-50%, -100%) scale(${k})`, transformOrigin: "50% 100%", fontFamily: "PressStart2P", fontSize: 28, color: "#ffffff", background: "rgba(9,13,43,0.92)", border: `6px solid ${g.col}`, boxShadow: "6px 6px 0 #05060f", padding: "12px 14px 8px", whiteSpace: "nowrap" }}>{g.txt}</div>); })}</>
 );
-const HOME = { p: [0, 0.75, 29] as V3, l: [0, 0.75, 0] as V3 };
+const HOME = { p: [0, 0.6, 29] as V3, l: [0, 0.6, 0] as V3 };
+const BRAINV = { p: [0, 0.75, 29] as V3, l: [0, 0.75, 0] as V3 };
 const CAM_A: CamKey[] = [
   { t: 0, ...HOME }, { t: 0.4, ...HOME },
-  { t: b(2), p: [0.2, 1.0, 22], l: [0.2, 1.0, 0] },
-  { t: IN - 0.35, p: [0.5, 1.5, 7], l: [0.5, 1.5, 0] },
-  { t: IN, p: [0.55, 1.55, 2], l: [0.55, 1.55, 0] },
+  { t: b(2), p: [0.3, 1.0, 24], l: [0.3, 1.0, 0] },
+  { t: IN - 0.35, p: [0.4, 1.25, 7], l: [0.4, 1.25, 0] },
+  { t: IN, p: [0.45, 1.3, 1.6], l: [0.45, 1.3, 0] },
 ];
 const CAM_S: CamKey[] = [
   { t: IN, p: [0, 0.6, 6], l: [0, 0.6, 0] },
@@ -223,15 +295,17 @@ const CAM_B: CamKey[] = [
   { t: OUT, p: [0.55, 1.55, 2], l: [0.55, 1.55, 0] },
   { t: OUT + 0.9, p: [0, 0.85, 24], l: [0, 0.85, 0] },
   { t: b(11), p: [0, 0.8, 25], l: [0, 0.8, 0] },
-  { t: D - 1.4, ...HOME }, { t: D, ...HOME },
+  { t: BACK - 0.4, p: [0, 0.8, 27], l: [0, 0.8, 0] },
+  { t: BACK, ...BRAINV },
 ];
-const camFor = (t: number) => (t < IN ? camAt(CAM_A, t) : t < OUT ? camAt(CAM_S, t) : camAt(CAM_B, t));
-const diveAt = (t: number) => Math.max(...[IN, OUT].map((x) => (t < x ? 1 - Math.min(1, (x - t) / FADE) : 1 - Math.min(1, (t - x) / FADE))));
-const diveCol = (t: number) => (Math.abs(t - IN) < 1 ? "#ff8a7a" : "#b48cff");
+const CAM_H: CamKey[] = [{ t: BACK, p: [0, 0.6, 32], l: [0, 0.6, 0] }, { t: BACK + 0.8, ...HOME }, { t: D, ...HOME }];
+const camFor = (t: number) => (t < IN ? camAt(CAM_A, t) : t < OUT ? camAt(CAM_S, t) : t < BACK ? camAt(CAM_B, t) : camAt(CAM_H, t));
+const diveAt = (t: number) => Math.max(...[IN, OUT, BACK].map((x) => (t < x ? 1 - Math.min(1, (x - t) / FADE) : 1 - Math.min(1, (t - x) / FADE))));
+const diveCol = (_t: number) => "#7a4dff";
 
 const TOPZ: [number, number] = [540, 420];
 const Lb = (from: number, to: number, border: string, lines: LabelDef["lines"], hold = false): LabelDef => ({ from, to, anchor: [0, 0, 0], screen: TOPZ, border, lines, hold });
-const HOOK = [[{ t: "WHAT DOES " }, { t: "LSD", c: "#b48cff" }], [{ t: "ACTUALLY DO TO" }], [{ t: "YOUR BRAIN? 🧠", c: "#ff8a7a" }]];
+const HOOK = [[{ t: "THIS TINY SQUARE" }], [{ t: "OF " }, { t: "LSD", c: "#b48cff" }, { t: " HACKS" }], [{ t: "YOUR BRAIN 🤯", c: "#ff8a7a" }]];
 const LABELS: LabelDef[] = [
   Lb(0, b(2), "#b48cff", HOOK, true),
   Lb(b(2), IN + 0.3, "#ffffff", [[{ t: "IT WORKS IN" }], [{ t: "MILLIONTHS", c: "#ffd23f" }], [{ t: "OF A GRAM 🤏" }]]),
@@ -239,8 +313,8 @@ const LABELS: LabelDef[] = [
   Lb(b(5), OUT, "#b48cff", [[{ t: "LSD MIMICS IT," }], [{ t: "GETS LOCKED IN", c: "#b48cff" }], [{ t: "FOR HOURS 🔒" }]]),
   Lb(OUT, b(9), "#6ee6cf", [[{ t: "BRAIN REGIONS" }], [{ t: "THAT RARELY TALK", c: "#6ee6cf" }], [{ t: "START CHATTING" }]]),
   Lb(b(9), b(11), "#b48cff", [[{ t: "THE 'SELF' NETWORK" }], [{ t: "QUIETS DOWN →", c: "#b48cff" }], [{ t: "EGO DISSOLUTION" }]]),
-  Lb(b(11), b(13), "#ff3a2a", [[{ t: "LASTS 8–12 HOURS" }], [{ t: "RISK: PANIC &", c: "#ff8a7a" }], [{ t: "PSYCHOSIS ⚠️", c: "#ff8a7a" }]]),
-  Lb(b(13), D + 0.01, "#b48cff", HOOK, true),
+  Lb(b(11), BACK, "#ff3a2a", [[{ t: "LASTS 8–12 HOURS" }], [{ t: "RISK: PANIC &", c: "#ff8a7a" }], [{ t: "PSYCHOSIS ⚠️", c: "#ff8a7a" }]]),
+  Lb(BACK, D + 0.01, "#b48cff", HOOK, true),
 ];
 const CamSet: React.FC<{ p: V3; l: V3 }> = ({ p, l }) => { const { camera } = useThree(); camera.position.set(...p); camera.lookAt(...l); camera.updateMatrixWorld(); return null; };
 const tag: React.CSSProperties = { fontFamily: "PressStart2P", fontSize: 22, textShadow: "4px 4px 0 #05060f, -4px 0 0 #05060f, 0 -4px 0 #05060f" };
@@ -255,11 +329,11 @@ export const LsdVideo: React.FC = () => {
       <PixelArtCanvas bg={BG} fov={FOV} palette={LSD_PALETTE} outline={false} dither={0.05}>
         <ClipOn />
         <CamSet p={cam.p} l={cam.l} />
-        {s === "brain" ? <><Space t={t} map={glow} /><Brain t={t} map={glow} /></> : <Synapse t={t} map={glow} />}
+        {s === "hero" ? <Hero t={t} map={glow} /> : s === "brain" ? <><Space t={t} map={glow} /><Brain t={t} map={glow} /></> : <Synapse t={t} map={glow} />}
       </PixelArtCanvas>
       <AbsoluteFill style={{ background: diveCol(t), opacity: diveAt(t) }} />
       <div style={{ ...tag, position: "absolute", right: 48, top: 60, color: "#b48cff" }}>@HOWTOWITHZAY</div>
-      <TagsView t={t} cam={cam} tags={s === "syn" ? TAGS : NET_TAGS} />
+      <TagsView t={t} cam={cam} tags={s === "syn" ? TAGS : s === "brain" ? NET_TAGS : HERO_TAGS} />
       <Labels t={t} cam={cam} labels={LABELS} fov={FOV} />
     </AbsoluteFill>
   );
