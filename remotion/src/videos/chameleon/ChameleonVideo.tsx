@@ -42,7 +42,7 @@ export const STATE = [
   { name: "ORANGE", mid: "#ff8a1f", light: "#ffbf6a", dark: "#c85a10", s: 0.7, refl: "#ffd23f" },
   { name: "RED", mid: "#ff3a2a", light: "#ff8a7a", dark: "#8a1414", s: 1, refl: "#ff3a2a" },
 ];
-export const stateAt = (t: number) => { let s = 0, at = 0, prev = 0; for (const [tt, c] of TL.colors) if (tt <= t + 1e-6) { prev = s; s = c; at = tt; } return { s, at, prev }; };
+export const stateAt = (t: number) => { let s = TL.colors[TL.colors.length - 1][1], at = 0, prev = s; /* wraps: frame 0 continues the last colour (loop) */ for (const [tt, c] of TL.colors) if (tt <= t + 1e-6) { prev = s; s = c; at = tt; } return { s, at, prev }; };
 const spacingAt = (t: number) => { const { s, at, prev } = stateAt(t); return lerp(STATE[prev].s, STATE[s].s, ease((t - at) / 0.15)); };
 const changeFlash = (t: number) => { const at = stateAt(t).at; return at === 0 ? 0 : Math.exp(-(t - at) / 0.12); }; // t=0 is already green (loop seam)
 
@@ -142,7 +142,7 @@ function tailGeo() {
   return g;
 }
 /** the colour wave: a change starts at the snout and rolls to the tail tip (distance d from the snout) */
-const WAVE_SPEED = 30, WAVE_EDGE = 0.9;
+const WAVE_SPEED = 40, WAVE_EDGE = 0.9; // head to tail tip in < 1 beat at 144 BPM
 const waveK = (t: number, at: number, d: number) => Math.max(0, Math.min(1, ((t - at) * WAVE_SPEED - d) / WAVE_EDGE));
 const C3 = (h: string) => new THREE.Color(h);
 const mixCol = (a: string, b: string, k: number, edge: string) => { const e = 1 - Math.abs(2 * k - 1); return C3(a).lerp(C3(b), k).lerp(C3(edge), k > 0 && k < 1 ? 0.55 * e : 0); };
@@ -218,7 +218,7 @@ export const Chameleon: React.FC<{ t: number; map: THREE.Texture; state?: number
           {[1, -1].map((s) => <mesh key={s} position={[0, 0.18, s * 0.18]} rotation={[s * (0.6 + 0.5 * Math.sin(t * 90)), 0, 0]}><planeGeometry args={[0.35, 0.18]} /><meshBasicMaterial color="#bfe6ff" transparent opacity={0.6} side={THREE.DoubleSide} /></mesh>)}
         </group>
       )}
-      <Glow map={map} at={[0.5, 1.8, -0.8]} size={9 + 3 * fl} color={st.mid} opacity={0.15 + 0.2 * fl} />
+      <Glow map={map} at={[0.5, 1.8, -2.5]} size={9 + 3 * fl} color={col(3.3, "mid")} opacity={0.12 + 0.18 * fl} />
     </group>
   );
 };
@@ -267,34 +267,84 @@ export const Jungle: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) 
 );
 
 // ===================== inside the skin =====================
+const hexMix = (a: string, c: string, k: number) => "#" + new THREE.Color(a).lerp(new THREE.Color(c), k).getHexString();
+/** a soft additive light shaft from a to b (in the z = a[2] plane) */
+const Shaft: React.FC<{ a: V3; b: V3; w: number; color: string; o: number }> = ({ a, b, w, color, o }) => {
+  const dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy);
+  return (
+    <mesh position={[(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, a[2]]} rotation={[0, 0, Math.atan2(dy, dx)]}>
+      <planeGeometry args={[len, w]} />
+      <meshBasicMaterial color={color} transparent opacity={o} blending={THREE.AdditiveBlending} depthWrite={false} />
+    </mesh>
+  );
+};
+const BACK_CELLS = Array.from({ length: 6 }, (_, i) => ({ x: -7.5 + i * 3 + rnd(i + 200) * 0.8, y: 1.0 + (rnd(i + 210) - 0.5) * 1.2, s: 1.7 + rnd(i + 220) * 0.6 }));
 export const Skin: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
-  const sp = spacingAt(t), st = STATE[stateAt(t).s], fl = changeFlash(t);
+  const sp = spacingAt(t), S0 = stateAt(t), st = STATE[S0.s], fl = changeFlash(t), age = t - S0.at;
   const gap = 0.62 + 0.75 * sp;
-  const crystals: V3[] = [];
-  for (let i = -6; i <= 6; i++) for (let j = 0; j < 4; j++) for (let k = -1; k <= 0; k++) crystals.push([i * gap + (j % 2) * gap * 0.5, 1.0 + (j - 1.5) * gap * 0.8, k * gap]);
   const refl = STATE.find((x) => Math.abs(x.s - sp) < 0.2)?.refl ?? st.refl;
-  const beam = (a: V3, b: V3, color: string, n = 26, phase = 0) =>
-    Array.from({ length: n }, (_, i) => { const u = ((i / n + TL.beamN * t / TL.dur + phase) % 1); return <Glow key={`${color}${i}`} map={map} at={[a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, a[2] + (b[2] - a[2]) * u]} size={0.75} color={color} opacity={0.95} />; });
+  const breathe = 0.03 * Math.sin(4 * TL.lw * t);
+  const crystals: { p: V3; r: number; back: boolean; i: number }[] = [];
+  let n = 0;
+  for (const back of [true, false]) for (let j = 0; j < 5; j++) for (let i = -7; i <= 7; i++) {
+    const x = i * gap + (j % 2) * gap * 0.5 + (back ? gap * 0.25 : 0), y = 1.0 + (j - 2) * gap * 0.62 * (1 + breathe);
+    if (Math.abs(x) > 7.2) continue;
+    crystals.push({ p: [x, y, back ? -0.9 : 0], r: 0.35 * Math.sin(i * 1.7 + j * 2.3) + 0.15 * Math.sin(3 * TL.lw * t + i + j), back, i: n++ });
+  }
+  const crystalCol = hexMix("#ffffff", refl, 0.45), backCol = hexMix(refl, "#05080a", 0.4);
+  const hit: V3 = [0, 0.6, 1.2];
+  const photons = (a: V3, b: V3, color: string, phase: number) =>
+    Array.from({ length: 16 }, (_, i) => { const u = ((i / 16 + TL.beamN * t / TL.dur + phase) % 1); return <Glow key={`${color}${phase}${i}`} map={map} at={[a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, a[2] + (b[2] - a[2]) * u]} size={0.6} color={color} opacity={0.95} />; });
   return (
     <group>
-      {/* skin surface (shows the final colour) and the yellow pigment layer */}
-      <mesh position={[0, 4.6, 0]}><boxGeometry args={[14, 0.5, 4]} /><Toon c={st.mid} e={0.3 + 0.4 * fl} /></mesh>
-      <mesh position={[0, 3.55, 0]}><boxGeometry args={[14, 1.2, 4]} /><Toon c="#ffd23f" o={0.55} /></mesh>
-      {Array.from({ length: 9 }, (_, i) => <mesh key={i} position={[-6 + i * 1.5, 3.55, 0.6]}><sphereGeometry args={[0.38, 10, 8]} /><Toon c="#fff08a" /></mesh>)}
-      {/* the iridophore cell with its crystal lattice */}
-      <mesh position={[0, 1.0, -0.4]}><boxGeometry args={[14, 4.4, 3.2]} /><Toon c="#0c1f12" o={0.6} /></mesh>
-      {crystals.map((p, i) => <mesh key={i} position={p}><octahedronGeometry args={[0.24, 0]} /><meshBasicMaterial color={i % 3 === 0 ? "#ffffff" : "#bfe6ff"} /></mesh>)}
-      {/* melanophores (dark pigment) underneath */}
-      <mesh position={[0, -2.6, -0.4]}><boxGeometry args={[14, 1.4, 3.2]} /><Toon c="#3a2414" /></mesh>
-      {Array.from({ length: 7 }, (_, i) => <mesh key={`m${i}`} position={[-6 + i * 2, -2.3, 1.0]} scale={[0.8, 0.45, 0.3]}><sphereGeometry args={[1, 10, 6]} /><Toon c="#5a3a1f" /></mesh>)}
-      {/* white light in, coloured light out */}
-      {beam([-7, 9, 1.2], [0, 0.6, 1.2], "#ffffff")}
-      {beam([0, 0.6, 1.2], [7, 9, 1.2], refl, 26, 0.5)}
-      <Glow map={map} at={[0, 0.6, 1.4]} size={2.4 + 2 * fl} color={refl} opacity={0.8} />
-      {/* spacing indicator */}
+      {/* backdrop: neighbouring cells (their membranes get the 1-px outline) + a soft glow of the reflected colour */}
+      {BACK_CELLS.map((c, i) => <mesh key={`bc${i}`} position={[c.x, c.y, -3.2]} scale={[c.s, c.s * 0.8, 0.4]}><sphereGeometry args={[1, 16, 10]} /><Toon c={i % 2 ? "#0c1f12" : "#143020"} /></mesh>)}
+      <Glow map={map} at={[0, 1.0, -2]} size={7} color={refl} opacity={0.06 + 0.12 * fl} />
+      {/* skin surface with little scales, in the final colour */}
+      <mesh position={[0, 4.6, 0]}><boxGeometry args={[15, 0.5, 4]} /><Toon c={st.mid} e={0.25 + 0.4 * fl} /></mesh>
+      {Array.from({ length: 16 }, (_, i) => <mesh key={`sc${i}`} position={[-7.5 + i, 4.85, 0.8]} scale={[0.5, 0.22, 0.5]}><sphereGeometry args={[1, 10, 6]} /><Toon c={st.light} e={0.2} /></mesh>)}
+      {/* yellow pigment cells (xanthophores) with a nucleus */}
+      <mesh position={[0, 3.55, -0.6]}><boxGeometry args={[15, 1.2, 2.4]} /><Toon c="#c8a010" o={0.5} /></mesh>
+      {Array.from({ length: 10 }, (_, i) => (
+        <group key={`x${i}`} position={[-6.75 + i * 1.5, 3.55 + 0.06 * Math.sin(3 * TL.lw * t + i), 0.5]}>
+          <mesh scale={[0.62, 0.42, 0.4]}><sphereGeometry args={[1, 14, 10]} /><Toon c="#ffd23f" e={0.15} /></mesh>
+          <mesh position={[0.12, 0.05, 0.3]}><sphereGeometry args={[0.13, 8, 6]} /><Toon c="#c85a10" /></mesh>
+        </group>
+      ))}
+      {/* the iridophore: two layers of flat hexagonal guanine crystals that sparkle */}
+      {crystals.map((c) => {
+        const tw = Math.max(0, Math.sin((11 + (c.i % 7)) * TL.lw * t + c.i * 2.1)) ** 24;
+        return (
+          <group key={`c${c.i}`} position={c.p}>
+            <mesh rotation={[Math.PI / 2 + 0.25 * Math.sin(c.i), c.r, 0]}><cylinderGeometry args={[0.19, 0.19, 0.06, 6]} /><Toon c={c.back ? backCol : crystalCol} e={c.back ? 0.05 : 0.18 + 0.25 * fl} /></mesh>
+            {!c.back && tw > 0.05 && <Glow map={map} at={[0.08, 0.08, 0.15]} size={0.25 + 0.5 * tw} color="#ffffff" opacity={tw} />}
+          </group>
+        );
+      })}
+      {/* white light in, coloured light out (shaft + photons), a ripple at the reflection on every change */}
+      <Shaft a={[-7, 9, 1.2]} b={hit} w={0.5} color="#fff8d0" o={0.22} />
+      <Shaft a={hit} b={[7, 9, 1.2]} w={0.6} color={refl} o={0.3 + 0.2 * fl} />
+      {photons([-7, 9, 1.2], hit, "#ffffff", 0)}
+      {photons(hit, [7, 9, 1.2], refl, 0.5)}
+      <Glow map={map} at={[hit[0], hit[1], 1.4]} size={1.6 + 1.6 * fl} color={refl} opacity={0.85} />
+      {age < 0.6 && <mesh position={[hit[0], hit[1], 1.3]} scale={0.3 + age * 3}><ringGeometry args={[0.92, 1, 32]} /><meshBasicMaterial color={refl} transparent opacity={1 - age / 0.6} blending={THREE.AdditiveBlending} depthWrite={false} /></mesh>}
+      {/* melanophores: dark pigment cells with branching arms */}
+      <mesh position={[0, -2.7, -0.6]}><boxGeometry args={[15, 1.2, 2.4]} /><Toon c="#3a2414" /></mesh>
+      {Array.from({ length: 6 }, (_, i) => {
+        const x = -6.25 + i * 2.5;
+        return (
+          <group key={`m${i}`}>
+            <mesh position={[x, -2.35, 0.8]} scale={[0.75, 0.42, 0.35]}><sphereGeometry args={[1, 12, 8]} /><Toon c="#5a3a1f" /></mesh>
+            {[-0.9, -0.35, 0.35, 0.9].map((dx, k) => <React.Fragment key={k}>{cyl([x + dx * 0.4, -2.2, 0.8], [x + dx, -1.55 + 0.15 * Math.abs(dx), 0.75], 0.07, "#5a3a1f")}</React.Fragment>)}
+          </group>
+        );
+      })}
+      {/* floating particles */}
+      {Array.from({ length: 26 }, (_, i) => <Glow key={`p${i}`} map={map} at={[(rnd(i + 300) - 0.5) * 14 + 0.3 * Math.sin(2 * TL.lw * t + i), (rnd(i + 310) - 0.5) * 7 + 1 + 0.25 * Math.cos(3 * TL.lw * t + i), 1.6]} size={0.14} color="#bfe6ff" opacity={0.6} />)}
+      {/* spacing gauge between two neighbouring crystals */}
       <mesh position={[-gap / 2, -0.75, 1.3]}><boxGeometry args={[0.08, 0.6, 0.08]} /><meshBasicMaterial color="#ffffff" /></mesh>
       <mesh position={[gap / 2, -0.75, 1.3]}><boxGeometry args={[0.08, 0.6, 0.08]} /><meshBasicMaterial color="#ffffff" /></mesh>
-      <mesh position={[0, -0.75, 1.3]}><boxGeometry args={[gap, 0.08, 0.08]} /><meshBasicMaterial color={refl} /></mesh>
+      <mesh position={[0, -0.75, 1.3]}><boxGeometry args={[gap, 0.1, 0.08]} /><meshBasicMaterial color={refl} /></mesh>
     </group>
   );
 };

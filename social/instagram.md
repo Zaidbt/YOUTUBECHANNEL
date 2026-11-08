@@ -114,3 +114,18 @@ Sound on 🔊 every colour is a chord: green = Am, yellow = C, orange = F, red =
 #chameleon #animals #nature #pixelart #science
 
 Extra tags (optional): #reptiles #biology #animalfacts #howitworks #pixelart3d #learnoninstagram
+
+## Post · How does a chameleon change color? · 30 s (out/chameleon30.mp4)
+How does a chameleon change color? 🦎🤯
+The secret is hidden in its skin: layers of tiny crystals that reflect light.
+
+💎 crystals packed close → reflect blue → blue + yellow pigment = GREEN
+💥 excited → the crystals spread → reflect RED
+🗣️ it's not to hide… it's to talk to rivals and mates
+👅 bonus: its tongue shoots up to 2× its body length
+
+Sound on 🔊 every colour is a chord.
+
+#chameleon #animals #nature #pixelart #science
+
+Extra tags (optional): #reptiles #animalfacts #biology #howitworks #pixelart3d #learnoninstagram

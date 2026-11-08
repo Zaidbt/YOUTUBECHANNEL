@@ -17,3 +17,9 @@ Facts (Teyssier et al., Nature Communications 2015, panther chameleon): iridopho
 nanocrystals; relaxed = crystals tightly packed → reflect blue, which with the yellow pigment above looks green;
 excited = the lattice expands → reflects longer wavelengths (yellow, orange, red). Colour change is mainly social
 signalling (rivals, mates) and temperature, not camouflage. The tongue can reach up to ~2× the body length.
+
+## 30 s retention cut (`npm run video:chameleon30`, `build_30.py` + `Chameleon30.tsx`)
+144 BPM funk ("funk 150" feel), 18 bars = 30 s. One scene at a time, one continuous camera: hero 3/4 shot (a colour
+wave rolls head → tail on every beat) → glide + dive into the skin (screen fills with the skin colour) → hexagonal
+guanine crystals (close = green, spread = red) → back out for the drop → it's to talk → tongue → hero (loop).
+Labels always at the same spot at the top. The colour timeline wraps, so frame 0 continues the last colour.
