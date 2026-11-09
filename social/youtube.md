@@ -61,3 +61,10 @@ Description:
 A 10 W LED fires about 10 quintillion photons every second. Inside its 1 mm chip sit two crystals: one with extra electrons (N), one with "holes", missing electrons (P). Switch on 3 volts and they're pushed to the edge, where an electron falls into a hole and its extra energy flies out as one photon. The bigger the fall (the energy gap), the bluer the light: blue was so hard to make it won the 2014 Nobel Prize. White LEDs are a blue chip under a yellow phosphor coat. Old bulbs heated a wire to ~2,500°C and turned ~90% of the power into heat; LEDs give the same light with 75% less power and last up to 25x longer. Sound on 🔊 every flash of light is a note.
 #physics #science #howitworks #led #shorts
 Tags: how does a light bulb work, how do leds work, led, light bulb, photons, semiconductor, band gap, blue led nobel prize, physics, how it works, shorts
+
+## How does anesthesia switch you off? (out/anesthesia.mp4)
+Title: How anesthesia ACTUALLY switches your brain off 💉😵 #shorts
+Description:
+Propofol, the milky drug nicknamed "milk of amnesia", knocks you out in about 30 seconds. Awake, your neurons fire nonstop above their firing threshold. GABA is the brain's brake: it opens a door in the GABA-A receptor that lets chloride in, calming the neuron. Propofol jams that door wide open, chloride floods in, and the neuron sinks below threshold into silence. Across billions of neurons, the EEG turns from fast chatter into huge slow waves, and the thalamus stops relaying signals to the cortex. It isn't sleep: a nudge wakes you from sleep, surgery doesn't wake you from this. It's closer to a reversible coma. Stop the drip, the drug washes out, and you're awake in minutes. Sound on 🔊 the music goes under with you.
+#anesthesia #neuroscience #brain #science #shorts
+Tags: how does anesthesia work, anesthesia, propofol, general anesthesia, GABA, neuroscience, brain, EEG, surgery, medicine, how it works, shorts

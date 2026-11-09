@@ -229,3 +229,22 @@ Sound on 🔊 every flash of light is a note.
 #physics #science #howitworks #led #pixelart
 
 Extra tags (optional): #lightbulb #semiconductor #nobelprize #learnoninstagram #stem #kurzgesagt
+
+## Post · How does anesthesia switch you off? (out/anesthesia.mp4)
+This milky drug switches you off in ~30 seconds. 💉😵
+
+🥛 propofol, nicknamed "milk of amnesia"
+⚡ awake, your neurons fire nonstop above their firing threshold
+🚪 GABA is the brake: it opens a chloride door (the GABA-A receptor)
+🔓 propofol jams that door wide open → chloride floods in
+🤫 the neuron sinks below threshold → silence
+🌊 EEG: fast chatter → huge slow waves
+📵 the thalamus stops relaying signals to the cortex → no awareness
+😶 not sleep: a nudge wakes you from sleep, surgery doesn't wake you from this. It's closer to a reversible coma.
+☀️ stop the drip → it washes out → awake in minutes
+
+Sound on 🔊 the music goes under with you.
+
+#anesthesia #neuroscience #brain #science #pixelart
+
+Extra tags (optional): #medicine #surgery #propofol #learnoninstagram #stem #kurzgesagt

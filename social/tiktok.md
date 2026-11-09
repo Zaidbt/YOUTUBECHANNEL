@@ -36,3 +36,7 @@ This tiny stamp hacks your brain 🧠🤯 A millionth of a gram, locked in a rec
 ## How does a light bulb make light? (out/bulb.mp4)
 How a light bulb ACTUALLY makes light 💡🤯 electrons fall into holes and every fall is a photon ✨ sound on 🔊 every flash is a note
 #physics #science #howitworks #led #learnontiktok #fyp
+
+## How does anesthesia switch you off? (out/anesthesia.mp4)
+This milky drug switches you off in ~30 seconds 💉😵 It jams your brain's brake wide open, and it's NOT sleep 🤯 sound on 🔊 the music goes under with you
+#anesthesia #neuroscience #brain #science #learnontiktok #fyp
