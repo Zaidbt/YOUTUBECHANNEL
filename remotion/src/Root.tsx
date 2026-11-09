@@ -33,6 +33,7 @@ import { AirFryerV2, DURATION as AF2_DURATION, FPS as AF2_FPS } from "./videos/a
 import { AirFryerK, DURATION as AFK_DURATION, FPS as AFK_FPS } from "./videos/airfryer/AirFryerK";
 import { LsdVideo, DURATION as LSD_DURATION, FPS as LSD_FPS } from "./videos/lsd/LsdVideo";
 import { BulbVideo, DURATION as BULB_DURATION, FPS as BULB_FPS } from "./videos/bulb/BulbVideo";
+import { AnesthesiaVideo, DURATION as ANES_DURATION, FPS as ANES_FPS } from "./videos/anesthesia/AnesthesiaVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -98,5 +99,6 @@ export const Root = () => (
     <Composition id="AirFryerK" component={AirFryerK} durationInFrames={AFK_DURATION} fps={AFK_FPS} width={1080} height={1920} />
     <Composition id="LsdVideo" component={LsdVideo} durationInFrames={LSD_DURATION} fps={LSD_FPS} width={1080} height={1920} />
     <Composition id="BulbVideo" component={BulbVideo} durationInFrames={BULB_DURATION} fps={BULB_FPS} width={1080} height={1920} />
+    <Composition id="AnesthesiaVideo" component={AnesthesiaVideo} durationInFrames={ANES_DURATION} fps={ANES_FPS} width={1080} height={1920} />
   </>
 );
