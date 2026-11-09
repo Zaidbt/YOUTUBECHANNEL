@@ -35,6 +35,14 @@ stereo productions (layered drums, swing, bass, keys, pads, a hook), clean.
   tags with the technical names. Cute flat Kurzgesagt drawing in the pixel pipeline.
 - Music: clean stereo production (scripts/stereo.py), each visual event = a note.
 
+## Inspiration: "gamify + musify the info" (user-shared reels, e.g. @science_in_8bit, ~93K likes)
+Pixel-art body/science facts that turn the info into a game and a song. What to borrow:
+- **Make the viewer play along**: a challenge or counter on screen ("you swallow ~585 times a day — try NOT to now"),
+  HUD elements (score, lives, level, progress bars, timers, combo counters) that track the mechanism like a game.
+- **Musify**: each fact/event is a beat or note of a catchy groove (we already do this — push it further: the
+  "game" sounds are part of the song).
+- Relatable everyday numbers (per day / per second), a playful CTA ("send this to someone who…"), sources in the caption.
+
 ## Format that works (user-approved, chameleon 30 s — follow this)
 - **30 s** (not 48), seamless loop. Reference: `remotion/src/videos/chameleon/Chameleon30.tsx` + `videos/12-chameleon/build_30.py`.
 - **Frame 0 = the subject, whole and instantly recognisable** (clear hero shot), already doing the "wow" thing on the
