@@ -5,9 +5,9 @@ brass fanfare + crash on the answer. You can HEAR the count: +1 cards are a high
 0 cards a rim click.
 
 Timeline (bars, 1.905 s): 0 hook · 1-3 the rules, one example card per bar · 4 a running total demo · 5-8 LEVEL 1 (a
-card every 2 beats, hints) · 9 "your count?" → reveal · 10-12 LEVEL 2 (a card per beat, no hints) · 13 reveal · 14-16 why
+card every 2 beats, hints) · 9 "your count?" → reveal · 10-12 LEVEL 2 (a card every beat and a half, no hints) · 13 reveal · 14-16 why
 it works: low cards gone = the shoe is rich in tens and aces → the edge swings ~1 % to the player · 17-19 LEVEL 3 casino
-speed (a card every 3 sixteenths) · 20 "your count?" — NOT revealed: viewers comment it · 21 "comment your count" · 22 hook again (loop).
+speed (a card per beat) · 20 "your count?" — NOT revealed: viewers comment it · 21 "comment your count" · 22 hook again (loop).
 Writes remotion/src/videos/cardcount/cardcount.json + public/videos/21-cardcount/music.wav.
 """
 import json, sys
@@ -30,8 +30,8 @@ SUITS = "SHDC"
 def deal(ranks, times):
     return [{"t": t, "r": ("10" if r == "T" else r), "s": SUITS[(i * 3 + len(ranks)) % 4], "v": VAL(r)} for i, (r, t) in enumerate(zip(ranks, times))]
 L1 = deal("5K392Q64", [bt(5 + k // 2, (k % 2) * 8) for k in range(8)])                       # every 2 beats
-L2 = deal("T4A762J538K2", [bt(10 + k // 4, (k % 4) * 4) for k in range(12)])                  # every beat
-L3 = deal("3KT52A796Q4J25T8", [bt(17 + (3 * k) // 16, (3 * k) % 16) for k in range(16)])    # a card every 3 sixteenths (casino speed)
+L2 = deal("T4A762J5", [bt(10 + (6 * k) // 16, (6 * k) % 16) for k in range(8)])               # every beat and a half
+L3 = deal("3KT52A796Q42", [bt(17 + k // 4, (k % 4) * 4) for k in range(12)])                 # every beat (casino speed)
 levels = [{"cards": L, "count": sum(c["v"] for c in L)} for L in (L1, L2, L3)]
 ASK = [bt(9), bt(13), bt(20)]; REVEAL = [bt(9, 8), bt(13, 8), bt(20, 8)]
 shoe = [bt(14, 8) + k * BEAT for k in range(6)]                                              # explanation: 6 low cards leave the shoe
@@ -215,6 +215,7 @@ for bar in range(BARS):
 UP = [74, 77, 81, 84, 86, 89]; n_up = 0
 for L in levels:
     for c in L["cards"]:
+        S.add(rimc(0.07), c["t"], 0.25, "drums"); S.add(tick(0.06), c["t"], -0.25, "drums")   # every card lands with a click, so the deal is in the groove
         if c["v"] > 0: S.add(pizz(UP[n_up % 6] + 12, 0.14), c["t"], 0.4, "keys"); n_up += 1
         elif c["v"] < 0: S.add(brass([50, 57], BEAT * 0.4, 0.07, 0.6), c["t"], -0.4, "brass")
         else: S.add(rimc(0.13), c["t"], 0, "drums")

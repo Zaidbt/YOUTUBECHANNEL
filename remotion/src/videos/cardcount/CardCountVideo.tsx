@@ -4,7 +4,8 @@
  * A high count favours the player (more blackjacks paid 3:2, dealer busts more): the edge moves by ~0.5 % per true
  * count, so from a ~0.5 % house edge to roughly a 1 % player edge — counters then raise their bets. Counting is not
  * illegal, but casinos can ban you.
- * LEVEL 1: a card every 2 beats with hints · LEVEL 2: a card per beat, no hints · LEVEL 3: casino speed (a card every 3 sixteenths), answer NOT revealed (viewers comment it).
+ * LEVEL 1: a card every 2 beats with hints · LEVEL 2: a card every beat and a half, no hints · LEVEL 3: casino speed (a card per beat), answer NOT revealed: the
+ * ending says "comment it" (label + flashing HUD line).
  * 43.8 s loop, 126 BPM electro swing (cardcount.json + music.wav from videos/21-cardcount/build.py): every card is a note.
  */
 import React, { useMemo } from "react";
@@ -113,7 +114,7 @@ const cardState = (t: number) => {
 };
 const Scene: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
   const k = beatK(t), st = cardState(t), half = Math.floor(t / (BEAT / 2));
-  const ri = REVEAL.findIndex((r, i) => t >= ASK[i] && t < (i < 2 ? ASK[i] + BAR : OUTRO)), asking = ri >= 0 && t < REVEAL[ri], revealed = ri >= 0 && t >= REVEAL[ri];
+  const ri = REVEAL.findIndex((r, i) => t >= ASK[i] && t < (i < 2 ? ASK[i] + BAR : AGAIN)), asking = ri >= 0 && t < REVEAL[ri], revealed = ri >= 0 && t >= REVEAL[ri];
   const hook = t < RULES || t >= AGAIN, rules = t >= RULES && t < LT[0], why = t >= WHY && t < LT[2], outro = t >= OUTRO && t < AGAIN;
   const cur = st && st.i >= 0 && t < LEND[st.lv] ? st.cs[st.i] : null;
   const dealK = cur ? Math.exp(-Math.max(0, t - cur.t + 0.09) / 0.12) : 0;
@@ -163,7 +164,6 @@ const Scene: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
       </group>}
       {/* outro: winnings */}
       {outro && Array.from({ length: 10 }, (_, i) => { const a = ((t - OUTRO) * 0.9 + i / 10) % 1; return <group key={`cn${i}`} position={[(rnd(i + 70) - 0.5) * 4.5, 1.5 - a * 4.5, 0.4]} rotation={[0, 0, a * 6 + i]}><Flat g={rrect(-0.2, -0.05, 0.2, 0.05, 0.04)} c={["#ffd23f", "#ff3a2a", "#4a9aff"][i % 3]} /></group>; })}
-      {outro && <group position={[CARD_C[0], CARD_C[1], 0]} scale={1 + 0.05 * k}><CardFace s="H" /></group>}
     </group>
   );
 };
@@ -182,14 +182,13 @@ const px: React.CSSProperties = { fontFamily: "PressStart2P", color: "#ffffff" }
 const Overlays: React.FC<{ t: number; cam: { p: V3; l: V3 } }> = ({ t, cam }) => {
   const [cx, cy] = project([CARD_C[0], CARD_C[1] + 0.42, 0.1], cam, FOV), unit = project([1, 0, 0], cam, FOV)[0] - project([0, 0, 0], cam, FOV)[0];
   const st = cardState(t), cur = st && st.i >= 0 && t < LEND[st.lv] ? st.cs[st.i] : null, inK = cur ? clamp01((t - cur.t + 0.09) / 0.09) : 0;
-  const ri = REVEAL.findIndex((r, i) => t >= ASK[i] && t < (i < 2 ? ASK[i] + BAR : OUTRO)), revealed = ri >= 0 && t >= REVEAL[ri];
+  const ri = REVEAL.findIndex((r, i) => t >= ASK[i] && t < (i < 2 ? ASK[i] + BAR : AGAIN)), revealed = ri >= 0 && t >= REVEAL[ri];
   const hook = t < RULES || t >= AGAIN, rules = t >= RULES && t < LT[0], outro = t >= OUTRO && t < AGAIN;
   const rank = (txt: string, red: boolean, x: number, y: number, size: number, sx = 1) => (
     <div style={{ ...px, position: "absolute", left: x, top: y, transform: `translate(-50%, -50%) scaleX(${sx})`, fontSize: size, color: red ? "#ff3a2a" : "#05060f", whiteSpace: "nowrap" }}>{txt}</div>);
   return (
     <>
       {hook && rank("A", false, cx, cy, unit * 0.62)}
-      {outro && rank("A", true, cx, cy, unit * 0.62)}
       {rules && [["5", "+1", 1], ["8", "0", 0], ["K", "-1", -1]].map(([r, v, n], i) => { const a = t - EX[i]; if (a < 0) return null; const [x, y] = project([[-1.55, 0, 1.55][i], CARD_C[1] + 0.1 + 0.33, 0.1], cam, FOV), [, y2] = project([0, CARD_C[1] - 0.95, 0.1], cam, FOV); return (
         <React.Fragment key={i}>
           {rank(r as string, i === 0 || i === 2, x, y, unit * 0.48)}
@@ -207,7 +206,8 @@ const Overlays: React.FC<{ t: number; cam: { p: V3; l: V3 } }> = ({ t, cam }) =>
 const TOPZ: [number, number] = [540, 330];
 const Lb = (from: number, to: number, border: string, lines: LabelDef["lines"], hold = false): LabelDef => ({ from, to, anchor: [0, 0, 0], screen: TOPZ, border, lines, hold });
 const HOOK = [[{ t: "CAN YOU COUNT" }], [{ t: "CARDS LIKE A", c: "#ffd23f" }], [{ t: "CASINO PRO? 🃏" }]];
-const ASKL = (i: number) => Lb(ASK[i], i < 2 ? ASK[i] + BAR : OUTRO, "#ffd23f", [[{ t: `LEVEL ${i + 1} DONE` }], [{ t: "WHAT'S YOUR", c: "#ffd23f" }], [{ t: "COUNT? 🤔" }]]);
+const ASKL = (i: number) => (i < 2 ? Lb(ASK[i], ASK[i] + BAR, "#ffd23f", [[{ t: `LEVEL ${i + 1} DONE` }], [{ t: "WHAT'S YOUR", c: "#ffd23f" }], [{ t: "COUNT? 🤔" }]])
+  : Lb(ASK[i], AGAIN, "#ffd23f", [[{ t: "WHAT'S YOUR COUNT?" }], [{ t: "NO ANSWER HERE:", c: "#ffd23f" }], [{ t: "COMMENT IT 👇", c: "#ffd23f" }]]));
 const LABELS: LabelDef[] = [
   Lb(0, RULES, "#ffd23f", HOOK, true),
   Lb(EX[0], EX[1], "#3fcf6a", [[{ t: "THE TRICK (HI-LO):" }], [{ t: "LOW CARD, 2 TO 6", c: "#3fcf6a" }], [{ t: "= PLUS 1", c: "#3fcf6a" }]]),
@@ -222,7 +222,6 @@ const LABELS: LabelDef[] = [
   Lb(WHY + 1.5 * BAR, LT[2], "#ffd23f", [[{ t: "THE ODDS FLIP ~1%" }], [{ t: "TO THE PLAYER →", c: "#3fcf6a" }], [{ t: "THEY BET BIG 💰", c: "#ffd23f" }]]),
   Lb(LT[2], ASK[2], "#ff3a2a", [[{ t: "LEVEL 3:" }], [{ t: "CASINO SPEED 🔥", c: "#ff3a2a" }], [{ t: "RESTART FROM 0" }]]),
   ASKL(2),
-  Lb(OUTRO, AGAIN, "#fff08a", [[{ t: "NO ANSWER THIS TIME" }], [{ t: "COMMENT YOUR", c: "#fff08a" }], [{ t: "LEVEL 3 COUNT 👇" }]]),
   Lb(AGAIN, D + 0.01, "#ffd23f", HOOK, true),
 ];
 /** game HUD: level, the Hi-Lo legend, card progress, the count (hidden until the reveal), the edge meter */
@@ -230,7 +229,8 @@ const Hud: React.FC<{ t: number }> = ({ t }) => {
   const lv = levelAt(t), why = t >= WHY && t < LT[2];
   const ri = REVEAL.findIndex((r, i) => t >= REVEAL[i] && t < (i < 2 ? LT[i + 1] : AGAIN) && !(i === 1 && t >= WHY));
   const st = cardState(t), shoeOut = SHOE.filter((s) => t >= s).length;
-  const title = lv >= 0 ? `LEVEL ${lv + 1}/3` : why ? "WHY IT WORKS" : t >= OUTRO && t < AGAIN ? "GAME OVER" : "HI-LO COUNT";
+  const cta = t >= REVEAL[2] && t < AGAIN;
+  const title = cta ? "LEVEL 3/3" : lv >= 0 ? `LEVEL ${lv + 1}/3` : why ? "WHY IT WORKS" : "HI-LO COUNT";
   const count = why ? sgn(shoeOut).replace("+0", "0") : ri >= 0 && ri < 2 ? sgn(LEVELS[ri].count) : "?";
   const pop = ri >= 0 && t - REVEAL[ri] < 0.5 ? 1 + 0.35 * Math.sin(((t - REVEAL[ri]) / 0.5) * Math.PI) : 1;
   const legend: [string, string, string][] = [["2-6", "+1", "#3fcf6a"], ["7-9", "0", "#9aa0b8"], ["10-A", "-1", "#ff3a2a"]];
@@ -241,7 +241,9 @@ const Hud: React.FC<{ t: number }> = ({ t }) => {
         <div style={{ ...px, fontSize: 30 }}>{title}</div>
         <div style={{ ...px, fontSize: 40, color: "#ffd23f", transform: `scale(${pop})`, transformOrigin: "100% 50%" }}>COUNT: {count}</div>
       </div>
-      {why ? (
+      {cta ? (
+        <div style={{ ...px, fontSize: 32, whiteSpace: "nowrap", textAlign: "center", padding: "10px 0 8px", color: Math.floor(t / (BEAT / 2)) % 2 ? "#ffd23f" : "#ffffff" }}>👇 COMMENT YOUR COUNT 👇</div>
+      ) : why ? (
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ ...px, fontSize: 24, color: "#ff3a2a" }}>HOUSE</div>
           <div style={{ flex: 1, height: 44, background: "#05060f", border: "5px solid #05060f", position: "relative" }}>
