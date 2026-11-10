@@ -38,6 +38,7 @@ import { AfterimageVideo, DURATION as AFTER_DURATION, FPS as AFTER_FPS } from ".
 import { BlinkVideo, DURATION as BLINK_DURATION, FPS as BLINK_FPS } from "./videos/blink/BlinkVideo";
 import { PixelQuizVideo, DURATION as QUIZ_DURATION, FPS as QUIZ_FPS } from "./videos/pixelquiz/PixelQuizVideo";
 import { CardCountVideo, DURATION as CARD_DURATION, FPS as CARD_FPS } from "./videos/cardcount/CardCountVideo";
+import { WorldsVideo, DURATION as WORLDS_DURATION, FPS as WORLDS_FPS } from "./videos/worlds/WorldsVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -108,5 +109,6 @@ export const Root = () => (
     <Composition id="BlinkVideo" component={BlinkVideo} durationInFrames={BLINK_DURATION} fps={BLINK_FPS} width={1080} height={1920} />
     <Composition id="PixelQuizVideo" component={PixelQuizVideo} durationInFrames={QUIZ_DURATION} fps={QUIZ_FPS} width={1080} height={1920} />
     <Composition id="CardCountVideo" component={CardCountVideo} durationInFrames={CARD_DURATION} fps={CARD_FPS} width={1080} height={1920} />
+    <Composition id="WorldsVideo" component={WorldsVideo} durationInFrames={WORLDS_DURATION} fps={WORLDS_FPS} width={1080} height={1920} />
   </>
 );
