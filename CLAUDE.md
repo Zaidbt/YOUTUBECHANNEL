@@ -53,6 +53,10 @@ earworm). Fix = **gamify the topic** (reference: `videos/pixelquiz/PixelQuizVide
 - Music: ONE short riff (vocal-chop formant synth `chop()` + pluck) repeated from frame 0; suspense = lighter groove on
   questions, full groove drops on answers; countdown beeps / coin jingle are in key and on the beat.
 - Real continuous zooms into the actual thing beat fill-dives when possible (phone picture = real pixel grid).
+- Liked ("I like it"): `videos/cardcount/CardCountVideo.tsx` + `videos/21-cardcount/build.py` — a game the viewer
+  really plays (count cards over 3 speed levels, answer hidden until a stop-time reveal), a character host, electro swing
+  where every card is a note. The pixel quiz on RGB was "childish": pick topics that make an adult think and fail a level.
+  Give the RULES time (one example per bar + a tiny demo) before the game starts; up to ~45 s is fine.
 - Rejected: a static optical-illusion image (afterimage parrot: "visuel nul", "meh") — the picture must stay alive.
   Body challenges ("hold your breath"-style) only if original; the user asked for topic quizzes instead.
 
@@ -89,7 +93,7 @@ earworm). Fix = **gamify the topic** (reference: `videos/pixelquiz/PixelQuizVide
   `PixelArtCanvas`. 1–3 short lines, one label per ~2 bars (≥ 2.5 s), colour-code words to match what's on screen.
 - **Every video gets a different hyped rhythm/genre** (done so far: 120 BPM chiptune, 150 BPM four-on-the-floor
   hyper, 170 BPM drum & bass, 140 BPM jersey club / trap with 808s, 130 BPM UK garage 2-step,
-  130 BPM funk carioca, 144 BPM "funk 150", 128 BPM phonk, 128 BPM clean melodic house, 120 BPM stereo nu-disco, 112 BPM melodic afro house, 120 BPM clean synthwave, 96 BPM lo-fi neo-soul (music that goes under), 96 BPM dembow, 108 BPM electro-funk quiz. User wants bold but NOT noisy: they hated a distorted rave mix (hoover, acid, noise sweeps,
+  130 BPM funk carioca, 144 BPM "funk 150", 128 BPM phonk, 128 BPM clean melodic house, 120 BPM stereo nu-disco, 112 BPM melodic afro house, 120 BPM clean synthwave, 96 BPM lo-fi neo-soul (music that goes under), 96 BPM dembow, 108 BPM electro-funk quiz, 126 BPM electro swing. User wants bold but NOT noisy: they hated a distorted rave mix (hoover, acid, noise sweeps,
   master saturation) as "so noisy" — keep mixes clean: punchy clean kick, warm filtered chords, round bass, quiet hats, bell leads). Pick a BPM where `48 s × BPM / 240` is a whole number of bars.
 - **The animation plays the music**: map visual events to instruments/notes (parts = drums, colours/letters = notes)
   from the shared timeline, so what you see is what you hear.

@@ -262,3 +262,21 @@ Comment your score 👇 and send this to someone who thinks their screen has yel
 #screens #pixels #howitworks #science #pixelart
 
 Extra tags (optional): #rgb #oled #techexplained #quiz #learnoninstagram #stem
+
+## Post · CAN YOU COUNT CARDS? (out/cardcount.mp4)
+Can you count cards like a casino pro? 🃏 Level 3 is brutal.
+
+It's not memorising the deck. It's ONE running number (the Hi-Lo count):
+🟢 low card (2 to 6) = +1
+⚪ middle card (7, 8, 9) = 0
+🔴 high card (10, J, Q, K, ace) = −1
+
+Why it works: when lots of low cards are gone, what's left is rich in tens and aces, and the odds swing about 1% from the house to the player. That's when counters bet big. Not illegal, but casinos will throw you out.
+
+Sound on 🔊 you can hear the count: high note = +1, low brass = −1.
+
+Comment your 3 counts 👇 and send this to the friend who thinks they're good at maths.
+
+#cardcounting #blackjack #casino #math #pixelart
+
+Extra tags (optional): #braingame #challenge #probability #learnoninstagram #vegas #poker

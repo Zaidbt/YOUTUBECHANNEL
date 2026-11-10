@@ -44,3 +44,7 @@ This milky drug switches you off in ~30 seconds 💉😵 It jams your brain's br
 ## PIXEL QUIZ: how screens work (out/pixelquiz.mp4)
 Your screen has NO yellow 📱🤯 3 levels, 3 seconds each. Comment your score 👇
 #screens #pixels #howitworks #quiz #learnontiktok #fyp
+
+## CAN YOU COUNT CARDS? (out/cardcount.mp4)
+Can you count cards like a casino pro? 🃏 3 levels, level 3 is casino speed 🔥 comment your 3 counts 👇 sound on 🔊
+#cardcounting #blackjack #casino #math #braingame #fyp

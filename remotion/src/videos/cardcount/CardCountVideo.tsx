@@ -5,7 +5,7 @@
  * count, so from a ~0.5 % house edge to roughly a 1 % player edge — counters then raise their bets. Counting is not
  * illegal, but casinos can ban you.
  * LEVEL 1: a card every 2 beats with hints · LEVEL 2: a card per beat, no hints · LEVEL 3: casino speed (2 per beat).
- * 40 s loop, 126 BPM electro swing (cardcount.json + music.wav from videos/21-cardcount/build.py): every card is a note.
+ * 43.8 s loop, 126 BPM electro swing (cardcount.json + music.wav from videos/21-cardcount/build.py): every card is a note.
  */
 import React, { useMemo } from "react";
 import * as THREE from "three";
@@ -29,7 +29,7 @@ const LW = (2 * Math.PI) / D;
 const FOV = 20;
 const LEVELS = EV.levels as { cards: Card[]; count: number }[];
 const LT = EV.l as number[], ASK = EV.ask as number[], REVEAL = EV.reveal as number[], SHOE = EV.shoe as number[];
-const RULES = EV.rules, WHY = EV.why, OUTRO = EV.outro, AGAIN = EV.again;
+const RULES = EV.rules, WHY = EV.why, OUTRO = EV.outro, AGAIN = EV.again, EX = EV.ex as number[], DEMO = EV.demo;
 const LEND = [ASK[0], ASK[1], ASK[2]];
 
 export const CARD_PALETTE = [
@@ -140,7 +140,7 @@ const Scene: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
         <group scale={1 + 0.05 * k} rotation={[0, 0, 0.03 * Math.sin(2 * LW * t)]}><CardFace s="S" /></group>
       </group>}
       {/* the rules: three example cards */}
-      {rules && [-1.55, 0, 1.55].map((x, i) => { const a = t - RULES - i * BEAT * 2; return a < 0 ? null : <group key={`rl${i}`} position={[x, CARD_C[1] + 0.1, 0]} scale={0.78 * Math.max(0.001, backOut(a / 0.25))}><CardFace s={["H", "C", "D"][i]} /></group>; })}
+      {rules && [-1.55, 0, 1.55].map((x, i) => { const a = t - EX[i]; return a < 0 ? null : <group key={`rl${i}`} position={[x, CARD_C[1] + 0.1, 0]} scale={0.78 * Math.max(0.001, backOut(a / 0.25))}><CardFace s={["H", "C", "D"][i]} /></group>; })}
       {/* the game: discard pile + the current card */}
       {st && st.done > 0 && <group position={[2.05, -1.9, -0.1]} scale={0.42}>{Array.from({ length: Math.min(st.done, 8) }, (_, j) => <group key={j} position={[0.02 * j, 0.05 * j, 0.001 * j]} rotation={[0, 0, 0.15 * Math.sin(j * 2.1)]}><CardFace back /></group>)}</group>}
       {cur && <group position={[lerp(-2.4, CARD_C[0], ease(inK)), CARD_C[1] + 0.25 * Math.sin(inK * Math.PI), 0.1]} rotation={[0, 0, lerp(-0.5, 0, inK)]} scale={[Math.max(0.05, inK) * (1 + 0.06 * dealK), 1 + 0.06 * dealK, 1]}>
@@ -190,7 +190,7 @@ const Overlays: React.FC<{ t: number; cam: { p: V3; l: V3 } }> = ({ t, cam }) =>
     <>
       {hook && rank("A", false, cx, cy, unit * 0.62)}
       {outro && rank("A", true, cx, cy, unit * 0.62)}
-      {rules && [["5", "+1", 1], ["8", "0", 0], ["K", "-1", -1]].map(([r, v, n], i) => { const a = t - RULES - i * BEAT * 2; if (a < 0) return null; const [x, y] = project([[-1.55, 0, 1.55][i], CARD_C[1] + 0.1 + 0.33, 0.1], cam, FOV), [, y2] = project([0, CARD_C[1] - 0.95, 0.1], cam, FOV); return (
+      {rules && [["5", "+1", 1], ["8", "0", 0], ["K", "-1", -1]].map(([r, v, n], i) => { const a = t - EX[i]; if (a < 0) return null; const [x, y] = project([[-1.55, 0, 1.55][i], CARD_C[1] + 0.1 + 0.33, 0.1], cam, FOV), [, y2] = project([0, CARD_C[1] - 0.95, 0.1], cam, FOV); return (
         <React.Fragment key={i}>
           {rank(r as string, i === 0 || i === 2, x, y, unit * 0.48)}
           <div style={{ ...px, position: "absolute", left: x, top: y2, transform: `translate(-50%, -50%) scale(${backOut((a - 0.2) / 0.25)})`, fontSize: 54, color: VCOL(n as number), background: "rgba(9,13,43,0.94)", border: `6px solid ${VCOL(n as number)}`, padding: "14px 18px 8px" }}>{v}</div>
@@ -210,13 +210,16 @@ const HOOK = [[{ t: "CAN YOU COUNT" }], [{ t: "CARDS LIKE A", c: "#ffd23f" }], [
 const ASKL = (i: number) => Lb(ASK[i], i < 2 ? ASK[i] + BAR : OUTRO, "#ffd23f", [[{ t: `LEVEL ${i + 1} DONE` }], [{ t: "WHAT'S YOUR", c: "#ffd23f" }], [{ t: "COUNT? 🤔" }]]);
 const LABELS: LabelDef[] = [
   Lb(0, RULES, "#ffd23f", HOOK, true),
-  Lb(RULES, LT[0], "#ffffff", [[{ t: "2 TO 6 = +1", c: "#3fcf6a" }], [{ t: "7, 8, 9 = 0", c: "#c8cdf0" }], [{ t: "10 TO ACE = -1", c: "#ff3a2a" }]]),
+  Lb(EX[0], EX[1], "#3fcf6a", [[{ t: "THE TRICK (HI-LO):" }], [{ t: "LOW CARD, 2 TO 6", c: "#3fcf6a" }], [{ t: "= PLUS 1", c: "#3fcf6a" }]]),
+  Lb(EX[1], EX[2], "#c8cdf0", [[{ t: "MIDDLE CARD:" }], [{ t: "7, 8 OR 9", c: "#c8cdf0" }], [{ t: "= ZERO", c: "#c8cdf0" }]]),
+  Lb(EX[2], DEMO, "#ff3a2a", [[{ t: "HIGH CARD:" }], [{ t: "10, J, Q, K, ACE", c: "#ff3a2a" }], [{ t: "= MINUS 1", c: "#ff3a2a" }]]),
+  Lb(DEMO, LT[0], "#ffd23f", [[{ t: "KEEP ONE RUNNING" }], [{ t: "TOTAL IN MIND:", c: "#ffd23f" }], [{ t: "+1  0  -1  = 0" }]]),
   Lb(LT[0], ASK[0], "#3fcf6a", [[{ t: "LEVEL 1: ADD THEM" }], [{ t: "UP IN YOUR HEAD", c: "#3fcf6a" }], [{ t: "(HINTS ON) 🧠" }]]),
   ASKL(0),
   Lb(LT[1], ASK[1], "#ffd23f", [[{ t: "LEVEL 2: FASTER." }], [{ t: "NO MORE HINTS", c: "#ffd23f" }], [{ t: "RESTART FROM 0" }]]),
   ASKL(1),
-  Lb(WHY, b(13.5), "#ff4f8b", [[{ t: "LOW CARDS GONE =" }], [{ t: "MORE TENS & ACES", c: "#ff4f8b" }], [{ t: "LEFT IN THE SHOE" }]]),
-  Lb(b(13.5), LT[2], "#ffd23f", [[{ t: "THE ODDS FLIP ~1%" }], [{ t: "TO THE PLAYER →", c: "#3fcf6a" }], [{ t: "THEY BET BIG 💰", c: "#ffd23f" }]]),
+  Lb(WHY, WHY + 1.5 * BAR, "#ff4f8b", [[{ t: "LOW CARDS GONE =" }], [{ t: "MORE TENS & ACES", c: "#ff4f8b" }], [{ t: "LEFT IN THE SHOE" }]]),
+  Lb(WHY + 1.5 * BAR, LT[2], "#ffd23f", [[{ t: "THE ODDS FLIP ~1%" }], [{ t: "TO THE PLAYER →", c: "#3fcf6a" }], [{ t: "THEY BET BIG 💰", c: "#ffd23f" }]]),
   Lb(LT[2], ASK[2], "#ff3a2a", [[{ t: "LEVEL 3:" }], [{ t: "CASINO SPEED 🔥", c: "#ff3a2a" }], [{ t: "RESTART FROM 0" }]]),
   ASKL(2),
   Lb(OUTRO, AGAIN, "#fff08a", [[{ t: "3 OUT OF 3?" }], [{ t: "COMMENT YOUR", c: "#fff08a" }], [{ t: "COUNTS 👇" }]]),

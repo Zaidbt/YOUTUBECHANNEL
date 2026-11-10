@@ -1,13 +1,13 @@
 """Video 021 · CAN YOU COUNT CARDS? — the viewer plays 3 levels of Hi-Lo card counting (2-6 = +1, 7-9 = 0, 10-A = -1).
-40 s seamless loop, 126 BPM ELECTRO SWING (21 bars): swung 4-on-the-floor, walking bass + sub, brass stabs, a muted
+43.8 s seamless loop, 126 BPM ELECTRO SWING (23 bars): swung 4-on-the-floor, walking bass + sub, brass stabs, a muted
 "wah-wah" trumpet hook (formant synth), piano comping, ride pattern, fills, stop-time breaks before every reveal and a
 brass fanfare + crash on the answer. You can HEAR the count: +1 cards are a high pizzicato, -1 cards a low brass "bwap",
 0 cards a rim click.
 
-Timeline (bars, 1.905 s): 0 hook · 1-2 the rules · 3-6 LEVEL 1 (a card every 2 beats, hints) · 7 "your count?" → reveal
-· 8-10 LEVEL 2 (a card per beat, no hints) · 11 reveal · 12-14 why it works: low cards gone = the shoe is rich in tens
-and aces → the edge swings ~1 % to the player · 15-17 LEVEL 3 casino speed (2 cards per beat) · 18 reveal · 19 "comment
-your count" · 20 hook again (loop).
+Timeline (bars, 1.905 s): 0 hook · 1-3 the rules, one example card per bar · 4 a running total demo · 5-8 LEVEL 1 (a
+card every 2 beats, hints) · 9 "your count?" → reveal · 10-12 LEVEL 2 (a card per beat, no hints) · 13 reveal · 14-16 why
+it works: low cards gone = the shoe is rich in tens and aces → the edge swings ~1 % to the player · 17-19 LEVEL 3 casino
+speed (2 cards per beat) · 20 reveal · 21 "comment your counts" · 22 hook again (loop).
 Writes remotion/src/videos/cardcount/cardcount.json + public/videos/21-cardcount/music.wav.
 """
 import json, sys
@@ -19,7 +19,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from chiptune import hz, noise  # noqa: E402
 from stereo import StereoSong, SR  # noqa: E402
 
-BPM, BARS = 126, 21
+BPM, BARS = 126, 23
 BEAT = 60 / BPM; BAR = 4 * BEAT; DUR = BARS * BAR; S16 = BEAT / 4
 SWING = {0: 0.0, 1: 0.1, 2: 0.55, 3: 0.3}
 bt = lambda bar, step=0: round(bar * BAR + (step + SWING[step % 4]) * S16, 5)
@@ -29,14 +29,14 @@ VAL = lambda r: 1 if r in "23456" else 0 if r in "789" else -1
 SUITS = "SHDC"
 def deal(ranks, times):
     return [{"t": t, "r": ("10" if r == "T" else r), "s": SUITS[(i * 3 + len(ranks)) % 4], "v": VAL(r)} for i, (r, t) in enumerate(zip(ranks, times))]
-L1 = deal("5K392Q64", [bt(3 + k // 2, (k % 2) * 8) for k in range(8)])                       # every 2 beats
-L2 = deal("T4A762J538K2", [bt(8 + k // 4, (k % 4) * 4) for k in range(12)])                  # every beat
-L3 = deal("3KT52A796Q4J25T83K6A47Q", [bt(15 + k // 8, (k % 8) * 2) for k in range(23)])      # 2 per beat (casino speed)
+L1 = deal("5K392Q64", [bt(5 + k // 2, (k % 2) * 8) for k in range(8)])                       # every 2 beats
+L2 = deal("T4A762J538K2", [bt(10 + k // 4, (k % 4) * 4) for k in range(12)])                  # every beat
+L3 = deal("3KT52A796Q4J25T83K6A47Q", [bt(17 + k // 8, (k % 8) * 2) for k in range(23)])      # 2 per beat (casino speed)
 levels = [{"cards": L, "count": sum(c["v"] for c in L)} for L in (L1, L2, L3)]
-ASK = [bt(7), bt(11), bt(18)]; REVEAL = [bt(7, 8), bt(11, 8), bt(18, 8)]
-shoe = [bt(12, 8) + k * BEAT for k in range(6)]                                              # explanation: 6 low cards leave the shoe
+ASK = [bt(9), bt(13), bt(20)]; REVEAL = [bt(9, 8), bt(13, 8), bt(20, 8)]
+shoe = [bt(14, 8) + k * BEAT for k in range(6)]                                              # explanation: 6 low cards leave the shoe
 ev = {"duration": DUR, "bpm": BPM, "bar": BAR, "levels": levels, "ask": ASK, "reveal": REVEAL, "shoe": shoe,
-      "rules": bt(1), "l": [bt(3), bt(8), bt(15)], "why": bt(12), "outro": bt(19), "again": bt(20)}
+      "rules": bt(1), "ex": [bt(1), bt(2), bt(3)], "demo": bt(4), "l": [bt(5), bt(10), bt(17)], "why": bt(14), "outro": bt(21), "again": bt(22)}
 (ROOT / "remotion/src/videos/cardcount/cardcount.json").write_text(json.dumps(ev))
 print("counts:", [l["count"] for l in levels])
 
@@ -163,13 +163,13 @@ walk = lambda b: WALK[3] if b == 0 else WALK[(b - 1) % 4]
 HOOK_A = [(0, 74, 2), (2, 77, 2), (4, 81, 2), (6, 77, 2), (8, 81, 2), (10, 84, 2), (12, 81, 4)]
 HOOK_B = [(0, 82, 2), (2, 81, 2), (4, 77, 2), (6, 74, 2), (8, 76, 2), (10, 73, 2), (12, 74, 4)]
 def sec(b):
-    if b in (0, 20): return "hook"
-    if b in (1, 2): return "rules"
-    if b in (7, 11, 18): return "ask"
-    if b < 7: return "l1"
-    if b < 11: return "l2"
-    if b < 15: return "why"
-    if b < 18: return "l3"
+    if b in (0, 22): return "hook"
+    if b in (1, 2, 3, 4): return "rules"
+    if b in (9, 13, 20): return "ask"
+    if b < 9: return "l1"
+    if b < 13: return "l2"
+    if b < 17: return "why"
+    if b < 20: return "l3"
     return "outro"
 ENERGY = {"hook": 1.0, "rules": 0.55, "l1": 0.75, "l2": 0.9, "why": 0.6, "l3": 1.1, "ask": 0.0, "outro": 1.0}
 kicks = []
@@ -194,7 +194,7 @@ for bar in range(BARS):
     for s in (0, 4, 6, 8, 12, 14): S.add(ride(0.035 * (0.6 + 0.4 * en), seed=bar * 16 + s), bt(bar, s), 0.35, "drums")   # ding, ding-a-ding
     if en > 0.85:
         for s in (2, 6, 10, 14): S.add(hat(0.03, seed=700 + bar * 16 + s, long=(s == 14)), bt(bar, s), -0.35, "drums")
-    if bar in (6, 10, 14, 17, 19):                                                       # fill into the next section
+    if bar in (4, 8, 12, 16, 19, 21):                                                       # fill into the next section
         for k in range(6): S.add(snr(0.1 + k * 0.02, seed=50 + k + bar), bt(bar, 10) + k * S16, 0, "drums")
     # walking bass (+ sub on the downbeat in the big sections)
     for q in range(4): S.add(upright(wk[q], BEAT * 0.92, 0.36), bt(bar, q * 4), 0, "bass")
@@ -221,7 +221,8 @@ for L in levels:
 for t in REVEAL: S.add(impact(0.45), t, 0, "fx"); [S.add(blip(m, 0.11, 0.35), t + k * S16, [-0.3, 0.3][k % 2], "keys") for k, m in enumerate((86, 89, 93, 98))]
 for t in ev["l"]: S.add(crash(0.1, seed=int(t)), t, 0, "drums"); S.add(impact(0.35), t, 0, "fx")
 for i, t in enumerate(shoe): S.add(pizz([74, 77, 81, 84, 86, 89][i] + 12, 0.12), t, [-0.4, 0.4][i % 2], "keys")
-S.add(riser(BAR, 0.05, seed=3), bt(2)); S.add(riser(BAR, 0.06, seed=5), bt(14)); S.add(crash(0.12, seed=77), bt(19), 0, "drums")
+S.add(riser(BAR, 0.05, seed=3), bt(4)); S.add(riser(BAR, 0.06, seed=5), bt(16)); S.add(crash(0.12, seed=77), bt(21), 0, "drums")
+for i, t in enumerate(ev["ex"]): S.add(blip([86, 81, 74][i], 0.12, 0.4), t + BEAT, 0, "keys")
 S.delay("chop", BEAT * 0.75, fb=0.3, mix=0.18); S.delay("keys", BEAT * 0.5, fb=0.25, mix=0.12)
 S.sidechain("bass", kicks, 0.3); S.sidechain("pads", kicks, 0.5); S.sidechain("brass", kicks, 0.2); S.sidechain("chop", kicks, 0.15)
 S.reverb("chop", 0.22, 1.3, 21); S.reverb("keys", 0.2, 1.3, 31); S.reverb("pads", 0.35, 2.2, 41); S.reverb("drums", 0.12, 0.9, 51); S.reverb("brass", 0.2, 1.2, 71); S.reverb("fx", 0.25, 1.3, 61)
