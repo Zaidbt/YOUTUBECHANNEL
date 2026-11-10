@@ -275,7 +275,7 @@ Why it works: when lots of low cards are gone, what's left is rich in tens and a
 
 Sound on 🔊 you can hear the count: high note = +1, low brass = −1.
 
-Comment your 3 counts 👇 and send this to the friend who thinks they're good at maths.
+The Level 3 answer is NOT in the video. Comment your count 👇 and send this to the friend who thinks they're good at maths.
 
 #cardcounting #blackjack #casino #math #pixelart
 

@@ -79,6 +79,6 @@ Tags: how do screens work, pixels, rgb, subpixels, oled, phone screen, how it wo
 ## CAN YOU COUNT CARDS? (out/cardcount.mp4)
 Title: Can you count cards like a casino pro? 🃏 (Level 3 is brutal) #shorts
 Description:
-Card counting isn't memorising the deck. It's one running number. The Hi-Lo trick: low cards (2 to 6) count +1, middle cards (7, 8, 9) count 0, high cards (10, J, Q, K, ace) count -1. Play 3 levels: slow with hints, faster with none, then casino speed. Why it works: when lots of low cards are gone, the cards left are rich in tens and aces, and the odds swing about 1% from the house to the player. That's when counters bet big. It isn't illegal, but casinos will throw you out. Sound on 🔊 you can hear the count: high note = +1, low brass = -1. Comment your 3 counts 👇
+Card counting isn't memorising the deck. It's one running number. The Hi-Lo trick: low cards (2 to 6) count +1, middle cards (7, 8, 9) count 0, high cards (10, J, Q, K, ace) count -1. Play 3 levels: slow with hints, faster with none, then casino speed. Why it works: when lots of low cards are gone, the cards left are rich in tens and aces, and the odds swing about 1% from the house to the player. That's when counters bet big. It isn't illegal, but casinos will throw you out. Sound on 🔊 you can hear the count: high note = +1, low brass = -1. The Level 3 answer is NOT in the video: comment your count 👇
 #cardcounting #blackjack #casino #math #shorts
 Tags: card counting, how to count cards, blackjack, hi-lo, casino, math, probability, brain game, challenge, how it works, shorts

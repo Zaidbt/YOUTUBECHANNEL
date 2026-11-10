@@ -46,5 +46,5 @@ Your screen has NO yellow 📱🤯 3 levels, 3 seconds each. Comment your score 
 #screens #pixels #howitworks #quiz #learnontiktok #fyp
 
 ## CAN YOU COUNT CARDS? (out/cardcount.mp4)
-Can you count cards like a casino pro? 🃏 3 levels, level 3 is casino speed 🔥 comment your 3 counts 👇 sound on 🔊
+Can you count cards like a casino pro? 🃏 3 levels, level 3 is casino speed 🔥 no answer for level 3: comment your count 👇 sound on 🔊
 #cardcounting #blackjack #casino #math #braingame #fyp

@@ -4,7 +4,7 @@
  * A high count favours the player (more blackjacks paid 3:2, dealer busts more): the edge moves by ~0.5 % per true
  * count, so from a ~0.5 % house edge to roughly a 1 % player edge — counters then raise their bets. Counting is not
  * illegal, but casinos can ban you.
- * LEVEL 1: a card every 2 beats with hints · LEVEL 2: a card per beat, no hints · LEVEL 3: casino speed (2 per beat).
+ * LEVEL 1: a card every 2 beats with hints · LEVEL 2: a card per beat, no hints · LEVEL 3: casino speed (a card every 3 sixteenths), answer NOT revealed (viewers comment it).
  * 43.8 s loop, 126 BPM electro swing (cardcount.json + music.wav from videos/21-cardcount/build.py): every card is a note.
  */
 import React, { useMemo } from "react";
@@ -200,7 +200,7 @@ const Overlays: React.FC<{ t: number; cam: { p: V3; l: V3 } }> = ({ t, cam }) =>
       {cur && st && st.lv === 0 && t >= cur.t && (() => { const [hx, hy] = project([CARD_C[0] + 1.25, CARD_C[1] + 0.3, 0.1], cam, FOV); return (
         <div style={{ ...px, position: "absolute", left: hx, top: hy, transform: `translate(-50%, -50%) scale(${backOut((t - cur.t) / 0.2)})`, fontSize: 60, color: VCOL(cur.v), background: "rgba(9,13,43,0.94)", border: `6px solid ${VCOL(cur.v)}`, padding: "16px 18px 8px" }}>{cur.v === 0 ? "0" : sgn(cur.v)}</div>); })()}
       {ri >= 0 && (() => { const [qx, qy] = project([CARD_C[0], CARD_C[1], 0.1], cam, FOV); return (
-        <div style={{ ...px, position: "absolute", left: qx, top: qy, transform: `translate(-50%, -50%) scale(${revealed ? 1 + 0.4 * Math.exp(-(t - REVEAL[ri]) / 0.15) : 1})`, fontSize: unit * (revealed ? 0.55 : 0.8), color: "#05060f" }}>{revealed ? sgn(LEVELS[ri].count) : "?"}</div>); })()}
+        <div style={{ ...px, position: "absolute", left: qx, top: qy, transform: `translate(-50%, -50%) scale(${revealed ? 1 + 0.4 * Math.exp(-(t - REVEAL[ri]) / 0.15) : 1})`, fontSize: unit * (revealed && ri < 2 ? 0.55 : 0.8), color: "#05060f" }}>{revealed && ri < 2 ? sgn(LEVELS[ri].count) : "?"}</div>); })()}
     </>
   );
 };
@@ -222,7 +222,7 @@ const LABELS: LabelDef[] = [
   Lb(WHY + 1.5 * BAR, LT[2], "#ffd23f", [[{ t: "THE ODDS FLIP ~1%" }], [{ t: "TO THE PLAYER →", c: "#3fcf6a" }], [{ t: "THEY BET BIG 💰", c: "#ffd23f" }]]),
   Lb(LT[2], ASK[2], "#ff3a2a", [[{ t: "LEVEL 3:" }], [{ t: "CASINO SPEED 🔥", c: "#ff3a2a" }], [{ t: "RESTART FROM 0" }]]),
   ASKL(2),
-  Lb(OUTRO, AGAIN, "#fff08a", [[{ t: "3 OUT OF 3?" }], [{ t: "COMMENT YOUR", c: "#fff08a" }], [{ t: "COUNTS 👇" }]]),
+  Lb(OUTRO, AGAIN, "#fff08a", [[{ t: "NO ANSWER THIS TIME" }], [{ t: "COMMENT YOUR", c: "#fff08a" }], [{ t: "LEVEL 3 COUNT 👇" }]]),
   Lb(AGAIN, D + 0.01, "#ffd23f", HOOK, true),
 ];
 /** game HUD: level, the Hi-Lo legend, card progress, the count (hidden until the reveal), the edge meter */
@@ -231,7 +231,7 @@ const Hud: React.FC<{ t: number }> = ({ t }) => {
   const ri = REVEAL.findIndex((r, i) => t >= REVEAL[i] && t < (i < 2 ? LT[i + 1] : AGAIN) && !(i === 1 && t >= WHY));
   const st = cardState(t), shoeOut = SHOE.filter((s) => t >= s).length;
   const title = lv >= 0 ? `LEVEL ${lv + 1}/3` : why ? "WHY IT WORKS" : t >= OUTRO && t < AGAIN ? "GAME OVER" : "HI-LO COUNT";
-  const count = why ? sgn(shoeOut).replace("+0", "0") : ri >= 0 ? sgn(LEVELS[ri].count) : "?";
+  const count = why ? sgn(shoeOut).replace("+0", "0") : ri >= 0 && ri < 2 ? sgn(LEVELS[ri].count) : "?";
   const pop = ri >= 0 && t - REVEAL[ri] < 0.5 ? 1 + 0.35 * Math.sin(((t - REVEAL[ri]) / 0.5) * Math.PI) : 1;
   const legend: [string, string, string][] = [["2-6", "+1", "#3fcf6a"], ["7-9", "0", "#9aa0b8"], ["10-A", "-1", "#ff3a2a"]];
   const edge = why ? shoeOut / 6 : 0;
