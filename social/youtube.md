@@ -68,3 +68,10 @@ Description:
 Propofol, the milky drug nicknamed "milk of amnesia", knocks you out in about 30 seconds. Awake, your neurons fire nonstop above their firing threshold. GABA is the brain's brake: it opens a door in the GABA-A receptor that lets chloride in, calming the neuron. Propofol jams that door wide open, chloride floods in, and the neuron sinks below threshold into silence. Across billions of neurons, the EEG turns from fast chatter into huge slow waves, and the thalamus stops relaying signals to the cortex. It isn't sleep: a nudge wakes you from sleep, surgery doesn't wake you from this. It's closer to a reversible coma. Stop the drip, the drug washes out, and you're awake in minutes. Sound on 🔊 the music goes under with you.
 #anesthesia #neuroscience #brain #science #shorts
 Tags: how does anesthesia work, anesthesia, propofol, general anesthesia, GABA, neuroscience, brain, EEG, surgery, medicine, how it works, shorts
+
+## PIXEL QUIZ: how screens work (out/pixelquiz.mp4)
+Title: Your screen has NO yellow. Can you beat this quiz? 📱🤯 #shorts
+Description:
+3 levels, 3 seconds to answer each. LEVEL 1: your screen has no yellow, so what makes it? Zoom in: every pixel is just 3 tiny lights, red, green and blue. Red + green look yellow because the lights are too small to see apart, so your eye blurs them together. LEVEL 2: what makes white? All 3 on. Black is all 3 off (on an OLED the pixel really switches off). Each light has 256 levels, which gives 16.7 million colours. LEVEL 3: how many lights in a phone screen? About 8 million (1080 x 2400 pixels x 3), redrawn 60 to 120 times a second. Did you get 3/3? Comment your score 👇
+#screens #pixels #howitworks #science #shorts
+Tags: how do screens work, pixels, rgb, subpixels, oled, phone screen, how it works, quiz, colour mixing, tech explained, shorts

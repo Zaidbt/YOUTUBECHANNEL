@@ -248,3 +248,17 @@ Sound on 🔊 the music goes under with you.
 #anesthesia #neuroscience #brain #science #pixelart
 
 Extra tags (optional): #medicine #surgery #propofol #learnoninstagram #stem #kurzgesagt
+
+## Post · PIXEL QUIZ: how screens work (out/pixelquiz.mp4)
+Your screen has NO yellow. 📱🤯 Can you get 3/3?
+
+🟡 LEVEL 1: what makes yellow? → red + green light. Every pixel is just 3 tiny lights (red, green, blue), too small to see apart, so your eye blurs them together.
+👻 LEVEL 2: what makes white? → all 3 on. Black = all off (on an OLED the pixel really switches off).
+🌈 each light has 256 levels → 16.7 million colours
+📱 LEVEL 3: how many lights in a phone screen? → about 8 million, redrawn 60–120 times a second
+
+Comment your score 👇 and send this to someone who thinks their screen has yellow.
+
+#screens #pixels #howitworks #science #pixelart
+
+Extra tags (optional): #rgb #oled #techexplained #quiz #learnoninstagram #stem

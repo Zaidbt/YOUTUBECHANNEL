@@ -40,3 +40,7 @@ How a light bulb ACTUALLY makes light 💡🤯 electrons fall into holes and eve
 ## How does anesthesia switch you off? (out/anesthesia.mp4)
 This milky drug switches you off in ~30 seconds 💉😵 It jams your brain's brake wide open, and it's NOT sleep 🤯 sound on 🔊 the music goes under with you
 #anesthesia #neuroscience #brain #science #learnontiktok #fyp
+
+## PIXEL QUIZ: how screens work (out/pixelquiz.mp4)
+Your screen has NO yellow 📱🤯 3 levels, 3 seconds each. Comment your score 👇
+#screens #pixels #howitworks #quiz #learnontiktok #fyp
