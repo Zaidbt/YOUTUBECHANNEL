@@ -33,7 +33,8 @@
     "video:bulb": "python3 videos/16-bulb/build.py && remotion render BulbVideo out/bulb.mp4 --gl=swangle",
     "video:anesthesia": "python3 videos/17-anesthesia/build.py && remotion render AnesthesiaVideo out/anesthesia.mp4 --gl=swangle",
     "video:afterimage": "python3 videos/18-afterimage/build.py && remotion render AfterimageVideo out/afterimage.mp4 --gl=swangle",
-    "video:blink": "python3 videos/19-blink/build.py && remotion render BlinkVideo out/blink.mp4 --gl=swangle"
+    "video:blink": "python3 videos/19-blink/build.py && remotion render BlinkVideo out/blink.mp4 --gl=swangle",
+    "video:pixelquiz": "python3 videos/20-pixelquiz/build.py && remotion render PixelQuizVideo out/pixelquiz.mp4 --gl=swangle"
   },
   "repository": {
     "type": "git",

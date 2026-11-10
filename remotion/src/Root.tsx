@@ -36,6 +36,7 @@ import { BulbVideo, DURATION as BULB_DURATION, FPS as BULB_FPS } from "./videos/
 import { AnesthesiaVideo, DURATION as ANES_DURATION, FPS as ANES_FPS } from "./videos/anesthesia/AnesthesiaVideo";
 import { AfterimageVideo, DURATION as AFTER_DURATION, FPS as AFTER_FPS } from "./videos/afterimage/AfterimageVideo";
 import { BlinkVideo, DURATION as BLINK_DURATION, FPS as BLINK_FPS } from "./videos/blink/BlinkVideo";
+import { PixelQuizVideo, DURATION as QUIZ_DURATION, FPS as QUIZ_FPS } from "./videos/pixelquiz/PixelQuizVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -104,5 +105,6 @@ export const Root = () => (
     <Composition id="AnesthesiaVideo" component={AnesthesiaVideo} durationInFrames={ANES_DURATION} fps={ANES_FPS} width={1080} height={1920} />
     <Composition id="AfterimageVideo" component={AfterimageVideo} durationInFrames={AFTER_DURATION} fps={AFTER_FPS} width={1080} height={1920} />
     <Composition id="BlinkVideo" component={BlinkVideo} durationInFrames={BLINK_DURATION} fps={BLINK_FPS} width={1080} height={1920} />
+    <Composition id="PixelQuizVideo" component={PixelQuizVideo} durationInFrames={QUIZ_DURATION} fps={QUIZ_FPS} width={1080} height={1920} />
   </>
 );
