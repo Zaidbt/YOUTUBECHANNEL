@@ -40,6 +40,7 @@ import { PixelQuizVideo, DURATION as QUIZ_DURATION, FPS as QUIZ_FPS } from "./vi
 import { CardCountVideo, DURATION as CARD_DURATION, FPS as CARD_FPS } from "./videos/cardcount/CardCountVideo";
 import { WorldsVideo, DURATION as WORLDS_DURATION, FPS as WORLDS_FPS } from "./videos/worlds/WorldsVideo";
 import { CalculatorVideo, DURATION as CALC_DURATION, FPS as CALC_FPS } from "./videos/calculator/CalculatorVideo";
+import { CalculatorDark } from "./videos/calculator/CalculatorDark";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -112,5 +113,6 @@ export const Root = () => (
     <Composition id="CardCountVideo" component={CardCountVideo} durationInFrames={CARD_DURATION} fps={CARD_FPS} width={1080} height={1920} />
     <Composition id="WorldsVideo" component={WorldsVideo} durationInFrames={WORLDS_DURATION} fps={WORLDS_FPS} width={1080} height={1920} />
     <Composition id="CalculatorVideo" component={CalculatorVideo} durationInFrames={CALC_DURATION} fps={CALC_FPS} width={1080} height={1920} />
+    <Composition id="CalculatorDark" component={CalculatorDark} durationInFrames={CALC_DURATION} fps={CALC_FPS} width={1080} height={1920} />
   </>
 );
