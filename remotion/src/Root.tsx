@@ -41,6 +41,7 @@ import { CardCountVideo, DURATION as CARD_DURATION, FPS as CARD_FPS } from "./vi
 import { WorldsVideo, DURATION as WORLDS_DURATION, FPS as WORLDS_FPS } from "./videos/worlds/WorldsVideo";
 import { CalculatorVideo, DURATION as CALC_DURATION, FPS as CALC_FPS } from "./videos/calculator/CalculatorVideo";
 import { CalculatorDark } from "./videos/calculator/CalculatorDark";
+import { OzempicVideo, DURATION as OZ_DURATION, FPS as OZ_FPS } from "./videos/ozempic/OzempicVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -114,5 +115,6 @@ export const Root = () => (
     <Composition id="WorldsVideo" component={WorldsVideo} durationInFrames={WORLDS_DURATION} fps={WORLDS_FPS} width={1080} height={1920} />
     <Composition id="CalculatorVideo" component={CalculatorVideo} durationInFrames={CALC_DURATION} fps={CALC_FPS} width={1080} height={1920} />
     <Composition id="CalculatorDark" component={CalculatorDark} durationInFrames={CALC_DURATION} fps={CALC_FPS} width={1080} height={1920} />
+    <Composition id="OzempicVideo" component={OzempicVideo} durationInFrames={OZ_DURATION} fps={OZ_FPS} width={1080} height={1920} />
   </>
 );
