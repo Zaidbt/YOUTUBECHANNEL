@@ -38,7 +38,8 @@
     "video:cardcount": "python3 videos/21-cardcount/build.py && remotion render CardCountVideo out/cardcount.mp4 --gl=swangle",
     "video:worlds": "python3 videos/22-worlds/build.py && remotion render WorldsVideo out/worlds.mp4 --gl=swangle",
     "video:calculator": "python3 videos/23-calculator/build.py && remotion render CalculatorVideo out/calculator.mp4 --gl=swangle",
-    "video:ozempic": "python3 videos/24-ozempic/build.py && remotion render OzempicVideo out/ozempic.mp4 --gl=swangle"
+    "video:ozempic": "python3 videos/24-ozempic/build.py && remotion render OzempicVideo out/ozempic.mp4 --gl=swangle",
+    "video:knuckles": "python3 videos/25-knuckles/build.py && remotion render KnucklesVideo out/knuckles.mp4 --gl=swangle"
   },
   "repository": {
     "type": "git",
