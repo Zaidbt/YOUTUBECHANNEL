@@ -7,7 +7,7 @@
  * the cavity forming. The joint can't be cracked again for ~20 minutes while the gas redissolves. No link with
  * arthritis was found; Dr Donald Unger cracked only his left hand's knuckles for ~60 years (≈36,500 times), neither hand
  * had arthritis — Ig Nobel Prize in Medicine 2009.
- * 41.3 s loop, 122 BPM tech house whose snare IS a knuckle crack (knuckles.json + music.wav from videos/25-knuckles/build.py).
+ * 42.7 s loop, 118 BPM 80s synth-pop whose snare is layered with a knuckle crack (knuckles.json + music.wav from videos/25-knuckles/build.py).
  */
 import React, { useMemo } from "react";
 import * as THREE from "three";
@@ -57,38 +57,50 @@ const Burst: React.FC<{ at: P2; age: number; s?: number; map: THREE.Texture; z?:
   );
 };
 
-// ================= the hand (side view, fingers pointing right) =================
+// ================= the hand (back of the hand, fingers up, a sweater sleeve) =================
 const SKIN = "#ffbf6a", SKIN_D = "#c85a10", SKIN_L = "#fff3b0";
-const BACKG = blob([[-2.7, -1.6], [-2.2, -0.2], [-1.6, 0.55], [-0.6, 0.62], [0.1, 0.38], [0.25, -0.25], [-0.2, -0.75], [-1.2, -1.15], [-1.9, -1.9]], 40);
-const CURLED = blob([[-0.6, -0.55], [0.15, -0.45], [0.55, -0.75], [0.45, -1.25], [-0.1, -1.35], [-0.7, -1.1]], 30);
-const THUMB = blob([[-1.4, -0.9], [-0.7, -1.05], [-0.15, -1.55], [-0.35, -1.85], [-1.0, -1.65], [-1.6, -1.3]], 30);
-const SEG = (l: number, w0: number, w1: number) => blob([[0, w0 / 2], [l, w1 / 2], [l + w1 / 2, 0], [l, -w1 / 2], [0, -w0 / 2], [-w0 / 2, 0]], 24);
-const P1 = SEG(1.1, 0.52, 0.46), P2G = SEG(0.72, 0.46, 0.42), P3 = SEG(0.56, 0.42, 0.36), NAIL = blob([[0.2, 0.1], [0.5, 0.14], [0.62, 0.0], [0.5, -0.02], [0.2, 0.0]], 14);
-/** a crack pose: the finger is pulled out a little and snaps back */
-const crackPose = (t: number, evs: number[]) => { let k = 0; for (const e of evs) { const a = t - e; if (a > -0.15 && a < 0.5) k = Math.max(k, a < 0 ? ease((a + 0.15) / 0.15) : Math.exp(-a / 0.12)); } return k; };
-const Hand: React.FC<{ t: number; pull: number; xray?: boolean; mirror?: boolean; flex?: number }> = ({ t, pull, xray, mirror, flex = 0 }) => {
-  const bend = 0.18 + 0.08 * Math.sin(3 * LW * t) - 0.15 * pull + flex;
-  const skin = xray ? "#2b3f99" : SKIN, dark = xray ? "#1c2a6e" : SKIN_D, light = xray ? "#4a9aff" : SKIN_L, bone = "#fff3b0";
+const FX = [-0.75, -0.25, 0.25, 0.73], FLEN = [1.6, 1.82, 1.7, 1.32], FW = [0.44, 0.46, 0.44, 0.38], FB = 0.55;
+const PALM = blob([[-1.0, 0.7], [-0.35, 0.82], [0.35, 0.8], [0.98, 0.62], [1.05, -0.4], [0.82, -1.25], [0.0, -1.5], [-0.82, -1.3], [-1.08, -0.4]], 40);
+const THUMB_G = blob([[-0.15, 0.25], [0.15, 0.22], [0.2, -0.8], [0.0, -1.05], [-0.22, -0.8]], 24);
+/** fold envelope for finger events: 0 straight … 1 folded (crack at full fold) */
+const foldEnv = (t: number, evs: number[]) => { let k = 0; for (const e of evs) { const a = t - e; if (a > -0.3 && a < 0) k = Math.max(k, ease((a + 0.3) / 0.3)); else if (a >= 0 && a < 0.5) k = Math.max(k, 1 - ease(a / 0.5)); } return k; };
+const knuckleOf = (c: P2, sc: number, i: number, mirror = false): P2 => [c[0] + (mirror ? -1 : 1) * FX[i] * sc, c[1] + (FB + 0.22) * sc];
+const Hand: React.FC<{ t: number; fold: number[]; xray?: boolean; mirror?: boolean; sleeve?: string }> = ({ t, fold, xray, mirror, sleeve = "#7a4dff" }) => {
+  const skin = xray ? "#2b3f99" : SKIN, dark = xray ? "#1c2a6e" : SKIN_D, light = xray ? "#4a9aff" : SKIN_L, bone = "#fff3b0", sway = 0.015 * Math.sin(3 * LW * t);
   return (
-    <group scale={[mirror ? -1 : 1, 1, 1]}>
-      <Flat g={CURLED} c={dark} z={-0.02} />
-      <Flat g={BACKG} c={skin} />
-      <Flat g={ribbon(curve([[-1.6, 0.5], [-0.6, 0.6], [0.05, 0.36]], 12), () => 0.08)} c={light} z={0.001} />
-      <Flat g={THUMB} c={skin} z={0.01} /><Flat g={ribbon(curve([[-1.3, -1.0], [-0.6, -1.2], [-0.3, -1.6]], 10), () => 0.05)} c={dark} z={0.011} />
-      {xray && <><Flat g={rrect(-2.2, 0.05, -0.15, 0.25, 0.1)} c={bone} z={0.002} /><Disc at={[-0.1, 0.15]} r={0.2} c={bone} z={0.003} seg={14} /></>}
-      {/* the index finger: three bones / segments, hinged */}
-      <group position={[0.05 + 0.14 * pull, 0.15, 0.02]} rotation={[0, 0, -bend * 0.4]}>
-        <Flat g={P1} c={skin} />{xray && <Flat g={rrect(0.12, -0.08, 0.95, 0.08, 0.06)} c={bone} z={0.002} />}
-        <Disc at={[0, 0.02]} r={0.3} c={pull > 0.3 && !xray ? "#ff8a7a" : skin} z={0.001} seg={16} />
-        <group position={[1.1, 0, 0]} rotation={[0, 0, -bend * 0.7]}>
-          <Flat g={P2G} c={skin} z={0.003} />{xray && <Flat g={rrect(0.08, -0.07, 0.62, 0.07, 0.05)} c={bone} z={0.004} />}
-          <Flat g={ribbon([[-0.02, 0.2], [0.05, 0.05]], () => 0.03)} c={dark} z={0.004} />
-          <group position={[0.72, 0, 0]} rotation={[0, 0, -bend * 0.6]}>
-            <Flat g={P3} c={skin} z={0.005} />{xray && <Flat g={rrect(0.06, -0.06, 0.45, 0.06, 0.05)} c={bone} z={0.006} />}
-            {!xray && <Flat g={NAIL} c={light} z={0.006} />}
-          </group>
-        </group>
+    <group scale={[mirror ? -1 : 1, 1, 1]} rotation={[0, 0, sway]}>
+      {/* sleeve */}
+      <Flat g={rrect(-1.05, -5.2, 1.05, -2.15, 0.3)} c={sleeve} z={-0.03} />
+      {[-0.7, -0.35, 0, 0.35, 0.7].map((x, i) => <Flat key={`rb${i}`} g={rrect(x - 0.04, -2.75, x + 0.04, -2.2, 0.03)} c="#5a2a9a" z={-0.029} />)}
+      <Flat g={rrect(-1.05, -2.8, 1.05, -2.6, 0.08)} c="#5a2a9a" z={-0.028} />
+      {/* wrist + back of the hand */}
+      <Flat g={rrect(-0.72, -2.4, 0.72, -1.0, 0.25)} c={skin} z={-0.02} />
+      <Flat g={rrect(0.45, -2.4, 0.72, -1.0, 0.2)} c={dark} z={-0.019} o={0.6} />
+      <Flat g={PALM} c={skin} />
+      <Flat g={blob([[0.6, 0.6], [0.98, 0.5], [1.03, -0.4], [0.8, -1.2], [0.55, -0.6]], 20)} c={dark} z={0.001} o={0.55} />
+      {!xray && [[-0.55, -0.2], [0.05, -0.4], [0.5, -0.1]].map((p, i) => <Flat key={`tn${i}`} g={ribbon(curve([[p[0], p[1] + 0.5], [p[0] + 0.05, p[1]], [p[0] - 0.02, p[1] - 0.5]], 10), () => 0.025)} c={dark} z={0.002} o={0.35} />)}
+      {/* thumb (on the side, angled out) */}
+      <group position={[-1.05, -0.55, 0.004]} rotation={[0, 0, 0.95]} scale={1.4}>
+        <Flat g={THUMB_G} c={dark} p={[0.03, -0.03]} z={-0.001} />
+        <Flat g={THUMB_G} c={skin} /><Flat g={rrect(-0.1, 0.0, 0.1, 0.2, 0.07)} c={light} z={0.001} />
+        {xray && <><Flat g={rrect(-0.05, -0.75, 0.05, -0.38, 0.04)} c={bone} z={0.002} /><Flat g={rrect(-0.05, -0.3, 0.05, 0.12, 0.04)} c={bone} z={0.002} /></>}
       </group>
+      {xray && <>
+        {[[-0.35, -1.15], [0, -1.2], [0.35, -1.15], [-0.18, -0.95], [0.18, -0.95]].map((p, i) => <Disc key={`cp${i}`} at={p as P2} r={0.12} c={bone} z={0.003} seg={10} />)}
+        {FX.map((x, i) => <Flat key={`mc${i}`} g={rrect(x * 0.85 - 0.06, -0.85, x - 0.06 + 0.12, FB + 0.05, 0.05)} c={bone} z={0.003} />)}
+      </>}
+      {/* fingers: they fold away from us at the knuckle (shorter + the knuckle bump shows) */}
+      {FX.map((x, i) => { const f = clamp01(fold[i] ?? 0), len = FLEN[i] * (1 - 0.62 * f), w = FW[i], y0 = FB; return (
+        <group key={`f${i}`} position={[x, 0, 0.01 + i * 0.001]}>
+          <Flat g={rrect(-w / 2, y0 - 0.1, w / 2, y0 + len, w / 2)} c={skin} />
+          <Flat g={rrect(w / 2 - w * 0.28, y0, w / 2, y0 + len - w * 0.3, w * 0.14)} c={dark} z={0.001} o={0.5} />
+          <Flat g={rrect(-w / 2 + 0.05, y0 + len - w * 0.6, -w / 2 + 0.11, y0 + len - 0.12, 0.03)} c={light} z={0.001} o={0.8} />
+          {!xray && f < 0.5 && <Flat g={rrect(-w * 0.3, y0 + len - w * 0.78, w * 0.3, y0 + len - 0.05, w * 0.28)} c={light} z={0.002} />}
+          {!xray && f < 0.6 && [0.42, 0.72].map((u, j) => <Flat key={j} g={ribbon(curve([[-w * 0.28, y0 + len * u], [0, y0 + len * u + 0.04], [w * 0.28, y0 + len * u]], 8), () => 0.022)} c={dark} z={0.002} o={0.6} />)}
+          {/* the knuckle */}
+          <Disc at={[0, y0 + 0.08 + 0.12 * f]} r={w * (0.42 + 0.12 * f)} c={f > 0.3 ? light : skin} z={0.003} seg={18} />
+          {xray && [0, 1, 2].map((j) => { const a0 = y0 + 0.05 + (len / 3) * j, a1 = a0 + len / 3 - 0.08; return <Flat key={`ph${j}`} g={rrect(-0.055, a0, 0.055, a1, 0.04)} c={bone} z={0.004} />; })}
+        </group>); })}
     </group>
   );
 };
@@ -150,13 +162,14 @@ const Joint: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
 };
 
 // ================= hero + the 60-year experiment =================
-const HAND_C: P2 = [0.05, -0.9];
-const KNUCKLE: P2 = [HAND_C[0] + 0.05, HAND_C[1] + 0.15];
-const HS = 1.0;
+const HAND_C: P2 = [0.05, -1.75];
+const HS = 1.15;
+const FINGER_OF = (i: number) => [1, 0, 2, 3, 1, 2, 0][i % 7];
 const MOL_C: P2 = [0.4, 1.35];
 const SHRINK = L[1];
 const heroK = (t: number) => (t >= BACK ? 0 : ease((t - SHRINK) / 0.6));
 const bubbleK = (t: number) => (t >= BACK ? 0 : backOut((t - SHRINK - 0.35) / 0.45));
+const foldsFor = (t: number, evs: number[], fingerOf: (i: number) => number) => [0, 1, 2, 3].map((f) => foldEnv(t, evs.filter((_, i) => fingerOf(i) === f)));
 const Backdrop: React.FC<{ t: number; map: THREE.Texture; c?: string }> = ({ t, map, c = "#ff8a1f" }) => {
   const k = beatK(t);
   return (
@@ -169,39 +182,39 @@ const Backdrop: React.FC<{ t: number; map: THREE.Texture; c?: string }> = ({ t, 
   );
 };
 const Hero: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
-  const hk = heroK(t), bk = bubbleK(t), pull = crackPose(t, HOOKC);
-  const sc = lerp(HS, 0.5, hk), cx = lerp(HAND_C[0], -1.4, hk), cy = lerp(HAND_C[1], -2.6, hk);
-  const kn: P2 = [cx + 0.05 * sc + 0.14 * pull * sc, cy + 0.15 * sc];
+  const hk = heroK(t), bk = bubbleK(t), fold = foldsFor(t, HOOKC, FINGER_OF);
+  const sc = lerp(HS, 0.42, hk), cx = lerp(HAND_C[0], -1.5, hk), cy = lerp(HAND_C[1], -2.0, hk);
+  const kn = knuckleOf([cx, cy], sc, 1);
   const tang = (deg: number): P2 => [MOL_C[0] + 2.0 * Math.cos((deg * Math.PI) / 180), MOL_C[1] + 2.0 * Math.sin((deg * Math.PI) / 180)];
   return (
     <group>
       <Backdrop t={t} map={map} />
       {bk > 0.01 && <group position={[MOL_C[0], MOL_C[1], 0]} scale={bk}><group position={[-MOL_C[0], -MOL_C[1], 0]}>
-        {[200, 280].map((d, i) => <Flat key={`zl${i}`} g={ribbon([kn, tang(d)], () => 0.04)} c="#bfe6ff" z={-0.3} o={0.55} />)}
+        {[200, 275].map((d, i) => <Flat key={`zl${i}`} g={ribbon([kn, tang(d)], () => 0.04)} c="#bfe6ff" z={-0.3} o={0.55} />)}
         <Disc at={MOL_C} r={2.0} c="#4a2a5a" z={-0.25} seg={64} />
         <mesh position={[MOL_C[0], MOL_C[1], -0.2]}><ringGeometry args={[1.96, 2.06, 64]} /><meshBasicMaterial color="#bfe6ff" /></mesh>
         <group position={[MOL_C[0] + 0.25, MOL_C[1], 0]} scale={0.8}><JointX t={t} map={map} mini /></group>
       </group></group>}
-      <group position={[cx, cy, 0.3]} scale={sc}><Hand t={t} pull={pull} xray={hk > 0.5 && t < BACK} /></group>
-      {HOOKC.map((c, i) => <Burst key={i} at={kn} age={t - c} s={0.9 * sc} map={map} />)}
+      <group position={[cx, cy, 0.3]} scale={sc}><Hand t={t} fold={fold} xray={hk > 0.5 && t < BACK} /></group>
+      {HOOKC.map((c, i) => <Burst key={i} at={knuckleOf([cx, cy], sc, FINGER_OF(i))} age={t - c} s={0.85 * sc} map={map} />)}
     </group>
   );
 };
+const LH: P2 = [-1.25, -1.6], RH: P2 = [1.25, -1.6], SS = 0.6;
 const Hands: React.FC<{ t: number; map: THREE.Texture }> = ({ t, map }) => {
   const you = t >= L[9];
-  const pull = you ? crackPose(t, [YOUR]) : crackPose(t, COUNT.filter((_, i) => i % 3 === 0));
-  const tryAgain = you && t >= NOPE - 0.4 && t < NOPE + 0.6 ? Math.sin(clamp01((t - NOPE + 0.4) / 1.0) * Math.PI) : 0;
+  const cnt = COUNT.filter((_, i) => i % 2 === 0), cf = (i: number) => i % 4;
   return (
     <group>
       <Backdrop t={t} map={map} c={you ? "#ff4f8b" : "#3fcf6a"} />
       {!you ? <>
-        <group position={[-0.2, 0.75, 0.3]} scale={0.62}><Hand t={t} pull={pull} /></group>
-        <group position={[0.25, -1.75, 0.3]} scale={0.62}><Hand t={t} pull={0} /></group>
-        {COUNT.filter((_, i) => i % 3 === 0).map((c, i) => <Burst key={i} at={[-0.2 + 0.05 * 0.62, 0.75 + 0.15 * 0.62]} age={t - c} s={0.6} map={map} />)}
+        <group position={[LH[0], LH[1], 0.3]} scale={SS}><Hand t={t} fold={foldsFor(t, cnt, cf)} mirror sleeve="#1fb5a8" /></group>
+        <group position={[RH[0], RH[1], 0.3]} scale={SS}><Hand t={t} fold={[0, 0, 0, 0]} sleeve="#1fb5a8" /></group>
+        {cnt.map((c, i) => <Burst key={i} at={knuckleOf(LH, SS, cf(i), true)} age={t - c} s={0.55} map={map} />)}
       </> : <>
-        <group position={[HAND_C[0], HAND_C[1], 0.3]} scale={HS}><Hand t={t} pull={Math.max(pull, tryAgain * 0.8)} /></group>
-        <Burst at={KNUCKLE} age={t - YOUR} s={1.1} map={map} />
-        {t >= NOPE && t - NOPE < 0.5 && <mesh position={[KNUCKLE[0], KNUCKLE[1], 0.6]} scale={0.6 + (t - NOPE) * 2}><ringGeometry args={[0.85, 1, 28]} /><meshBasicMaterial color="#ff3a2a" transparent opacity={1 - (t - NOPE) / 0.5} /></mesh>}
+        <group position={[HAND_C[0], HAND_C[1], 0.3]} scale={HS}><Hand t={t} fold={[0, Math.max(foldEnv(t, [YOUR]), foldEnv(t, [NOPE]) * 0.9), 0, 0]} /></group>
+        <Burst at={knuckleOf(HAND_C, HS, 1)} age={t - YOUR} s={1.0} map={map} />
+        {t >= NOPE && t - NOPE < 0.5 && <mesh position={[knuckleOf(HAND_C, HS, 1)[0], knuckleOf(HAND_C, HS, 1)[1], 0.6]} scale={0.6 + (t - NOPE) * 2}><ringGeometry args={[0.85, 1, 28]} /><meshBasicMaterial color="#ff3a2a" transparent opacity={1 - (t - NOPE) / 0.5} /></mesh>}
       </>}
     </group>
   );
@@ -220,11 +233,11 @@ const JOINT_TAGS: Tag[] = [
   { txt: "BUBBLE", at: [0.22, 0.75, 0.5], from: CRACK + 0.5, to: OUT, col: "#ffffff" },
 ];
 const HAND_TAGS: Tag[] = [
-  { txt: "LEFT: CRACKED DAILY", at: [-0.3, 2.0, 0.5], from: OUT + 0.6, to: L[8], col: "#ffd23f" },
-  { txt: "RIGHT: NEVER", at: [0.2, -0.55, 0.5], from: OUT + 0.9, to: L[8], col: "#9aa0b8" },
-  { txt: "NO ARTHRITIS ✅", at: [-0.3, 2.0, 0.5], from: L[8], to: L[9], col: "#3fcf6a" },
-  { txt: "NO ARTHRITIS ✅", at: [0.2, -0.55, 0.5], from: L[8] + 0.3, to: L[9], col: "#3fcf6a" },
-  { txt: "LOCKED: ~20 MIN 🔒", at: [KNUCKLE[0], KNUCKLE[1] + 0.85, 0.5], from: NOPE + 0.1, to: BACK, col: "#ff3a2a" },
+  { txt: "CRACKED DAILY", at: [LH[0], 0.95, 0.5], from: OUT + 0.6, to: L[8], col: "#ffd23f" },
+  { txt: "NEVER", at: [RH[0], 0.95, 0.5], from: OUT + 0.9, to: L[8], col: "#9aa0b8" },
+  { txt: "NO ARTHRITIS", at: [LH[0], 0.95, 0.5], from: L[8], to: L[9], col: "#3fcf6a" },
+  { txt: "NO ARTHRITIS", at: [RH[0], 0.95, 0.5], from: L[8] + 0.3, to: L[9], col: "#3fcf6a" },
+  { txt: "LOCKED: ~20 MIN", at: [HAND_C[0] - 0.25 * HS, HAND_C[1] + 2.75 * HS, 0.5], from: NOPE + 0.1, to: BACK, col: "#ff3a2a" },
 ];
 const TagsView: React.FC<{ t: number; cam: { p: V3; l: V3 }; tags: Tag[] }> = ({ t, cam, tags }) => (
   <>{tags.filter((g) => t >= g.from && t < g.to).map((g, i) => { const [x, y] = project(typeof g.at === "function" ? g.at(t) : g.at, cam, FOV); const k = backOut((t - g.from) / 0.25); return (

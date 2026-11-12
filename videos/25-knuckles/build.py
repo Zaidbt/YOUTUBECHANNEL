@@ -1,10 +1,11 @@
-"""Video 025 · What is the CRACK when you crack your knuckles? — 41.3 s seamless loop, 122 BPM tech house (21 bars).
-The song's snare IS a knuckle crack (a synthesised pop: a click + a short broadband burst), so every crack you see is a
-hit you hear. Rolling offbeat bass, a vocal-chop riff (the earworm), offbeat hats, stabs.
+"""Video 025 · What is the CRACK when you crack your knuckles? — 42.7 s seamless loop, 118 BPM 80s synth-pop / R&B-pop (21 bars) in the spirit of an Ariana Grande x The Weeknd duet
+(original writing: pulsing 8th-note octave bass, gated snare, LinnDrum-style kit, glossy detuned pads, a bright 16th arp,
+and a breathy "vocal" hook — formant synth doubled by an airy lead).
+The snare is layered with a knuckle crack (a click + a short broadband burst), so every crack you see is a hit you hear.
 Story events play the music: the finger being pulled = a falling pressure sweep, the big CRACK = the drop, the 20-minute
 refractory timer = a ticking hat, the "60 years" counter = rising plucks, the viewer's failed second crack = a low "nope".
 
-Timeline (bars, 1.967 s): 0 hook: a hand cracks its knuckles · 1.5 X-ray callout on a knuckle · 3 DIVE into the joint:
+Timeline (bars, 2.034 s): 0 hook: a hand cracks its knuckles · 1.5 X-ray callout on a knuckle · 3 DIVE into the joint:
 a sealed bag of joint fluid · 5 pull: the bag stretches, pressure drops · 6.5 CRACK: dissolved gas rips out into a bubble
 · 8 the sound = the bubble being born (MRI 2015) · 9.5 ~20 min to dissolve: no second crack · 11.5 out: one doctor cracked
 only his left hand for 60 years · 13.5 no arthritis in either hand, Ig Nobel 2009 · 15.5 your turn: crack one, then try
@@ -20,7 +21,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from chiptune import hz, noise  # noqa: E402
 from stereo import StereoSong, SR  # noqa: E402
 
-BPM, BARS = 122, 21
+BPM, BARS = 118, 21
 BEAT = 60 / BPM; BAR = 4 * BEAT; DUR = BARS * BAR; S16 = BEAT / 4
 bt = lambda bar, step=0: round(bar * BAR + step * S16, 5)
 bb = lambda x: bt(int(x), int(round((x - int(x)) * 16)))
@@ -151,48 +152,86 @@ def nope(vol=0.2):
         o = int(k * 0.3 * SR); out[o:o + n] += lp(s, 1800) * vol
     return out
 
+def gsnare(vol=0.32, seed=0):
+    """80s gated snare: body + noise into a short dense 'room' that is cut hard"""
+    n = int(0.32 * SR); t = np.arange(n) / SR
+    body = np.sin(2 * np.pi * np.cumsum(190 + 70 * np.exp(-t / 0.01)) / SR) * np.exp(-t / 0.05) * 0.6
+    nz = lp(hp(noise(0.32, 1.0, 0.32, rate=44100, seed=seed)[:n], 1100), 8000)
+    room = nz * (0.35 + 0.65 * np.exp(-t / 0.03)) * np.clip((0.24 - t) / 0.02, 0, 1)
+    return (body + room * 0.75) * vol
+def tamb(vol=0.03, seed=0):
+    x = noise(0.06, 1.0, 0.03, rate=44100, seed=seed); return hp(x, 7500) * vol
+def obass(midi, dur, vol=0.26):
+    n = int(dur * SR); t = np.arange(n) / SR; f = hz(midi); x = np.zeros(n)
+    for d in (-0.004, 0.004): ph = f * (1 + d) * t + rng.random(); x += 2 * (ph % 1) - 1
+    y = lp(lp(x, 1100), 1100) * (0.65 + 0.35 * np.exp(-t / 0.06)) + 0.6 * np.sin(2 * np.pi * f * t)
+    return y * vol * np.clip(t / 0.003, 0, 1) * np.clip((dur - t) / 0.02, 0, 1)
+def gloss(notes, dur, vol=0.026, cut=2600):
+    n = int(dur * SR); t = np.arange(n) / SR; x = np.zeros(n)
+    for m in notes:
+        for d in (-0.009, -0.003, 0.003, 0.009): ph = hz(m) * (1 + d) * t + rng.random(); x += 2 * (ph % 1) - 1
+    return lp(lp(x, cut), cut) / len(notes) * 4 * vol * np.clip(t / 0.08, 0, 1) * np.clip((dur - t) / 0.15, 0, 1)
+def sqarp(midi, vol=0.035):
+    n = int(0.16 * SR); t = np.arange(n) / SR; f = hz(midi)
+    return lp(np.sign(np.sin(2 * np.pi * f * t)) * 0.6 + (2 * ((f * t) % 1) - 1) * 0.4, 4200) * vol * np.clip(t / 0.002, 0, 1) * np.exp(-t / 0.07)
+def airy(midi, dur, vol=0.05):
+    n = int(dur * SR); t = np.arange(n) / SR
+    f = hz(midi) * (1 + 0.007 * np.sin(2 * np.pi * 5.3 * t) * np.clip((t - 0.12) / 0.2, 0, 1)); ph = np.cumsum(f) / SR
+    x = np.sin(2 * np.pi * ph) + 0.25 * np.sin(2 * np.pi * 2 * ph) + 0.08 * hp(noise(dur, 1.0, dur, rate=44100, seed=int(midi))[:n], 3000)
+    return x * vol * np.clip(t / 0.03, 0, 1) * np.clip((dur - t) / 0.08, 0, 1)
+
 S = StereoSong(BPM, BARS)
-ROOTS = [33, 33, 36, 31]; CH = [[57, 60, 64, 67], [57, 60, 64, 67], [60, 64, 67, 71], [55, 59, 62, 67]]   # Am7 Am7 Cmaj7 G
-RIFF = [(0, 76, 2, "a"), (3, 74, 1, "e"), (4, 76, 2, "a"), (7, 79, 2, "o"), (10, 76, 2, "a"), (12, 72, 3, "e"),
-        (16, 76, 2, "a"), (19, 74, 1, "e"), (20, 76, 2, "a"), (23, 81, 2, "o"), (26, 79, 2, "a"), (28, 76, 3, "e")]
+# C minor: Cm - Ab - Eb - Bb (i - VI - III - VII), 1 bar each
+CH = [[60, 63, 67], [56, 60, 63], [55, 58, 63], [58, 62, 65]]
+RT = [36, 32, 39, 34]
+# the hook: a breathy 2-bar vocal line (original), sung on the vowels of the formant synth
+HOOK = [(0, 72, 2, "o"), (2, 75, 2, "a"), (4, 79, 3, "a"), (8, 77, 2, "e"), (10, 75, 2, "a"), (12, 72, 3, "o"),
+        (16, 72, 2, "o"), (18, 75, 2, "a"), (20, 80, 3, "a"), (24, 79, 2, "e"), (26, 77, 2, "a"), (28, 75, 4, "o")]
 def sec(b):
-    if b < 3 or b >= 18: return "hook"
-    if b < 5: return "joint"
-    if b < 6.5: return "pull"
-    if b < 9.5: return "drop"
-    if b < 11.5: return "wait"
-    if b < 15.5: return "story"
-    return "you"
+    if b < 3 or b >= 18: return "chorus"
+    if b < 5: return "verse"
+    if b < 6.5: return "build"
+    if b < 9.5: return "chorus"
+    if b < 11.5: return "break"
+    if b < 15.5: return "verse2"
+    return "chorus"
 kicks = []
 for bar in range(BARS):
-    r = ROOTS[bar % 4]; ch = CH[bar % 4]
+    ch = CH[bar % 4]; r = RT[bar % 4]
     for half in (0, 1):
         s_ = sec(bar + half * 0.5); steps = range(half * 8, half * 8 + 8)
-        full = s_ in ("hook", "drop", "story", "you")
+        big = s_ == "chorus"
         for s in steps:
-            if s % 4 == 0 and not (s_ == "pull" and s % 8 == 4): S.add(tkick(), bt(bar, s), 0, "drums", 0.9); kicks.append(bt(bar, s))
-            if s % 8 == 4 and s_ != "pull": S.add(kcrack(0.42 if full else 0.3, seed=bar * 16 + s), bt(bar, s), 0.05, "drums")   # the snare = a crack
-            if s % 4 == 2: S.add(hat(0.05 if full else 0.035, seed=900 + bar * 16 + s, long=(s % 8 == 6)), bt(bar, s), 0.3, "drums")
-            elif full: S.add(hat(0.014, seed=1100 + bar * 16 + s), bt(bar, s), -0.3, "drums")
-            if s_ == "wait" and s % 2 == 1: S.add(tick(0.07), bt(bar, s), [-0.5, 0.5][s % 4 // 2], "drums")
-            if s_ != "pull" and s % 4 in (1, 2, 3) and (s % 4 != 1 or full): S.add(rbass(r + (12 if s % 4 == 3 else 0), S16 * 0.9, 0.3 if full else 0.24), bt(bar, s), 0, "bass")
-        if full:
-            for s in steps:
-                if s % 8 in (2, 7): S.add(stab([m + 12 for m in ch[1:]], 0.22, 0.05), bt(bar, s), [0.3, -0.3][s % 2], "keys")
-    S.add(pad(ch, BAR, 0.016), bt(bar), 0, "pads")
-    for s, m, ln, vw in RIFF:
+            if s_ != "break" and s % 4 == 0 and not (s_ == "build" and s % 8 == 4): S.add(tkick(), bt(bar, s), 0, "drums", 0.9); kicks.append(bt(bar, s))
+            if s_ == "break" and s % 8 == 0: S.add(tkick(0.6), bt(bar, s), 0, "drums"); kicks.append(bt(bar, s))
+            if s % 8 == 4 and s_ not in ("build", "break"):
+                S.add(gsnare(0.32 if big else 0.24, seed=bar * 16 + s), bt(bar, s), 0, "drums"); S.add(kcrack(0.3 if big else 0.22, seed=bar * 16 + s), bt(bar, s), 0.15, "drums")
+            if s_ in ("chorus", "verse", "verse2"): S.add(tamb(0.03 if s % 2 else 0.045, seed=700 + bar * 16 + s), bt(bar, s), 0.4, "drums")
+            if s % 2 == 0 and s_ != "break": S.add(hat(0.03, seed=900 + bar * 16 + s), bt(bar, s), -0.3, "drums")
+            if s_ == "break" and s % 2 == 1: S.add(tick(0.06), bt(bar, s), [-0.5, 0.5][s % 4 // 2], "drums")
+            # pulsing 8th-note octave bass (the 80s engine)
+            if s % 2 == 0 and s_ != "break": S.add(obass(r + (12 if (s // 2) % 2 else 0), S16 * 1.8, 0.27 if big else 0.22), bt(bar, s), 0, "bass")
+            if s_ in ("chorus", "verse2", "build"): S.add(sqarp(ch[s % 3] + 24 + (12 if s % 8 == 7 else 0), 0.035 if big else 0.026), bt(bar, s), [-0.5, 0.5][s % 2], "keys")
+        if s_ == "break": S.add(obass(r, BAR / 2 * 0.95, 0.2), bt(bar, half * 8), 0, "bass")
+    S.add(gloss([m + 12 for m in ch] + [ch[0] + 24], BAR, 0.03 if sec(bar) == "chorus" else 0.024, 3200 if sec(bar) == "chorus" else 1800), bt(bar), 0, "pads")
+    S.add(gloss([ch[0] - 12, ch[0]], BAR, 0.012, 900), bt(bar), 0, "pads")
+    for s, m, ln, vw in HOOK:
         if s // 16 == bar % 2:
             s_ = sec(bar + (s % 16) / 16)
-            if s_ in ("hook", "drop", "story", "you"): S.add(chop(m, ln * S16 * 0.9, vw, 0.32), bt(bar, s % 16), 0, "chop")
+            if s_ == "chorus":
+                S.add(chop(m, ln * S16 * 0.95, vw, 0.34), bt(bar, s % 16), -0.08, "chop"); S.add(airy(m + 12, ln * S16 * 0.95, 0.03), bt(bar, s % 16), 0.15, "lead")
+            elif s_ in ("verse", "verse2") and s % 16 >= 8:
+                S.add(airy(m, ln * S16 * 0.95, 0.045), bt(bar, s % 16), 0.1, "lead")
 # events
-for i, t in enumerate(hook_cracks): S.add(kcrack(0.3, seed=500 + i), t + S16 * 0.5, -0.25, "fx")            # a second, smaller pop just after
-S.add(sweep(76, 52, pull[1] - pull[0], 0.07), pull[0], 0, "fx"); S.add(riser(pull[1] - pull[0], 0.07, seed=7), pull[0])
+for i, t in enumerate(hook_cracks): S.add(kcrack(0.32, seed=500 + i), t + S16 * 0.5, -0.25, "fx")
+S.add(sweep(76, 52, pull[1] - pull[0], 0.06), pull[0], 0, "fx"); S.add(riser(pull[1] - pull[0], 0.07, seed=7), pull[0])
+for k in range(8): S.add(gsnare(0.1 + k * 0.02, seed=40 + k), pull[1] - BAR / 2 + k * S16, 0, "drums")
 S.add(kcrack(0.7, seed=77, big=True), CRACK, 0, "fx"); S.add(impact(0.55), CRACK, 0, "fx")
-for i, t in enumerate(count): S.add(pluck([69, 72, 76, 79, 81, 84, 86, 88, 91, 93, 96, 98][i], 0.05, 0.3), t, [-0.4, 0.4][i % 2], "keys")
+for i, t in enumerate(count): S.add(sqarp([72, 75, 79, 84, 87, 91, 96, 99, 103, 108, 111, 115][i] - 12, 0.06), t, [-0.4, 0.4][i % 2], "keys")
 S.add(kcrack(0.5, seed=88), your, 0, "fx"); S.add(nope(0.22), ev["nope"], 0, "fx")
 for t in (IN, OUT, BACK): S.add(impact(0.3), t, 0, "fx")
-S.delay("chop", BEAT * 0.75, fb=0.3, mix=0.18); S.delay("keys", BEAT * 0.5, fb=0.3, mix=0.15)
-S.sidechain("bass", kicks, 0.4); S.sidechain("pads", kicks, 0.55); S.sidechain("keys", kicks, 0.2); S.sidechain("chop", kicks, 0.15)
-S.reverb("chop", 0.2, 1.3, 21); S.reverb("keys", 0.2, 1.4, 31); S.reverb("pads", 0.35, 2.2, 41); S.reverb("drums", 0.1, 0.9, 51); S.reverb("fx", 0.25, 1.4, 61)
-S.save(ROOT / "public/videos/25-knuckles/music.wav", gains={"drums": 1.0, "bass": 1.0, "chop": 0.95, "keys": 0.9, "pads": 0.8, "fx": 0.95})
+S.delay("chop", BEAT * 0.75, fb=0.35, mix=0.22); S.delay("lead", BEAT * 0.75, fb=0.4, mix=0.25); S.delay("keys", BEAT * 0.75, fb=0.3, mix=0.15)
+S.sidechain("bass", kicks, 0.25); S.sidechain("pads", kicks, 0.45); S.sidechain("keys", kicks, 0.15)
+S.reverb("chop", 0.3, 2.0, 21); S.reverb("lead", 0.35, 2.4, 22); S.reverb("keys", 0.22, 1.6, 31); S.reverb("pads", 0.35, 2.6, 41); S.reverb("drums", 0.12, 0.9, 51); S.reverb("fx", 0.25, 1.4, 61)
+S.save(ROOT / "public/videos/25-knuckles/music.wav", gains={"drums": 1.0, "bass": 1.0, "chop": 1.0, "lead": 0.95, "keys": 0.9, "pads": 0.85, "fx": 0.95})
 print(f"knuckles: {DUR:.3f} s")
