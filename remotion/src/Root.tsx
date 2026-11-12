@@ -43,6 +43,7 @@ import { CalculatorVideo, DURATION as CALC_DURATION, FPS as CALC_FPS } from "./v
 import { CalculatorDark } from "./videos/calculator/CalculatorDark";
 import { OzempicVideo, DURATION as OZ_DURATION, FPS as OZ_FPS } from "./videos/ozempic/OzempicVideo";
 import { KnucklesVideo, DURATION as KN_DURATION, FPS as KN_FPS } from "./videos/knuckles/KnucklesVideo";
+import { CrackVideo, DURATION as CRACK_DURATION, FPS as CRACK_FPS } from "./videos/crack/CrackVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -118,5 +119,6 @@ export const Root = () => (
     <Composition id="CalculatorDark" component={CalculatorDark} durationInFrames={CALC_DURATION} fps={CALC_FPS} width={1080} height={1920} />
     <Composition id="OzempicVideo" component={OzempicVideo} durationInFrames={OZ_DURATION} fps={OZ_FPS} width={1080} height={1920} />
     <Composition id="KnucklesVideo" component={KnucklesVideo} durationInFrames={KN_DURATION} fps={KN_FPS} width={1080} height={1920} />
+    <Composition id="CrackVideo" component={CrackVideo} durationInFrames={CRACK_DURATION} fps={CRACK_FPS} width={1080} height={1920} />
   </>
 );
