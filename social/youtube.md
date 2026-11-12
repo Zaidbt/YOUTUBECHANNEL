@@ -82,3 +82,10 @@ Description:
 Card counting isn't memorising the deck. It's one running number. The Hi-Lo trick: low cards (2 to 6) count +1, middle cards (7, 8, 9) count 0, high cards (10, J, Q, K, ace) count -1. Play 3 levels: slow with hints, faster with none, then casino speed. Why it works: when lots of low cards are gone, the cards left are rich in tens and aces, and the odds swing about 1% from the house to the player. That's when counters bet big. It isn't illegal, but casinos will throw you out. Sound on 🔊 you can hear the count: high note = +1, low brass = -1. The Level 3 answer is NOT in the video: comment your count 👇
 #cardcounting #blackjack #casino #math #shorts
 Tags: card counting, how to count cards, blackjack, hi-lo, casino, math, probability, brain game, challenge, how it works, shorts
+
+## What is the CRACK when you crack your knuckles? (out/knuckles.mp4)
+Title: That "crack" isn't your bones. Here's what it really is 🫧 #shorts
+Description:
+When you crack your knuckles, nothing breaks. Between the two bones of every knuckle is a sealed capsule full of slippery joint fluid with gas dissolved in it. Pull the finger and the capsule stretches, the pressure inside drops, and the gas suddenly rips out of the fluid into a bubble. That's the crack: real-time MRI in 2015 caught the sound happening exactly as the bubble is born. The gas needs around 20 minutes to dissolve again, which is why you can't crack the same knuckle twice in a row. And arthritis? One doctor cracked only his left hand for 60 years (about 36,500 times): no arthritis in either hand, and it won him an Ig Nobel Prize in 2009. Try it: crack one, then try the same one again 😏
+#knucklecracking #bodyfacts #science #howitworks #shorts
+Tags: knuckle cracking, why do knuckles crack, cracking knuckles, joint popping, cavitation, synovial fluid, arthritis myth, body facts, science, how it works, shorts

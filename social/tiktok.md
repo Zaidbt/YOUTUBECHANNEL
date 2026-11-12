@@ -48,3 +48,7 @@ Your screen has NO yellow 📱🤯 3 levels, 3 seconds each. Comment your score 
 ## CAN YOU COUNT CARDS? (out/cardcount.mp4)
 Can you count cards like a casino pro? 🃏 3 levels, level 3 is casino speed 🔥 no answer for level 3: comment your count 👇 sound on 🔊
 #cardcounting #blackjack #casino #math #braingame #fyp
+
+## What is the CRACK when you crack your knuckles? (out/knuckles.mp4)
+That "crack" isn't your bones 🫧 it's a gas bubble being born in your joint 💥 now try cracking the same knuckle again 😏
+#knucklecracking #bodyfacts #science #learnontiktok #didyouknow #fyp

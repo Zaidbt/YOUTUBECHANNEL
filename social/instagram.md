@@ -280,3 +280,19 @@ The Level 3 answer is NOT in the video. Comment your count 👇 and send this to
 #cardcounting #blackjack #casino #math #pixelart
 
 Extra tags (optional): #braingame #challenge #probability #learnoninstagram #vegas #poker
+
+## Post · What is the CRACK when you crack your knuckles? (out/knuckles.mp4)
+That "crack" isn't your bones. 🫧
+
+🦴 between the two bones of each knuckle: a sealed bag of slippery joint fluid, with gas dissolved in it
+🖐️ pull the finger → the bag stretches → the pressure drops
+💥 the gas suddenly rips out of the fluid into a bubble: CRACK (seen live on MRI in 2015)
+⏳ the gas needs ~20 minutes to dissolve again → that's why you can't crack the same knuckle twice
+🏆 arthritis? One doctor cracked only his LEFT hand for 60 years (~36,500 cracks). Neither hand got arthritis. Ig Nobel Prize, 2009.
+
+Your turn: crack one. Now try the same one again 😏
+Send this to the friend who cracks their knuckles all day.
+
+#knucklecracking #bodyfacts #science #howitworks #pixelart
+
+Extra tags (optional): #didyouknow #learnoninstagram #anatomy #stem #kurzgesagt

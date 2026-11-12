@@ -286,7 +286,7 @@ const Panel: React.FC<{ t: number }> = ({ t }) => {
         <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
           <div style={{ ...px, fontSize: 24, width: 260, color: "#6ee6cf" }}>{wait ? "RECHARGE" : "PRESSURE"}</div>
           <div style={{ flex: 1, height: 34, background: "#05060f", border: "4px solid #05060f" }}><div style={{ width: `${(wait ? rec : p) * 100}%`, height: "100%", background: wait ? "#ff8a7a" : p < 0.4 ? "#ff3a2a" : "#6ee6cf" }} /></div>
-          <div style={{ ...px, fontSize: 24, width: 140, textAlign: "right" }}>{wait ? `${Math.round(rec * 20)} MIN` : ""}</div>
+          <div style={{ ...px, fontSize: 24, width: 150, textAlign: "right", whiteSpace: "nowrap" }}>{wait ? `${Math.round(rec * 20)} MIN` : ""}</div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ ...px, fontSize: 24, width: 260, color: "#ffd23f" }}>SOUND</div>
