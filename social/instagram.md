@@ -296,3 +296,22 @@ Send this to the friend who cracks their knuckles all day.
 #knucklecracking #bodyfacts #science #howitworks #pixelart
 
 Extra tags (optional): #didyouknow #learnoninstagram #anatomy #stem #kurzgesagt
+
+## Post · How a 2-stroke engine works (out/twostroke.mp4)
+Half the parts. Twice the bangs. 🏍️💥
+
+🕳️ no valves: just 3 holes in the cylinder wall
+⬆️ going up, the piston squeezes the fuel on top + sucks fresh fuel into the crankcase below
+💥 spark → bang → the piston slams down
+🔄 going down it opens the holes: smoke out, fresh fuel in
+〰️ the fat pipe bounces a pressure wave back to plug the exit
+1️⃣ result: 1 bang every turn (a car engine: 1 every 2)
+💨 the catch: oil is mixed into the fuel → that blue smoke
+🔥 at 10,000 rpm: 167 bangs a second
+
+Sound on 🔊 every bang is a drum hit.
+Tag someone who still rides a 2-stroke.
+
+#2stroke #engine #motorcycle #howitworks #pixelart
+
+Extra tags (optional): #dirtbike #mechanic #ringding #moto #learnoninstagram #stem

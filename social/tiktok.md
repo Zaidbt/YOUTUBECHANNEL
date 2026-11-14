@@ -52,3 +52,7 @@ Can you count cards like a casino pro? 🃏 3 levels, level 3 is casino speed �
 ## What is the CRACK when you crack your knuckles? (out/knuckles.mp4)
 That "crack" isn't your bones 🫧 it's a gas bubble being born in your joint 💥 now try cracking the same knuckle again 😏
 #knucklecracking #bodyfacts #science #learnontiktok #didyouknow #fyp
+
+## How a 2-stroke engine works (out/twostroke.mp4)
+Half the parts, twice the bangs 🏍️💥 how a 2-stroke engine works, and why it smokes blue 💨 sound on 🔊
+#2stroke #engine #motorcycle #dirtbike #howitworks #fyp

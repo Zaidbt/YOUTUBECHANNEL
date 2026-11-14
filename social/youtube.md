@@ -89,3 +89,10 @@ Description:
 When you crack your knuckles, nothing breaks. Between the two bones of every knuckle is a sealed capsule full of slippery joint fluid with gas dissolved in it. Pull the finger and the capsule stretches, the pressure inside drops, and the gas suddenly rips out of the fluid into a bubble. That's the crack: real-time MRI in 2015 caught the sound happening exactly as the bubble is born. The gas needs around 20 minutes to dissolve again, which is why you can't crack the same knuckle twice in a row. And arthritis? One doctor cracked only his left hand for 60 years (about 36,500 times): no arthritis in either hand, and it won him an Ig Nobel Prize in 2009. Try it: crack one, then try the same one again 😏
 #knucklecracking #bodyfacts #science #howitworks #shorts
 Tags: knuckle cracking, why do knuckles crack, cracking knuckles, joint popping, cavitation, synovial fluid, arthritis myth, body facts, science, how it works, shorts
+
+## How a 2-stroke engine works (out/twostroke.mp4)
+Title: Why 2-stroke engines sound like THAT 🏍️💥 #shorts
+Description:
+Half the parts, twice the bangs. A 2-stroke engine has no valves: just 3 holes in the cylinder wall. Going up, the piston squeezes the fuel on top and sucks fresh fuel into the crankcase underneath. Spark, bang, the piston slams down, and on the way down it uncovers the holes: burnt gas out the exhaust, fresh fuel up the side channel. The fat exhaust pipe (an expansion chamber) even bounces a pressure wave back to plug the exit. Result: one bang every turn, where a car engine gets one every two. The catch: oil is mixed into the fuel, which is that blue smoke. At 10,000 rpm that's 167 bangs a second. Sound on 🔊 every bang is a drum hit.
+#2stroke #engine #motorcycle #howitworks #shorts
+Tags: how a 2 stroke engine works, two stroke engine, 2 stroke, dirt bike, expansion chamber, engine explained, piston, mechanics, how it works, pixel art, shorts

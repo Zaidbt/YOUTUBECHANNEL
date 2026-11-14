@@ -65,6 +65,12 @@ Colourful arcade pixel look + school topics + mascots + LEVEL/SCORE = reads as k
 font (`CalculatorDark.tsx`) = "too professional". Keep the LSD look, pick topics adults wonder about (drugs, body,
 everyday mysteries), dry copy, no mascots. Draw body parts carefully (a side-view finger read as phallic).
 
+## Text in a music-only video (user, Nov)
+No word-by-word subtitles ("it's not a voice-over video"). Use a title on the hook, 1-3 word callouts pinned to the
+thing, and big graphic stamps/numbers on the drops. The realistic-3D medical look (`videos/crack/CrackVideo.tsx`) read
+"too scientific / documentary" for fun Instagram; the user then asked for pixel art again (2-stroke engine).
+No Pletor credits: stay with our own tools.
+
 ## Format that works (user-approved, chameleon 30 s — follow this)
 - **30 s** (not 48), seamless loop. Reference: `remotion/src/videos/chameleon/Chameleon30.tsx` + `videos/12-chameleon/build_30.py`.
 - **Frame 0 = the subject, whole and instantly recognisable** (clear hero shot), already doing the "wow" thing on the
@@ -98,7 +104,7 @@ everyday mysteries), dry copy, no mascots. Draw body parts carefully (a side-vie
   `PixelArtCanvas`. 1–3 short lines, one label per ~2 bars (≥ 2.5 s), colour-code words to match what's on screen.
 - **Every video gets a different hyped rhythm/genre** (done so far: 120 BPM chiptune, 150 BPM four-on-the-floor
   hyper, 170 BPM drum & bass, 140 BPM jersey club / trap with 808s, 130 BPM UK garage 2-step,
-  130 BPM funk carioca, 144 BPM "funk 150", 128 BPM phonk, 128 BPM clean melodic house, 120 BPM stereo nu-disco, 112 BPM melodic afro house, 120 BPM clean synthwave, 96 BPM lo-fi neo-soul (music that goes under), 96 BPM dembow, 108 BPM electro-funk quiz, 126 BPM electro swing, 118 BPM 80s synth-pop (Ariana x Weeknd style; user asked for it). User wants bold but NOT noisy: they hated a distorted rave mix (hoover, acid, noise sweeps,
+  130 BPM funk carioca, 144 BPM "funk 150", 128 BPM phonk, 128 BPM clean melodic house, 120 BPM stereo nu-disco, 112 BPM melodic afro house, 120 BPM clean synthwave, 96 BPM lo-fi neo-soul (music that goes under), 96 BPM dembow, 108 BPM electro-funk quiz, 126 BPM electro swing, 118 BPM 80s synth-pop (Ariana x Weeknd style; user asked for it), 142 BPM UK drill, 130 BPM big beat. User wants bold but NOT noisy: they hated a distorted rave mix (hoover, acid, noise sweeps,
   master saturation) as "so noisy" — keep mixes clean: punchy clean kick, warm filtered chords, round bass, quiet hats, bell leads). Pick a BPM where `48 s × BPM / 240` is a whole number of bars.
 - **The animation plays the music**: map visual events to instruments/notes (parts = drums, colours/letters = notes)
   from the shared timeline, so what you see is what you hear.
