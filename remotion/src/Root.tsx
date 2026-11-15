@@ -45,6 +45,7 @@ import { OzempicVideo, DURATION as OZ_DURATION, FPS as OZ_FPS } from "./videos/o
 import { KnucklesVideo, DURATION as KN_DURATION, FPS as KN_FPS } from "./videos/knuckles/KnucklesVideo";
 import { CrackVideo, DURATION as CRACK_DURATION, FPS as CRACK_FPS } from "./videos/crack/CrackVideo";
 import { TwoStrokeVideo, DURATION as TS_DURATION, FPS as TS_FPS } from "./videos/twostroke/TwoStrokeVideo";
+import { WankelVideo, DURATION as WK_DURATION, FPS as WK_FPS } from "./videos/wankel/WankelVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -122,5 +123,6 @@ export const Root = () => (
     <Composition id="KnucklesVideo" component={KnucklesVideo} durationInFrames={KN_DURATION} fps={KN_FPS} width={1080} height={1920} />
     <Composition id="CrackVideo" component={CrackVideo} durationInFrames={CRACK_DURATION} fps={CRACK_FPS} width={1080} height={1920} />
     <Composition id="TwoStrokeVideo" component={TwoStrokeVideo} durationInFrames={TS_DURATION} fps={TS_FPS} width={1080} height={1920} />
+    <Composition id="WankelVideo" component={WankelVideo} durationInFrames={WK_DURATION} fps={WK_FPS} width={1080} height={1920} />
   </>
 );

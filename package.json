@@ -41,7 +41,8 @@
     "video:ozempic": "python3 videos/24-ozempic/build.py && remotion render OzempicVideo out/ozempic.mp4 --gl=swangle",
     "video:knuckles": "python3 videos/25-knuckles/build.py && remotion render KnucklesVideo out/knuckles.mp4 --gl=swangle",
     "video:crack": "python3 videos/26-crack/build.py && remotion render CrackVideo out/crack.mp4 --gl=swangle",
-    "video:twostroke": "python3 videos/27-twostroke/build.py && remotion render TwoStrokeVideo out/twostroke.mp4 --gl=swangle"
+    "video:twostroke": "python3 videos/27-twostroke/build.py && remotion render TwoStrokeVideo out/twostroke.mp4 --gl=swangle",
+    "video:wankel": "python3 videos/28-wankel/build.py && remotion render WankelVideo out/wankel.mp4 --gl=swangle"
   },
   "repository": {
     "type": "git",
