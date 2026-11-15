@@ -46,6 +46,7 @@ import { KnucklesVideo, DURATION as KN_DURATION, FPS as KN_FPS } from "./videos/
 import { CrackVideo, DURATION as CRACK_DURATION, FPS as CRACK_FPS } from "./videos/crack/CrackVideo";
 import { TwoStrokeVideo, DURATION as TS_DURATION, FPS as TS_FPS } from "./videos/twostroke/TwoStrokeVideo";
 import { WankelVideo, DURATION as WK_DURATION, FPS as WK_FPS } from "./videos/wankel/WankelVideo";
+import { GearboxVideo, DURATION as GB_DURATION, FPS as GB_FPS } from "./videos/gearbox/GearboxVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -124,5 +125,6 @@ export const Root = () => (
     <Composition id="CrackVideo" component={CrackVideo} durationInFrames={CRACK_DURATION} fps={CRACK_FPS} width={1080} height={1920} />
     <Composition id="TwoStrokeVideo" component={TwoStrokeVideo} durationInFrames={TS_DURATION} fps={TS_FPS} width={1080} height={1920} />
     <Composition id="WankelVideo" component={WankelVideo} durationInFrames={WK_DURATION} fps={WK_FPS} width={1080} height={1920} />
+    <Composition id="GearboxVideo" component={GearboxVideo} durationInFrames={GB_DURATION} fps={GB_FPS} width={1080} height={1920} />
   </>
 );
