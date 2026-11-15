@@ -71,6 +71,11 @@ thing, and big graphic stamps/numbers on the drops. The realistic-3D medical loo
 "too scientific / documentary" for fun Instagram; the user then asked for pixel art again (2-stroke engine).
 No Pletor credits: stay with our own tools.
 
+## Mechanical series look (Nov): "slicker, more attractive"
+`videos/wankel/WankelVideo.tsx` + `videos/gearbox/GearboxVideo.tsx`: real 3D parts (Extrude/gear shapes) with
+MeshToonMaterial + 3-step gradient map, PixelArtCanvas `outline` on, `scale={3}`, dark stage with blue/pink rim lights,
+a neon ring, a perspective grid floor; camera at a 3/4 angle so gear FACES are visible. User picked the gearbox to finish.
+
 ## Format that works (user-approved, chameleon 30 s — follow this)
 - **30 s** (not 48), seamless loop. Reference: `remotion/src/videos/chameleon/Chameleon30.tsx` + `videos/12-chameleon/build_30.py`.
 - **Frame 0 = the subject, whole and instantly recognisable** (clear hero shot), already doing the "wow" thing on the
@@ -104,7 +109,7 @@ No Pletor credits: stay with our own tools.
   `PixelArtCanvas`. 1–3 short lines, one label per ~2 bars (≥ 2.5 s), colour-code words to match what's on screen.
 - **Every video gets a different hyped rhythm/genre** (done so far: 120 BPM chiptune, 150 BPM four-on-the-floor
   hyper, 170 BPM drum & bass, 140 BPM jersey club / trap with 808s, 130 BPM UK garage 2-step,
-  130 BPM funk carioca, 144 BPM "funk 150", 128 BPM phonk, 128 BPM clean melodic house, 120 BPM stereo nu-disco, 112 BPM melodic afro house, 120 BPM clean synthwave, 96 BPM lo-fi neo-soul (music that goes under), 96 BPM dembow, 108 BPM electro-funk quiz, 126 BPM electro swing, 118 BPM 80s synth-pop (Ariana x Weeknd style; user asked for it), 142 BPM UK drill, 130 BPM big beat. User wants bold but NOT noisy: they hated a distorted rave mix (hoover, acid, noise sweeps,
+  130 BPM funk carioca, 144 BPM "funk 150", 128 BPM phonk, 128 BPM clean melodic house, 120 BPM stereo nu-disco, 112 BPM melodic afro house, 120 BPM clean synthwave, 96 BPM lo-fi neo-soul (music that goes under), 96 BPM dembow, 108 BPM electro-funk quiz, 126 BPM electro swing, 118 BPM 80s synth-pop (Ariana x Weeknd style; user asked for it), 142 BPM UK drill, 130 BPM big beat, 116 BPM future funk, 155 BPM Eurobeat. User wants bold but NOT noisy: they hated a distorted rave mix (hoover, acid, noise sweeps,
   master saturation) as "so noisy" — keep mixes clean: punchy clean kick, warm filtered chords, round bass, quiet hats, bell leads). Pick a BPM where `48 s × BPM / 240` is a whole number of bars.
 - **The animation plays the music**: map visual events to instruments/notes (parts = drums, colours/letters = notes)
   from the shared timeline, so what you see is what you hear.

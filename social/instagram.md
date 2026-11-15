@@ -315,3 +315,21 @@ Tag someone who still rides a 2-stroke.
 #2stroke #engine #motorcycle #howitworks #pixelart
 
 Extra tags (optional): #dirtbike #mechanic #ringding #moto #learnoninstagram #stem
+
+## Post · What happens inside a manual gearbox (out/gearbox.mp4)
+What ACTUALLY happens when you shift gear? ⚙️🏁
+
+🔁 every gear in the box is always meshed and always spinning… but loose on its shaft
+🕹️ the stick slides a collar that locks ONE gear to the shaft
+🧲 before it locks, a friction cone (the synchro) matches their speeds → no grinding
+💪 1st: small gear drives a big one = ~3.5x the push, but slow
+🚀 top gear: big drives small = cruise speed
+🦶 the clutch unplugs the engine while you switch
+😬 that grinding sound? the synchro lost the race
+
+Sound on 🔊 every shift is a hit (and the beat changes key on each upshift).
+Tag the friend who still grinds 2nd.
+
+#manual #gearbox #cars #howitworks #pixelart
+
+Extra tags (optional): #stickshift #savethemanuals #jdm #carguy #eurobeat #learnoninstagram

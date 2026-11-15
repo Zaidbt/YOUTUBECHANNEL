@@ -56,3 +56,7 @@ That "crack" isn't your bones 🫧 it's a gas bubble being born in your joint �
 ## How a 2-stroke engine works (out/twostroke.mp4)
 Half the parts, twice the bangs 🏍️💥 how a 2-stroke engine works, and why it smokes blue 💨 sound on 🔊
 #2stroke #engine #motorcycle #dirtbike #howitworks #fyp
+
+## What happens inside a manual gearbox (out/gearbox.mp4)
+What ACTUALLY happens when you shift gear ⚙️🏁 and why it grinds 😬 sound on 🔊 eurobeat key change on every upshift
+#manual #gearbox #stickshift #cars #howitworks #fyp

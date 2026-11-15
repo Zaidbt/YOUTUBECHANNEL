@@ -96,3 +96,10 @@ Description:
 Half the parts, twice the bangs. A 2-stroke engine has no valves: just 3 holes in the cylinder wall. Going up, the piston squeezes the fuel on top and sucks fresh fuel into the crankcase underneath. Spark, bang, the piston slams down, and on the way down it uncovers the holes: burnt gas out the exhaust, fresh fuel up the side channel. The fat exhaust pipe (an expansion chamber) even bounces a pressure wave back to plug the exit. Result: one bang every turn, where a car engine gets one every two. The catch: oil is mixed into the fuel, which is that blue smoke. At 10,000 rpm that's 167 bangs a second. Sound on 🔊 every bang is a drum hit.
 #2stroke #engine #motorcycle #howitworks #shorts
 Tags: how a 2 stroke engine works, two stroke engine, 2 stroke, dirt bike, expansion chamber, engine explained, piston, mechanics, how it works, pixel art, shorts
+
+## What happens inside a manual gearbox (out/gearbox.mp4)
+Title: What ACTUALLY happens when you shift gear ⚙️🏁 #shorts
+Description:
+Engine → clutch → gearbox → wheels. Inside the gearbox, every gear is always meshed and always spinning, but loose on its shaft. When you move the stick, a fork slides a collar that locks ONE gear to the shaft. Before it locks, a friction cone (the synchro) matches their speeds, so nothing grinds. 1st gear: a small gear drives a big one, about 3.5x the push but slow. Top gear: big drives small, cruise speed. The clutch unplugs the engine while you switch. That grinding sound? The synchro lost the race. Sound on 🔊 every shift is a hit, and the beat changes key with every upshift.
+#manual #gearbox #cars #howitworks #shorts
+Tags: how a manual gearbox works, manual transmission, gearbox, synchromesh, clutch, stick shift, gear ratio, car mechanics, how it works, pixel art, shorts
