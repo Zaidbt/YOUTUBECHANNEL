@@ -333,3 +333,20 @@ Tag the friend who still grinds 2nd.
 #manual #gearbox #cars #howitworks #pixelart
 
 Extra tags (optional): #stickshift #savethemanuals #jdm #carguy #eurobeat #learnoninstagram
+
+## How your phone vibrates (out/vibration.mp4)
+What's spinning inside your phone right now? 📳
+
+📱 when it buzzes, something inside spins ~11,760 times a minute
+🌗 a half-moon of metal on a tiny motor, off-center on purpose
+🌀 the heavy side yanks the motor (and your phone) in circles ~196 times a second
+💡 the chip flicks it on/off: bzz… bzz…
+🧲 newer phones: no spinning. A magnet on springs, pushed by a coil
+⚡ it stops in milliseconds, so it can "tap" instead of buzz
+
+Sound on 🔊 the buzz IS the melody: 196 Hz = a G, and it goes up an octave every time we speed up.
+Send this to the friend whose phone is always on vibrate.
+
+#howitworks #smartphone #tech #haptics #pixelart
+
+Extra tags (optional): #iphone #android #techfacts #engineering #learnoninstagram #science

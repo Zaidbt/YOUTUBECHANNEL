@@ -103,3 +103,10 @@ Description:
 Engine → clutch → gearbox → wheels. Inside the gearbox, every gear is always meshed and always spinning, but loose on its shaft. When you move the stick, a fork slides a collar that locks ONE gear to the shaft. Before it locks, a friction cone (the synchro) matches their speeds, so nothing grinds. 1st gear: a small gear drives a big one, about 3.5x the push but slow. Top gear: big drives small, cruise speed. The clutch unplugs the engine while you switch. That grinding sound? The synchro lost the race. Sound on 🔊 every shift is a hit, and the beat changes key with every upshift.
 #manual #gearbox #cars #howitworks #shorts
 Tags: how a manual gearbox works, manual transmission, gearbox, synchromesh, clutch, stick shift, gear ratio, car mechanics, how it works, pixel art, shorts
+
+## How your phone vibrates (out/vibration.mp4)
+Title: What's spinning inside your phone right now? 📳 #shorts
+Description:
+When your phone buzzes, something inside is spinning about 11,760 times a minute. Older and cheaper phones have a tiny motor (an ERM) with a half-moon of metal stuck on its shaft. Because the weight is off-center, every turn it yanks the motor (and the whole phone) around in a little circle, about 196 times a second. The chip switches the motor on and off to make patterns: bzz... bzz... Newer phones (iPhone Taptic Engine, most flagships) don't spin anything: a magnet sits between two springs and a coil pushes it back and forth at its natural rhythm (a linear resonant actuator). It starts and stops in a few milliseconds, so it can "tap" instead of buzz. Sound on 🔊 the buzz is the lead synth: 196 Hz is a G, and every time the video speeds up, the note goes up an octave.
+#vibration #smartphone #tech #howitworks #shorts
+Tags: how does a phone vibrate, phone vibration motor, vibrate, ERM motor, eccentric rotating mass, linear resonant actuator, taptic engine, haptics, smartphone, tech explained, how it works, pixel art, shorts

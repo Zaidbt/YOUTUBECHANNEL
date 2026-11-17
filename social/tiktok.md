@@ -60,3 +60,7 @@ Half the parts, twice the bangs 🏍️💥 how a 2-stroke engine works, and why
 ## What happens inside a manual gearbox (out/gearbox.mp4)
 What ACTUALLY happens when you shift gear ⚙️🏁 and why it grinds 😬 sound on 🔊 eurobeat key change on every upshift
 #manual #gearbox #stickshift #cars #howitworks #fyp
+
+## How your phone vibrates (out/vibration.mp4)
+What's spinning inside your phone right now? 📳 11,760 rpm, slowed down 512x 🌀 sound on 🔊 the buzz is the melody
+#phone #vibration #tech #haptics #howitworks #fyp
