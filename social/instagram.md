@@ -350,3 +350,38 @@ Send this to the friend whose phone is always on vibrate.
 #howitworks #smartphone #tech #haptics #pixelart
 
 Extra tags (optional): #iphone #android #techfacts #engineering #learnoninstagram #science
+
+## How Face ID works (out/faceid.mp4)
+Your phone fires 30,000 invisible dots at your face 👁️
+
+💡 a flood of infrared light lights you up (invisible, works in the dark)
+🔴 a dot projector fires 30,000+ IR dots at your face
+📷 an IR camera sees how each dot lands: nose = close, ears = far → a 3D map
+🧮 the chip turns it into maths and compares it with your saved map (it never leaves the phone)
+🖼️ a photo can't fool it: flat = every dot at the same depth
+🎲 odds a stranger unlocks your phone: 1 in 1,000,000 (Touch ID: 1 in 50,000)
+
+Sound on 🔊 every dot burst is a note.
+Send this to the friend who unlocks their phone 200 times a day.
+
+#howitworks #faceid #iphone #tech #pixelart
+
+Extra tags (optional): #techfacts #apple #infrared #learnoninstagram #science
+
+## How a lock gets picked (out/lockpick.mp4)
+Your front door opens without the key. Here's how 🔓
+
+🔩 5 pin stacks inside: key pin + driver pin + spring
+🚫 the driver pins cross the "shear line", so the lock can't turn
+🔑 the right key lifts every gap exactly to that line
+🔧 picking: twist slightly, and because no lock is perfect, ONE pin jams
+👆 lift it… click, it stays up, the next one jams. ×5 → it turns
+🔢 5 pins × up to 10 heights = up to 100,000 keys, beaten by feel
+🛡️ better locks use spool pins that fake the click
+
+Sound on 🔊 every pin that sets is a note.
+Tag the friend who always locks themselves out.
+
+#howitworks #lockpicking #locks #security #pixelart
+
+Extra tags (optional): #locksmith #lockpick #homesecurity #engineering #learnoninstagram

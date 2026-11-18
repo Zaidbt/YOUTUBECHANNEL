@@ -110,3 +110,17 @@ Description:
 When your phone buzzes, something inside is spinning about 11,760 times a minute. Older and cheaper phones have a tiny motor (an ERM) with a half-moon of metal stuck on its shaft. Because the weight is off-center, every turn it yanks the motor (and the whole phone) around in a little circle, about 196 times a second. The chip switches the motor on and off to make patterns: bzz... bzz... Newer phones (iPhone Taptic Engine, most flagships) don't spin anything: a magnet sits between two springs and a coil pushes it back and forth at its natural rhythm (a linear resonant actuator). It starts and stops in a few milliseconds, so it can "tap" instead of buzz. Sound on 🔊 the buzz is the lead synth: 196 Hz is a G, and every time the video speeds up, the note goes up an octave.
 #vibration #smartphone #tech #howitworks #shorts
 Tags: how does a phone vibrate, phone vibration motor, vibrate, ERM motor, eccentric rotating mass, linear resonant actuator, taptic engine, haptics, smartphone, tech explained, how it works, pixel art, shorts
+
+## How Face ID works (out/faceid.mp4)
+Title: Your phone fires 30,000 invisible dots at your face 👁️ #shorts
+Description:
+Every time you unlock your phone, it scans your face in the dark. First a flood illuminator lights you up with infrared light, which you can't see, so it works at night. Then a dot projector fires more than 30,000 infrared dots at your face. An infrared camera reads how each dot lands: dots on your nose are closer than dots near your ears, so together they make a 3D depth map. The chip turns that map into maths and compares it with your saved map, which stays locked inside the Secure Enclave and never leaves the phone. A printed photo can't fool it: it's flat, so every dot lands at the same depth. Odds that a random stranger's face unlocks your phone: about 1 in 1,000,000 (Touch ID was 1 in 50,000). Source: Apple Platform Security guide. Sound on 🔊 every dot burst is a note.
+#faceid #iphone #tech #howitworks #shorts
+Tags: how face id works, face id, iphone, dot projector, infrared, truedepth camera, depth map, facial recognition, secure enclave, tech explained, how it works, pixel art, shorts
+
+## How a lock gets picked (out/lockpick.mp4)
+Title: Your front door opens without the key. Here's how 🔓 #shorts
+Description:
+Inside most front door locks are 5 little pin stacks: a key pin, a driver pin and a spring. The driver pins cross the gap between the turning part (the plug) and the body, the "shear line", so the plug can't turn. The right key lifts every gap exactly to that line. Picking does it without the key: a tension wrench twists the plug very slightly, and because no lock is machined perfectly, ONE pin jams first. Lift it with a pick until it clicks: the driver pin stays up on the edge of the plug, and the next pin jams. Repeat 5 times and it turns. With 5 pins and up to 10 heights, that's up to 100,000 different keys, beaten by feel. Better locks use spool pins that fake the click. Sound on 🔊 every pin that sets is a note.
+#lockpicking #locks #security #howitworks #shorts
+Tags: how lock picking works, lock picking, pin tumbler lock, how locks work, tension wrench, spool pins, security pins, locksmith, home security, how it works, pixel art, shorts

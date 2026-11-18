@@ -64,3 +64,11 @@ What ACTUALLY happens when you shift gear ⚙️🏁 and why it grinds 😬 soun
 ## How your phone vibrates (out/vibration.mp4)
 What's spinning inside your phone right now? 📳 11,760 rpm, slowed down 512x 🌀 sound on 🔊 the buzz is the melody
 #phone #vibration #tech #haptics #howitworks #fyp
+
+## How Face ID works (out/faceid.mp4)
+Your phone fires 30,000 invisible dots at your face 👁️ and a photo can't fool it 🖼️❌ sound on 🔊
+#faceid #iphone #tech #infrared #howitworks #fyp
+
+## How a lock gets picked (out/lockpick.mp4)
+Your front door opens without the key 🔓 how lock picking really works, click by click 🔧 sound on 🔊
+#lockpicking #locks #security #lockpick #howitworks #fyp
