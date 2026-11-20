@@ -52,6 +52,8 @@ import { FaceIdVideo, DURATION as FI_DURATION, FPS as FI_FPS } from "./videos/fa
 import { LockPickVideo, DURATION as LP_DURATION, FPS as LP_FPS } from "./videos/lockpick/LockPickVideo";
 import { ClickPenVideo, DURATION as CP_DURATION, FPS as CP_FPS } from "./videos/clickpen/ClickPenVideo";
 import { MicrowaveVideo, DURATION as MW_DURATION, FPS as MW_FPS } from "./videos/microwave/MicrowaveVideo";
+import { TickleVideo, DURATION as TK_DURATION, FPS as TK_FPS } from "./videos/tickle/TickleVideo";
+import { ContactlessVideo, DURATION as CT_DURATION, FPS as CT_FPS } from "./videos/contactless/ContactlessVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -136,5 +138,7 @@ export const Root = () => (
     <Composition id="LockPickVideo" component={LockPickVideo} durationInFrames={LP_DURATION} fps={LP_FPS} width={1080} height={1920} />
     <Composition id="ClickPenVideo" component={ClickPenVideo} durationInFrames={CP_DURATION} fps={CP_FPS} width={1080} height={1920} />
     <Composition id="MicrowaveVideo" component={MicrowaveVideo} durationInFrames={MW_DURATION} fps={MW_FPS} width={1080} height={1920} />
+    <Composition id="TickleVideo" component={TickleVideo} durationInFrames={TK_DURATION} fps={TK_FPS} width={1080} height={1920} />
+    <Composition id="ContactlessVideo" component={ContactlessVideo} durationInFrames={CT_DURATION} fps={CT_FPS} width={1080} height={1920} />
   </>
 );
