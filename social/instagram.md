@@ -385,3 +385,37 @@ Tag the friend who always locks themselves out.
 #howitworks #lockpicking #locks #security #pixelart
 
 Extra tags (optional): #locksmith #lockpick #homesecurity #engineering #learnoninstagram
+
+## What happens when you click a pen (out/clickpen.mp4)
+What actually happens when you click a pen? 🖊️
+
+🌀 a spring pushes the ink tube up (that's why the tip hides)
+👆 click: a sawtooth pushes a little cam down and twists it
+🧱 let go: it lands on a ledge → the tip stays out
+🔁 click again: it twists into a slot → the spring shoots it back up
+⚪ the tip is a ~0.7 mm metal ball that rolls ink out like a roll-on
+🍯 the ink is thick like honey so it doesn't leak (Bíró's patent, 1938)
+
+Sound on 🔊 every click is a beat.
+Tag the friend who clicks pens in meetings.
+
+#howitworks #pen #engineering #satisfying #pixelart
+
+Extra tags (optional): #everydayobjects #design #mechanism #learnoninstagram #stationery
+
+## How a microwave heats food (out/microwave.mp4)
+Your microwave flips water 5 billion times a second 📡🍜
+
+💧 water has a + end and a − end
+⚡ the waves flip direction 4.9 billion times a second, and water follows every flip
+🔥 all that jostling = heat (the food heats itself)
+📡 the waves come from a magnetron (2.45 GHz)
+🔴🔵 they bounce into hot & cold spots ~6 cm apart → that's why the plate spins
+🥄 they only reach 1-2 cm deep → the middle stays cold. Stir it!
+
+Sound on 🔊 every flip is a note.
+Send this to the friend who eats lava-edged, frozen-middle leftovers.
+
+#howitworks #microwave #science #physics #pixelart
+
+Extra tags (optional): #kitchenhacks #foodscience #sciencefacts #learnoninstagram #stem

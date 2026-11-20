@@ -124,3 +124,17 @@ Description:
 Inside most front door locks are 5 little pin stacks: a key pin, a driver pin and a spring. The driver pins cross the gap between the turning part (the plug) and the body, the "shear line", so the plug can't turn. The right key lifts every gap exactly to that line. Picking does it without the key: a tension wrench twists the plug very slightly, and because no lock is machined perfectly, ONE pin jams first. Lift it with a pick until it clicks: the driver pin stays up on the edge of the plug, and the next pin jams. Repeat 5 times and it turns. With 5 pins and up to 10 heights, that's up to 100,000 different keys, beaten by feel. Better locks use spool pins that fake the click. Sound on 🔊 every pin that sets is a note.
 #lockpicking #locks #security #howitworks #shorts
 Tags: how lock picking works, lock picking, pin tumbler lock, how locks work, tension wrench, spool pins, security pins, locksmith, home security, how it works, pixel art, shorts
+
+## What happens when you click a pen (out/clickpen.mp4)
+Title: What actually happens when you click a pen? 🖊️ #shorts
+Description:
+There's a tiny rotating machine inside every click pen. A spring at the tip pushes the ink tube up, which is why the tip hides. When you click, the button's sawtooth pushes a little cam down, and because the teeth are slanted, it twists it a bit. Let go and the cam's ridges land on ledges inside the barrel: the tip is stuck out and you can write. Click again, it twists a bit more, the ridges line up with slots, and the spring shoots it back up. At the tip, a tiny metal ball (about 0.7 mm) rolls the ink out like a roll-on deodorant, and the ink is thick like honey so it doesn't leak. The ballpoint was patented by László Bíró in 1938. Sound on 🔊 every click is a beat.
+#pen #engineering #howitworks #satisfying #shorts
+Tags: how does a click pen work, retractable pen, ballpoint pen, pen mechanism, click pen, rotating cam, engineering, everyday objects, how it works, pixel art, shorts
+
+## How a microwave heats food (out/microwave.mp4)
+Title: Your microwave flips water 5 billion times a second 📡🍜 #shorts
+Description:
+A microwave doesn't heat the air, it shakes the water in your food. Water molecules have a slightly positive end and a slightly negative end. The microwaves are an electric field that flips direction about 4.9 billion times a second (2.45 GHz), and every flip yanks every water molecule around. All that jostling is heat. The waves are made by a magnetron, carried in by a waveguide, and bounce off the metal walls, which makes hot and cold spots about 6 cm apart, so the plate turns to move your food through them. They only reach 1 to 2 cm into the food: the middle heats slowly by conduction. That's why it's still cold in the middle. Stir it! Sound on 🔊 every flip is a note.
+#microwave #science #physics #howitworks #shorts
+Tags: how does a microwave work, microwave oven, why microwave food is cold in the middle, magnetron, 2.45 GHz, water molecules, dielectric heating, standing waves, kitchen science, how it works, pixel art, shorts

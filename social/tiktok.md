@@ -72,3 +72,11 @@ Your phone fires 30,000 invisible dots at your face 👁️ and a photo can't fo
 ## How a lock gets picked (out/lockpick.mp4)
 Your front door opens without the key 🔓 how lock picking really works, click by click 🔧 sound on 🔊
 #lockpicking #locks #security #lockpick #howitworks #fyp
+
+## What happens when you click a pen (out/clickpen.mp4)
+What actually happens when you click a pen? 🖊️ there's a tiny rotating machine in there 🌀 sound on 🔊
+#pen #engineering #satisfying #mechanism #howitworks #fyp
+
+## How a microwave heats food (out/microwave.mp4)
+Your microwave flips water 5 billion times a second 📡 and that's why the middle is still cold 🥶 sound on 🔊
+#microwave #science #physics #kitchenhacks #howitworks #fyp

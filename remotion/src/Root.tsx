@@ -50,6 +50,8 @@ import { GearboxVideo, DURATION as GB_DURATION, FPS as GB_FPS } from "./videos/g
 import { VibrationVideo, DURATION as VB_DURATION, FPS as VB_FPS } from "./videos/vibration/VibrationVideo";
 import { FaceIdVideo, DURATION as FI_DURATION, FPS as FI_FPS } from "./videos/faceid/FaceIdVideo";
 import { LockPickVideo, DURATION as LP_DURATION, FPS as LP_FPS } from "./videos/lockpick/LockPickVideo";
+import { ClickPenVideo, DURATION as CP_DURATION, FPS as CP_FPS } from "./videos/clickpen/ClickPenVideo";
+import { MicrowaveVideo, DURATION as MW_DURATION, FPS as MW_FPS } from "./videos/microwave/MicrowaveVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -132,5 +134,7 @@ export const Root = () => (
     <Composition id="VibrationVideo" component={VibrationVideo} durationInFrames={VB_DURATION} fps={VB_FPS} width={1080} height={1920} />
     <Composition id="FaceIdVideo" component={FaceIdVideo} durationInFrames={FI_DURATION} fps={FI_FPS} width={1080} height={1920} />
     <Composition id="LockPickVideo" component={LockPickVideo} durationInFrames={LP_DURATION} fps={LP_FPS} width={1080} height={1920} />
+    <Composition id="ClickPenVideo" component={ClickPenVideo} durationInFrames={CP_DURATION} fps={CP_FPS} width={1080} height={1920} />
+    <Composition id="MicrowaveVideo" component={MicrowaveVideo} durationInFrames={MW_DURATION} fps={MW_FPS} width={1080} height={1920} />
   </>
 );

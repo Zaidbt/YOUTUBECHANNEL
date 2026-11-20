@@ -46,7 +46,9 @@
     "video:gearbox": "python3 videos/29-gearbox/build.py && remotion render GearboxVideo out/gearbox.mp4 --gl=swangle",
     "video:vibration": "python3 videos/30-vibration/build.py && remotion render VibrationVideo out/vibration.mp4 --gl=swangle",
     "video:faceid": "python3 videos/31-faceid/build.py && remotion render FaceIdVideo out/faceid.mp4 --gl=swangle",
-    "video:lockpick": "python3 videos/32-lockpick/build.py && remotion render LockPickVideo out/lockpick.mp4 --gl=swangle"
+    "video:lockpick": "python3 videos/32-lockpick/build.py && remotion render LockPickVideo out/lockpick.mp4 --gl=swangle",
+    "video:clickpen": "python3 videos/33-clickpen/build.py && remotion render ClickPenVideo out/clickpen.mp4 --gl=swangle",
+    "video:microwave": "python3 videos/34-microwave/build.py && remotion render MicrowaveVideo out/microwave.mp4 --gl=swangle"
   },
   "repository": {
     "type": "git",
