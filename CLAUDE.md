@@ -76,6 +76,14 @@ No Pletor credits: stay with our own tools.
 MeshToonMaterial + 3-step gradient map, PixelArtCanvas `outline` on, `scale={3}`, dark stage with blue/pink rim lights,
 a neon ring, a perspective grid floor; camera at a 3/4 angle so gear FACES are visible. User picked the gearbox to finish.
 
+## Rejected (Nov 20): "random average, very low content" — vibration / Face ID / lock / pen / microwave
+User: same phone-notification template on random subjects, a bit childish, "for dummies", basic knowledge with drawings.
+Viewers are NOT dummies: they want something REAL they didn't know. Rules from now on:
+- Pick topics where the core fact is surprising/counter-intuitive to an informed adult (a myth busted, a mind-blowing
+  number, hidden engineering), not "how X works" textbook basics.
+- Every video gets its OWN visual identity built for its subject (no reused notification-card/HUD template).
+- Depth over coverage: one non-obvious mechanism with real numbers and named science, shown properly.
+
 ## Format that works (user-approved, chameleon 30 s — follow this)
 - **30 s** (not 48), seamless loop. Reference: `remotion/src/videos/chameleon/Chameleon30.tsx` + `videos/12-chameleon/build_30.py`.
 - **Frame 0 = the subject, whole and instantly recognisable** (clear hero shot), already doing the "wow" thing on the
