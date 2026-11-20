@@ -84,6 +84,10 @@ Viewers are NOT dummies: they want something REAL they didn't know. Rules from n
 - Every video gets its OWN visual identity built for its subject (no reused notification-card/HUD template).
 - Depth over coverage: one non-obvious mechanism with real numbers and named science, shown properly.
 
+Nov 20, second try also rejected: tickle (035, LSD look) + contactless card (036, neon 3D) — "none of the two is
+good": visuals/render, hook/pacing, topics AND music all judged not good enough. The user will now pick the topic;
+focus 100 % on execution quality (ask for a reference reel to match shot by shot when possible).
+
 ## Format that works (user-approved, chameleon 30 s — follow this)
 - **30 s** (not 48), seamless loop. Reference: `remotion/src/videos/chameleon/Chameleon30.tsx` + `videos/12-chameleon/build_30.py`.
 - **Frame 0 = the subject, whole and instantly recognisable** (clear hero shot), already doing the "wow" thing on the
