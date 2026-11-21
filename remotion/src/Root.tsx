@@ -55,6 +55,7 @@ import { MicrowaveVideo, DURATION as MW_DURATION, FPS as MW_FPS } from "./videos
 import { TickleVideo, DURATION as TK_DURATION, FPS as TK_FPS } from "./videos/tickle/TickleVideo";
 import { ContactlessVideo, DURATION as CT_DURATION, FPS as CT_FPS } from "./videos/contactless/ContactlessVideo";
 import { DiffTest, DURATION as DT_DURATION, FPS as DT_FPS } from "./videos/diff/DiffTest";
+import { ToothTest, DURATION as TT_DURATION, FPS as TT_FPS } from "./videos/toothbrush/ToothTest";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -142,5 +143,6 @@ export const Root = () => (
     <Composition id="TickleVideo" component={TickleVideo} durationInFrames={TK_DURATION} fps={TK_FPS} width={1080} height={1920} />
     <Composition id="ContactlessVideo" component={ContactlessVideo} durationInFrames={CT_DURATION} fps={CT_FPS} width={1080} height={1920} />
     <Composition id="DiffTest" component={DiffTest} durationInFrames={DT_DURATION} fps={DT_FPS} width={1080} height={1920} />
+    <Composition id="ToothTest" component={ToothTest} durationInFrames={TT_DURATION} fps={TT_FPS} width={1080} height={1920} />
   </>
 );
