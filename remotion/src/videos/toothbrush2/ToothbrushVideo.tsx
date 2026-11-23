@@ -37,7 +37,7 @@ const PH = (() => { const N = 8000, dt = D / N; let a = 0; const arr = [0]; for 
 const phase = (t: number) => PH.arr[Math.min(PH.arr.length - 1, Math.round(t / PH.dt))];
 const freq = (t: number) => 64 / slowAt(t) / BEAT;
 const SWING = 0.42;
-const swingA = (t: number) => (freq(t) > 9 ? 0 : SWING * Math.sin(2 * Math.PI * phase(t)));
+const swingA = (t: number) => (freq(t) > 9 ? SWING * 0.8 * Math.sin(t * 2 * Math.PI * 23.3 + Math.sin(t * 91) * 2) : SWING * Math.sin(2 * Math.PI * phase(t)));
 const motorA = (t: number) => 2 * Math.PI * phase(t) * 3;
 
 // ================= materials =================
@@ -259,7 +259,10 @@ export const ToothbrushVideo: React.FC = () => {
         <directionalLight position={[5, 10, 12]} intensity={1.5} color="#fff4e0" />
         <directionalLight position={[-6, 3, -4]} intensity={0.7} color="#9fc8ff" />
         {mk > 0.01 && <group position={[0, (1 - mk) * -12, 0]}><Mouth t={t} /></group>}
-        <group position={pose.p} rotation={pose.r}>
+        {mk > 0.5 && <group position={HOOK_HEAD}>
+          {Array.from({ length: 14 }, (_, k) => { const u = (((t * 0.9 + k / 14) % 1) + 1) % 1, a = k * 2.4; return <mesh key={k} material={M.white} position={[0.75 * Math.cos(a) * (0.6 + u * 0.6), 0.6 * Math.sin(a) * (0.6 + u * 0.6), -0.35 + 0.1 * Math.sin(k)]} scale={(0.12 + 0.08 * Math.sin(k * 3)) * (u < 0.85 ? 1 : (1 - u) / 0.15)}><sphereGeometry args={[1, 8, 6]} /></mesh>; })}
+        </group>}
+        <group position={[pose.p[0] + (freq(t) > 9 ? 0.03 * Math.sin(t * 173) : 0), pose.p[1] + (freq(t) > 9 ? 0.03 * Math.cos(t * 151) : 0), pose.p[2]]} rotation={pose.r}>
           <Brush t={t} xray={xray} ghost={freq(t) > 9} />
           {t >= L[5] - 0.2 && t < L[6] && <group>
             <mesh geometry={geo.base} material={M.base} position={[0, -0.6, 0]} />
