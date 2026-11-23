@@ -75,7 +75,7 @@ def gear_path(theta, r0, r1, n=16):
 
 def draw_world(c, fi, t):
     """everything that glows, in world coords"""
-    wave = min(len(WAVE_HUES) - 1, int(min(t, FULL_T - 0.01) / WAVE)); wh = WAVE_HUES[wave]
+    wave = 0 if t >= BURST1 else min(len(WAVE_HUES) - 1, int(min(t, FULL_T - 0.01) / WAVE)); wh = WAVE_HUES[wave]
     reset = t >= RESET
     pos, hue, born, alpha = ball_state(fi)
     n = len(pos)
@@ -149,7 +149,7 @@ def text(c, s, x, y, size, color, font, glow=None, alpha=1.0, spacing=0.0):
 SMALL_W, SMALL_H = W // 4, H // 4
 def draw(main, layer, small, fi):
     t = fi / FPS
-    wave = min(len(WAVE_HUES) - 1, int(min(t, FULL_T - 0.01) / WAVE)); wh = WAVE_HUES[wave]
+    wave = 0 if t >= BURST1 else min(len(WAVE_HUES) - 1, int(min(t, FULL_T - 0.01) / WAVE)); wh = WAVE_HUES[wave]
     c = main.getCanvas()
     bg = skia.Paint(); bg.setShader(skia.GradientShader.MakeRadial(skia.Point(CX, CY), 1250, [hsv(wh, 0.7, 0.16), hsv(wh, 0.8, 0.05), skia.ColorSetRGB(2, 2, 6)], [0.0, 0.55, 1.0])); c.drawRect(skia.Rect(0, 0, W, H), bg)
     for (a0, rr, s, ph) in STARS:
