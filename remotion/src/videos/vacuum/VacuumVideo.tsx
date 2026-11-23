@@ -117,7 +117,7 @@ const Vacuum: React.FC<{ t: number; xray: number }> = ({ t, xray }) => {
       <group position={P.head} rotation={[0, 0, -THETA]}>
         <mesh geometry={g.head} material={M.dark} castShadow receiveShadow />
         <mesh material={M.accent} position={[0, 0.27, 0]}><boxGeometry args={[0.6, 0.06, 2.3]} /></mesh>
-        <group position={[0.15, -0.12, 0]} rotation={[0, 0, -a * 0.02 - t * 9]}>
+        <group position={[0.15, -0.12, 0]} rotation={[0, 0, -LW * 50 * t]}>
           <mesh material={M.brush} rotation={[Math.PI / 2, 0, 0]}><cylinderGeometry args={[0.2, 0.2, 2.2, 16]} /></mesh>
           {Array.from({ length: 6 }, (_, i) => <mesh key={i} material={M.dark} rotation={[0, 0, (i / 6) * Math.PI * 2]} position={[0.2 * Math.cos((i / 6) * Math.PI * 2), 0.2 * Math.sin((i / 6) * Math.PI * 2), 0]}><boxGeometry args={[0.06, 0.06, 2.2]} /></mesh>)}
         </group>
@@ -133,7 +133,7 @@ const Cereal: React.FC<{ t: number }> = ({ t }) => {
   const j0 = Math.floor(t / DELTA) - 2, out: React.ReactElement[] = [];
   for (let j = j0; j < j0 + 14; j++) {
     const a = j * DELTA, dt = a - t;
-    if (dt > 0) { const x = HEADW[0] - 0.6 - dt * 1.6; out.push(<mesh key={j} geometry={g} material={M.cereal} position={[x, 0.07, cerZ(j)]} rotation={[Math.PI / 2 + 0.3 * Math.sin(j), 0, j]} castShadow />); }
+    if (dt > 0) { const x = HEADW[0] - 0.6 - dt * FLOOR_V; out.push(<mesh key={j} geometry={g} material={M.cereal} position={[x, 0.07, cerZ(j)]} rotation={[Math.PI / 2 + 0.3 * Math.sin(j), 0, j]} castShadow />); }
     else if (dt > -0.22) { const k = -dt / 0.22; out.push(<mesh key={j} geometry={g} material={M.cereal} position={[HEADW[0] - 0.6 + 0.5 * k, 0.07 + 0.35 * k, cerZ(j) * (1 - k)]} scale={1 - k * 0.8} rotation={[k * 6, j, 0]} />); }
   }
   return <>{out}</>;
@@ -169,7 +169,8 @@ const Room: React.FC = () => (
     <mesh position={[6, 6, -8.8]}><planeGeometry args={[3, 4]} /><meshStandardMaterial color="#ffd27a" emissive="#ffb84a" emissiveIntensity={0.5} /></mesh>
   </group>
 );
-const woodScroll = (t: number) => { woodTex.offset.set((-t * 1.6) / 6, 0); woodTex.repeat.set(10, 7); };
+const TILES_PER_LOOP = 9, FLOOR_V = (TILES_PER_LOOP * 6) / D;
+const woodScroll = (t: number) => { woodTex.offset.set(-TILES_PER_LOOP * (t / D), 0); woodTex.repeat.set(10, 7); };
 
 // ================= camera =================
 const HOOK = { p: [HEADW[0] + 8.0, 9.6, 25.0] as V3, l: [HEADW[0] - 2.4, 5.9, 0] as V3 };
@@ -183,7 +184,7 @@ const CAM: CamKey[] = [
   { t: L[3] + 0.6, ...offs(W.cyclones, [3.0, 2.2, 6.0]) }, { t: L[4] - 0.2, ...offs(W.cyclones, [2.8, 2.4, 6.2]) },
   { t: L[4] + 0.6, ...offs(W.filter, [-2.6, 2.2, 6.4], [-0.6, -0.2, 0]) }, { t: L[5] - 0.2, ...offs(W.filter, [-2.9, 2.1, 6.6], [-0.6, -0.2, 0]) },
   { t: L[5] + 0.6, ...offs(W.battery, [2.0, 1.2, 6.2], [-0.2, 0.3, 0]) }, { t: L[6] - 0.2, ...offs(W.battery, [2.2, 1.1, 6.4], [-0.2, 0.3, 0]) },
-  { t: L[6] + 1.0, p: [7.0, 7.5, 18.5], l: [-1.0, 4.6, 0] }, { t: L[7] + 0.8, p: [7.3, 7.4, 19.0], l: [-1.0, 4.6, 0] },
+  { t: L[6] + 1.0, p: [HEADW[0] + 6.0, 9.2, 23.0], l: [HEADW[0] - 2.8, 6.2, 0] }, { t: L[7] + 0.8, p: [HEADW[0] + 6.4, 9.3, 23.5], l: [HEADW[0] - 2.8, 6.2, 0] },
   { t: L[8], ...HOOK }, { t: D, ...HOOK },
 ];
 const camFor = (t: number) => camAt(CAM, t) as { p: V3; l: V3 };
