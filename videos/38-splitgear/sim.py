@@ -48,9 +48,10 @@ def arm_segments(theta):
     return segs
 
 @njit(cache=True)
-def step(pos, vel, n, theta, segs, cool, hits):
+def step(pos, vel, n, theta, segs, cool, hits, bnc):
     """one substep: move, walls, gear, arms, ball-ball (grid). returns number of gear touches recorded in hits[]"""
     nh = 0
+    nb = 0
     for i in range(n):
         pos[i, 0] += vel[i, 0] * DT; pos[i, 1] += vel[i, 1] * DT
         if cool[i] > 0: cool[i] -= DT
@@ -60,7 +61,10 @@ def step(pos, vel, n, theta, segs, cool, hits):
             nx = dx / d; ny = dy / d
             pos[i, 0] = CX + nx * (RA - BR); pos[i, 1] = CY + ny * (RA - BR)
             vn = vel[i, 0] * nx + vel[i, 1] * ny
-            if vn > 0: vel[i, 0] -= 2 * vn * nx; vel[i, 1] -= 2 * vn * ny
+            if vn > 0:
+                vel[i, 0] -= 2 * vn * nx; vel[i, 1] -= 2 * vn * ny
+                if vn > 120 and nb < bnc.shape[0]:
+                    bnc[nb, 0] = pos[i, 0]; bnc[nb, 1] = vn; bnc[nb, 2] = 0; nb += 1
         # gear (a disc; teeth add a tangential kick)
         if d < GR + 9 + BR:
             nx = dx / max(d, 1e-6); ny = dy / max(d, 1e-6)
@@ -82,7 +86,10 @@ def step(pos, vel, n, theta, segs, cool, hits):
                 nx = rx / rd; ny = ry / rd
                 pos[i, 0] = qx + nx * (BR + 6); pos[i, 1] = qy + ny * (BR + 6)
                 vn = vel[i, 0] * nx + vel[i, 1] * ny
-                if vn < 0: vel[i, 0] -= 2 * vn * nx; vel[i, 1] -= 2 * vn * ny
+                if vn < 0:
+                    vel[i, 0] -= 2 * vn * nx; vel[i, 1] -= 2 * vn * ny
+                    if -vn > 120 and nb < bnc.shape[0]:
+                        bnc[nb, 0] = pos[i, 0]; bnc[nb, 1] = -vn; bnc[nb, 2] = 1; nb += 1
                 if cool[i] <= 0 and nh < hits.shape[0]:
                     hits[nh] = i; nh += 1; cool[i] = 0.05
         # keep speeds lively but bounded
@@ -115,14 +122,14 @@ def step(pos, vel, n, theta, segs, cool, hits):
                                 vel[i, 0] += rv * nx; vel[i, 1] += rv * ny
                                 vel[j, 0] -= rv * nx; vel[j, 1] -= rv * ny
                     j = nxt[j]
-    return nh
+    return nh, nb
 
 def run():
     rng = np.random.default_rng(38)
     pos = np.zeros((NMAX + 8, 2)); vel = np.zeros((NMAX + 8, 2)); cool = np.zeros(NMAX + 8)
     hue = np.zeros(NMAX + 8); born = np.zeros(NMAX + 8)
     pos[0] = P0; vel[0] = V0VEC; hue[0] = 0.55; n = 1
-    hits = np.zeros(4096, np.int64)
+    hits = np.zeros(4096, np.int64); bnc = np.zeros((4096, 3)); bounces = []
     frames = []; events = []
     nf = int(round(D * FPS)); full_frame = None
     for f in range(nf):
@@ -131,7 +138,10 @@ def run():
             for s in range(SUB):
                 ts = t + s * DT; theta = OMEGA * ts
                 segs = arm_segments(theta)
-                nh = step(pos, vel, n, theta, segs, cool, hits)
+                nh, nb = step(pos, vel, n, theta, segs, cool, hits, bnc)
+                if nb:
+                    order = np.argsort(-bnc[:nb, 1])[:3]
+                    for q in order: bounces.append((round(ts, 4), float(bnc[q, 0]), float(bnc[q, 1]), int(bnc[q, 2])))
                 for k in range(nh):
                     i = hits[k]
                     if n < NMAX and n < target(ts):
@@ -145,11 +155,11 @@ def run():
         frames.append((pos[:n].astype(np.float32).copy(), hue[:n].astype(np.float32).copy(), born[:n].astype(np.float32).copy()))
         if f % 300 == 0: print(f"t={t:5.1f}s balls={n}", flush=True)
     np.save(OUT / "frames_n.npy", np.array([len(x[0]) for x in frames]))
-    return frames, events, full_frame
+    return frames, events, full_frame, bounces
 
 if __name__ == "__main__":
     import pickle
-    frames, events, ff = run()
+    frames, events, ff, bounces = run()
     with open(OUT / "sim.pkl", "wb") as fh: pickle.dump((frames, ff), fh)
-    (OUT / "events.json").write_text(json.dumps({"events": events, "full_frame": ff, "D": D, "bpm": BPM}))
+    (OUT / "events.json").write_text(json.dumps({"events": events, "bounces": bounces, "full_frame": ff, "D": D, "bpm": BPM}))
     print("full at frame", ff, "events", len(events))

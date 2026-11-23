@@ -1,77 +1,87 @@
-"""Music for video 038 from the simulation's own events (events.json): every split is a kalimba note quantised to
-the 16th grid (sparse single plinks at the start → a continuous arpeggio when the arena fills); the chord changes
-with every colour wave (2 bars); layers enter as the count grows; FULL = impact + big chord; burst = whoosh; quiet
-reset so the loop flows. 120 BPM, 22 bars = 44 s, A minor-ish (Am F C G Em F Dm E, ...)."""
+"""Sound for video 038, frame-accurate from the simulation (events.json + frames_n.npy):
+- every SPLIT = a bubbly pop + a kalimba note, at the exact birth time (no grid quantising); the note is a chord tone
+  picked by the ball's x position (left = low, right = high), panned by x; dense moments are gain-normalised so they
+  turn into a shimmering texture instead of clipping;
+- every strong BOUNCE = a marble click (wall) or a woody tock (spinner arm), level = impact speed, panned by x;
+- bed: the pad chord changes exactly when the colour wave changes (every 4 s), a soft kick marks each new wave, a low
+  drone whose filter opens with the fill level (tension), a riser into FULL;
+- FULL (40.0 s, ring flash) = impact + big chord; BURST (40.9 s) = explosion + a spray of clicks; the single new ball
+  fades in at 43.55 s = one ping. 44 s, A minor colour (Am F C G Em F Dm E Am F)."""
 import json, sys
 from pathlib import Path
 import numpy as np
 ROOT = Path(__file__).resolve().parents[2]; HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "scripts")); sys.path.insert(0, str(HERE))
 from chiptune import hz, noise  # noqa: E402
 from stereo import StereoSong, SR  # noqa: E402
+from sim import D, FULL_T, NMAX, FPS  # noqa: E402
 rng = np.random.default_rng(38)
 src = (ROOT / "videos/30-vibration/build.py").read_text()
 exec(src[src.index("def lp("):src.index("S = StereoSong")])
 
-EV = json.loads((HERE / "events.json").read_text())
-BPM = 120; BEAT = 60 / BPM; BAR = 4 * BEAT; S16 = BEAT / 4; BARS = 22
-bt = lambda bar, s=0: bar * BAR + s * S16
-
-def kalimba(midi, vol=0.12, dur=1.2):
-    n = int(dur * SR); t = np.arange(n) / SR; f = hz(midi)
-    x = np.sin(2 * np.pi * f * t) * np.exp(-t / 0.55) + 0.35 * np.sin(2 * np.pi * f * 5.4 * t) * np.exp(-t / 0.05) + 0.15 * np.sin(2 * np.pi * f * 2.0 * t) * np.exp(-t / 0.2)
-    return x * vol * np.clip(t / 0.002, 0, 1)
-def glass(midi, vol=0.06, dur=2.0):
-    n = int(dur * SR); t = np.arange(n) / SR; f = hz(midi)
-    return (np.sin(2 * np.pi * f * t) + 0.4 * np.sin(2 * np.pi * f * 3.01 * t) * np.exp(-t / 0.4)) * vol * np.exp(-t / 0.9) * np.clip(t / 0.003, 0, 1)
-def piano(notes, dur, vol=0.045):
-    n = int(dur * SR); t = np.arange(n) / SR; x = np.zeros(n)
-    for m in notes:
-        f = hz(m); x += np.sin(2 * np.pi * f * t) + 0.35 * np.sin(4 * np.pi * f * t) * np.exp(-t / 0.4) + 0.1 * np.sin(6 * np.pi * f * t) * np.exp(-t / 0.15)
-    return x / len(notes) * vol * 3 * np.clip(t / 0.004, 0, 1) * np.exp(-t / 1.6) * np.clip((dur - t) / 0.1, 0, 1)
-def sub(midi, dur, vol=0.28):
-    n = int(dur * SR); t = np.arange(n) / SR
-    return np.sin(2 * np.pi * hz(midi) * t) * vol * np.clip(t / 0.01, 0, 1) * np.clip((dur - t) / 0.05, 0, 1)
-def whoosh(dur, vol=0.12):
-    n = int(dur * SR); t = np.arange(n) / SR; k = t / dur
-    nz = noise(dur, 1.0, dur, rate=44100, seed=9)[:n]
-    return reson(nz, 600, 1.5) * 0 + lp(hp(nz, 400), 3000) * vol * np.sin(np.pi * k) ** 2
-
+EV = json.loads((HERE / "events.json").read_text()); NCOUNT = np.load(HERE / "frames_n.npy")
+BPM = 120; BEAT = 60 / BPM; BAR = 4 * BEAT; WAVE = 2 * BAR
+BURST0 = FULL_T + 0.9; RESET = D - 0.45
 PROG = [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62], [52, 55, 59], [53, 57, 60], [50, 53, 57], [52, 56, 59], [57, 60, 64], [53, 57, 62]]
-ROOTS = [33, 29, 36, 31, 28, 29, 26, 28, 33, 29]
-S = StereoSong(BPM, BARS)
-kicks = []
-for bar in range(BARS):
-    w = min(9, bar // 2); ch = PROG[w]; r = ROOTS[w]
-    lvl = 0 if bar < 6 else 1 if bar < 10 else 2 if bar < 14 else 3 if bar < 20 else (4 if bar < 21 else 5)
-    if bar < 20:
-        if bar % 2 == 0: S.add(piano([m + 12 for m in ch], BAR * 2, 0.04 + 0.006 * lvl), bt(bar), -0.15, "keys")
-        S.add(pad([m + 12 for m in ch], BAR, 0.012 + 0.002 * lvl), bt(bar), 0.15, "pads")
-    for s in range(16):
-        t = bt(bar, s)
-        if lvl >= 1 and lvl <= 4 and s % 4 == 0: S.add(tkick(0.55 + 0.1 * min(lvl, 3)), t, 0, "drums"); kicks.append(t)
-        if lvl >= 1 and lvl <= 4 and s % 4 == 2: S.add(hat(0.02 + 0.006 * lvl, seed=bar * 16 + s), t, 0.3, "drums")
-        if lvl >= 3 and lvl <= 4 and s in (4, 12): S.add(clap(0.17, seed=bar + s), t, -0.05, "drums")
-        if lvl >= 3 and lvl <= 4 and s % 2 == 1: S.add(hat(0.014, seed=900 + bar * 16 + s), t, -0.3, "drums")
-        if lvl == 4 and bar == 19 and s >= 8: S.add(snare(0.08 + 0.015 * (s - 8), seed=s), t, 0, "drums")
-    if 2 <= lvl <= 4:
-        for s, d in ((0, 0), (6, 0), (8, 12), (11, 0), (14, 7)): S.add(sub(r + 12 + d, S16 * 1.8, 0.24), bt(bar, s), 0, "bass")
-# ---- the splits = kalimba notes on the 16th grid (max one per step, chord tones, arpeggiated) ----
-used = set(); k = 0
-for (t, kind, h, x) in EV["events"]:
-    step = int(round(t / S16));
-    if step in used or step * S16 >= bt(20): continue
-    used.add(step); w = min(9, int(step * S16 / (2 * BAR))); ch = PROG[w]
-    pat = [0, 1, 2, 1, 0, 2, 1, 2]; m = ch[pat[k % 8]] + 24 + (12 if (k // 8) % 4 == 3 else 0)
-    S.add(kalimba(m, 0.11 if step * S16 < bt(12) else 0.08), step * S16, (x - 540) / 540 * 0.6, "fx"); k += 1
-for bar in range(0, 20, 2): S.add(glass(PROG[min(9, bar // 2)][2] + 36, 0.05), bt(bar), 0, "fx")
-# ---- FULL → burst → quiet reset ----
-FULL = bt(20)
-S.add(impact(0.4), FULL, 0, "fx"); S.add(piano([57, 64, 69, 72, 76], BAR * 2, 0.07), FULL, 0, "keys"); S.add(pad([69, 72, 76, 81], BAR * 1.8, 0.03), FULL, 0, "pads")
-S.add(riser(BAR, 0.06, seed=4), bt(19)); S.add(whoosh(1.8, 0.14), FULL + 0.9, 0, "fx")
-S.add(kalimba(69, 0.1), bt(21, 12), 0.2, "fx")
-S.delay("fx", BEAT * 0.75, fb=0.28, mix=0.18)
-S.sidechain("pads", kicks, 0.4); S.sidechain("keys", kicks, 0.15); S.sidechain("bass", kicks, 0.15)
-S.reverb("fx", 0.3, 1.8, 21); S.reverb("keys", 0.3, 2.0, 31); S.reverb("pads", 0.4, 2.6, 41); S.reverb("drums", 0.08, 0.8, 51)
-S.save(HERE / "music.wav", gains={"drums": 1.0, "bass": 1.0, "keys": 0.9, "pads": 0.85, "fx": 1.0})
-print("music", BARS * BAR)
+
+def pop(vol):
+    n = int(0.05 * SR); t = np.arange(n) / SR
+    f = 1500 * np.exp(-t / 0.012) + 520
+    return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.014) * vol
+def kalimba(midi, vol, dur=0.9):
+    n = int(dur * SR); t = np.arange(n) / SR; f = hz(midi)
+    x = np.sin(2 * np.pi * f * t) * np.exp(-t / 0.4) + 0.3 * np.sin(2 * np.pi * f * 5.4 * t) * np.exp(-t / 0.04) + 0.12 * np.sin(4 * np.pi * f * t) * np.exp(-t / 0.15)
+    return x * vol * np.clip(t / 0.0015, 0, 1)
+_nz = noise(0.02, 1.0, 0.02, rate=44100, seed=3)
+def click(vol, wood=False):
+    n = int(0.03 * SR); t = np.arange(n) / SR; f = 900 if wood else 3400 + 600 * rng.random()
+    x = np.sin(2 * np.pi * f * t) * np.exp(-t / (0.012 if wood else 0.005)) + hp(_nz[:n] if len(_nz) >= n else np.pad(_nz, (0, n - len(_nz))), 2500) * 0.4 * np.exp(-t / 0.003)
+    return x * vol
+def drone(dur):
+    n = int(dur * SR); t = np.arange(n) / SR
+    x = (2 * ((55 * t) % 1) - 1) + (2 * ((55.3 * t) % 1) - 1) + 0.6 * np.sin(2 * np.pi * 27.5 * t)
+    fill = np.interp(t, np.arange(len(NCOUNT)) / FPS, NCOUNT / NMAX)
+    cut = 150 + 2600 * fill ** 0.8
+    y = np.zeros(n); s = 0.0; a = np.exp(-2 * np.pi * cut / SR)
+    for i in range(n): s = (1 - a[i]) * x[i] + a[i] * s; y[i] = s
+    return y * (0.04 + 0.08 * fill)
+def explosion(vol=0.5):
+    n = int(2.2 * SR); t = np.arange(n) / SR
+    nz = noise(2.2, 1.0, 2.2, rate=44100, seed=11)[:n]
+    return (lp(nz, 1800) * np.exp(-t / 0.5) * 0.6 + np.sin(2 * np.pi * np.cumsum(70 * np.exp(-t / 0.4) + 30) / SR) * np.exp(-t / 0.7)) * vol
+
+S = StereoSong(BPM, int(round(D / BAR)))
+splits = [e for e in EV["events"] if e[0] < FULL_T + 0.05]
+times = np.array([e[0] for e in splits])
+for (t, _, h, x) in splits:
+    dens = np.sum(np.abs(times - t) < 0.04)
+    g = 1.0 / np.sqrt(dens)
+    w = min(9, int(t / WAVE)); ch = PROG[w]
+    u = min(0.999, max(0.0, (x - 70) / 940)); idx = int(u * 9)
+    m = ch[idx % 3] + 12 * (1 + idx // 3)
+    pan = (x - 540) / 540 * 0.7
+    S.add(pop(0.10 * g), t, pan, "pops"); S.add(kalimba(m, 0.09 * g), t, pan, "notes")
+bt_ = np.array([b[0] for b in EV["bounces"]])
+for (t, x, sp, kind) in EV["bounces"]:
+    if t >= FULL_T + 0.6: continue
+    dens = np.sum(np.abs(bt_ - t) < 0.03)
+    S.add(click(min(0.07, 0.07 * sp / 600) / np.sqrt(dens), wood=bool(kind)), t, (x - 540) / 540 * 0.8, "clicks")
+# bed
+for w in range(10):
+    t0 = w * WAVE
+    S.add(pad([m + 12 for m in PROG[w]], WAVE, 0.010 + 0.0025 * w), t0, 0.15, "pads")
+    S.add(tkick(0.25 + 0.05 * w), t0, 0, "drums")
+S.add(drone(FULL_T + 0.9), 0, 0, "drone")
+S.add(riser(2 * BAR, 0.06, seed=4), FULL_T - 2 * BAR)
+# FULL, BURST, RESET
+S.add(impact(0.45), FULL_T + 0.1, 0, "fx"); S.add(pad([69, 72, 76, 81], 2.2, 0.035), FULL_T + 0.1, 0, "fx")
+for m in (57, 64, 69, 72, 76): S.add(kalimba(m + 12, 0.07, 1.8), FULL_T + 0.1, 0, "fx")
+S.add(explosion(0.45), BURST0, 0, "fx")
+for k in range(320):
+    tt = BURST0 + 1.3 * (k / 320) ** 1.8
+    S.add(click(0.05 * (1 - k / 320), wood=k % 5 == 0), tt, rng.uniform(-0.9, 0.9), "clicks")
+S.add(kalimba(81, 0.12, 1.6), RESET, 0.33, "fx"); S.add(pop(0.08), RESET, 0.33, "fx")
+S.sidechain("pads", list(times[::3]), 0.15, 0.08)
+S.reverb("notes", 0.28, 1.6, 21); S.reverb("pads", 0.4, 2.6, 41); S.reverb("fx", 0.3, 2.0, 31); S.reverb("clicks", 0.12, 0.6, 51); S.reverb("pops", 0.1, 0.5, 61)
+S.save(HERE / "music.wav", gains={"pops": 1.0, "notes": 1.0, "clicks": 0.9, "pads": 0.9, "drums": 0.8, "drone": 0.9, "fx": 1.0})
+print("sound", D)
