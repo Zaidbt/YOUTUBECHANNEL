@@ -57,6 +57,7 @@ import { ContactlessVideo, DURATION as CT_DURATION, FPS as CT_FPS } from "./vide
 import { DiffTest, DURATION as DT_DURATION, FPS as DT_FPS } from "./videos/diff/DiffTest";
 import { ToothTest, DURATION as TT_DURATION, FPS as TT_FPS } from "./videos/toothbrush/ToothTest";
 import { VacuumVideo, DURATION as VC_DURATION, FPS as VC_FPS } from "./videos/vacuum/VacuumVideo";
+import { DishwasherVideo, DURATION as DW_DURATION, FPS as DW_FPS } from "./videos/dishwasher/DishwasherVideo";
 import { WatchVideo, DURATION as WATCH_DURATION, FPS as WATCH_FPS } from "./videos/watch/WatchVideo";
 import { CarEngine, DURATION as CAR_ENGINE_DURATION, FPS as CAR_ENGINE_FPS } from "./videos/CarEngine";
 
@@ -146,5 +147,6 @@ export const Root = () => (
     <Composition id="DiffTest" component={DiffTest} durationInFrames={DT_DURATION} fps={DT_FPS} width={1080} height={1920} />
     <Composition id="ToothTest" component={ToothTest} durationInFrames={TT_DURATION} fps={TT_FPS} width={1080} height={1920} />
     <Composition id="VacuumVideo" component={VacuumVideo} durationInFrames={VC_DURATION} fps={VC_FPS} width={1080} height={1920} />
+    <Composition id="DishwasherVideo" component={DishwasherVideo} durationInFrames={DW_DURATION} fps={DW_FPS} width={1080} height={1920} />
   </>
 );
