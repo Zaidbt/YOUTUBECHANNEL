@@ -133,8 +133,8 @@ const Cereal: React.FC<{ t: number }> = ({ t }) => {
   const j0 = Math.floor(t / DELTA) - 2, out: React.ReactElement[] = [];
   for (let j = j0; j < j0 + 14; j++) {
     const a = j * DELTA, dt = a - t;
-    if (dt > 0) { const x = HEADW[0] - 0.6 - dt * FLOOR_V; out.push(<mesh key={j} geometry={g} material={M.cereal} position={[x, 0.07, cerZ(j)]} rotation={[Math.PI / 2 + 0.3 * Math.sin(j), 0, j]} castShadow />); }
-    else if (dt > -0.22) { const k = -dt / 0.22; out.push(<mesh key={j} geometry={g} material={M.cereal} position={[HEADW[0] - 0.6 + 0.5 * k, 0.07 + 0.35 * k, cerZ(j) * (1 - k)]} scale={1 - k * 0.8} rotation={[k * 6, j, 0]} />); }
+    if (dt > 0) { const x = HEADW[0] - 0.6 - dt * FLOOR_V; out.push(<mesh key={j} geometry={g} material={M.cereal} position={[x, 0.07, cerZ(j)]} rotation={[Math.PI / 2 + 0.3 * Math.sin(j % CER), 0, j % CER]} castShadow />); }
+    else if (dt > -0.22) { const k = -dt / 0.22; out.push(<mesh key={j} geometry={g} material={M.cereal} position={[HEADW[0] - 0.6 + 0.5 * k, 0.07 + 0.35 * k, cerZ(j) * (1 - k)]} scale={1 - k * 0.8} rotation={[k * 6, j % CER, 0]} />); }
   }
   return <>{out}</>;
 };
