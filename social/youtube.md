@@ -152,3 +152,10 @@ Description:
 Slowed down 1024×: a cordless stick vacuum is a tiny jet engine pointed backwards. The motor spins a little fan (the impeller) at up to 125,000 rpm, that's over 2,000 turns every second, and it pulls air up the wand. The dirty air then hits a ring of 14 tiny cyclones: the air spins so fast that the dust is flung outward at up to 79,000 g and falls into the bin. That's why there's no bag: nothing to clog, so the suction doesn't fade. Clean air goes through a filter and out the back, and a pack of lithium cells under the handle feeds it all. Speeds and g-forces are the manufacturer's figures (Dyson V11/V15). Sound on 🔊 the motor's whine is the melody: real speed is a high C, and every ×4 slow-down drops it two octaves.
 #vacuum #engineering #howitworks #satisfying #shorts
 Tags: how does a cordless vacuum work, dyson, stick vacuum, cyclone vacuum, vacuum motor, 125000 rpm, cyclone separation, engineering, how it works, pixel art, shorts
+
+## How a dishwasher works (out/dishwasher.mp4)
+Title: Your dishwasher uses less water than your sink 🍽️ #shorts
+Description:
+A full dishwasher load uses about 13 litres. Washing the same dishes by hand: about 100 litres on average (University of Bonn study; people ranged from 33 to 440 L). How? 1) The spray arm has no motor: its own angled jets push it round, like a garden sprinkler. 2) A pump sucks the same water back up through a filter and sprays it again and again. 3) A heater warms it and the enzymes in the detergent chew through starch and protein. 4) Rinse aid lowers the water's surface tension so it slides off in a sheet instead of drying into spots. Water figures: Which? tests (14 place settings) and the Bonn study. Sound on 🔊
+#dishwasher #howitworks #engineering #kitchen #shorts
+Tags: how does a dishwasher work, dishwasher, spray arm, rinse aid, dishwasher vs hand washing, water saving, kitchen science, engineering, how it works, pixel art, shorts

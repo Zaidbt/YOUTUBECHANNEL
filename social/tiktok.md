@@ -88,3 +88,7 @@ Your microwave flips water 5 billion times a second 📡 and that's why the midd
 ## How a cordless vacuum works (out/vacuum.mp4)
 Your vacuum's motor spins 125,000× a minute 🌀 slowed down 1024× to see inside 👀 sound on 🔊
 #vacuum #engineering #cleantok #satisfying #howitworks #fyp
+
+## How a dishwasher works (out/dishwasher.mp4)
+Your dishwasher uses ~13 L. By hand? ~100 L 🍽️ here's the trick 👀 sound on 🔊
+#dishwasher #cleantok #kitchenhacks #engineering #howitworks #fyp

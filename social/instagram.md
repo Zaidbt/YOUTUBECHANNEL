@@ -447,3 +447,18 @@ Tag the friend who vacuums at 7 am 😅
 #howitworks #engineering #vacuum #satisfying #pixelart
 
 Extra tags (optional): #dyson #cleantok #cleaning #techfacts #learnoninstagram
+
+## How a dishwasher works (out/dishwasher.mp4)
+Your dishwasher uses less water than your sink 🍽️
+
+💧 ~13 L for a full load vs ~100 L by hand (Bonn study)
+1️⃣ the spray arm has no motor: its own jets push it round
+2️⃣ the same water is filtered + pumped round again and again
+3️⃣ hot water + enzymes chew through the gunk
+4️⃣ rinse aid makes water slide off in a sheet → no spots
+
+Sound on 🔊 Tag the friend who "pre-washes" everything 😅
+
+#howitworks #dishwasher #engineering #kitchenhacks #pixelart
+
+Extra tags (optional): #cleantok #lifehacks #science #learnoninstagram #home
