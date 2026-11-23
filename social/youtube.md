@@ -138,3 +138,10 @@ Description:
 A microwave doesn't heat the air, it shakes the water in your food. Water molecules have a slightly positive end and a slightly negative end. The microwaves are an electric field that flips direction about 4.9 billion times a second (2.45 GHz), and every flip yanks every water molecule around. All that jostling is heat. The waves are made by a magnetron, carried in by a waveguide, and bounce off the metal walls, which makes hot and cold spots about 6 cm apart, so the plate turns to move your food through them. They only reach 1 to 2 cm into the food: the middle heats slowly by conduction. That's why it's still cold in the middle. Stir it! Sound on 🔊 every flip is a note.
 #microwave #science #physics #howitworks #shorts
 Tags: how does a microwave work, microwave oven, why microwave food is cold in the middle, magnetron, 2.45 GHz, water molecules, dielectric heating, standing waves, kitchen science, how it works, pixel art, shorts
+
+## 1 ball. 1 rule. (out/splitgear.mp4)
+Title: 1 ball. 1 rule. How long until it's full? ⚙️ #shorts
+Description:
+It starts with ONE ball. One rule: every ball that touches the spinner splits in two. That's exponential growth: 1, 2, 4, 8… it looks slow for 20 seconds (only ~190 balls), then 3,600 balls fill the circle in the last 10. Every split you hear is a note, so the song writes itself. Guess the time before it says it 👇
+#satisfying #simulation #physics #oddlysatisfying #shorts
+Tags: satisfying simulation, physics simulation, oddly satisfying, exponential growth, ball simulation, marble, satisfying video, asmr, generative art, shorts

@@ -419,3 +419,16 @@ Send this to the friend who eats lava-edged, frozen-middle leftovers.
 #howitworks #microwave #science #physics #pixelart
 
 Extra tags (optional): #kitchenhacks #foodscience #sciencefacts #learnoninstagram #stem
+
+## 1 ball. 1 rule. (out/splitgear.mp4)
+1 ball. 1 rule. How long until it's full? ⚙️
+
+Every ball that touches the spinner splits in two.
+At 20 s there are only ~190 balls… then 3,600 in the last 10 seconds. That's exponential growth 🤯
+Every split is a note 🔊
+
+Comment your guess BEFORE the end 👇
+
+#satisfying #oddlysatisfying #simulation #physics #asmr
+
+Extra tags (optional): #satisfyingvideo #generativeart #exponential #math #reels

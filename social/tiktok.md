@@ -80,3 +80,7 @@ What actually happens when you click a pen? 🖊️ there's a tiny rotating mach
 ## How a microwave heats food (out/microwave.mp4)
 Your microwave flips water 5 billion times a second 📡 and that's why the middle is still cold 🥶 sound on 🔊
 #microwave #science #physics #kitchenhacks #howitworks #fyp
+
+## 1 ball. 1 rule. (out/splitgear.mp4)
+1 ball. 1 rule: touch the spinner = split in two ⚙️ guess how long until it's full 👇 sound on 🔊
+#satisfying #oddlysatisfying #simulation #physics #asmr #fyp
