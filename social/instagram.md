@@ -432,3 +432,18 @@ Comment your guess BEFORE the end 👇
 #satisfying #oddlysatisfying #simulation #physics #asmr
 
 Extra tags (optional): #satisfyingvideo #generativeart #exponential #math #reels
+
+## How a cordless vacuum works (out/vacuum.mp4)
+Your vacuum's motor spins 125,000 times a minute 🌀
+
+1️⃣ a tiny fan (the impeller) spins 2,000+ times a SECOND and sucks air up the wand
+2️⃣ 14 mini cyclones spin the air so hard the dust is flung out at up to 79,000 g
+3️⃣ no bag = nothing to clog, so the suction never fades
+4️⃣ lithium cells + one trigger feed it all
+
+Sound on 🔊 the motor's whine is the melody (a high C at real speed).
+Tag the friend who vacuums at 7 am 😅
+
+#howitworks #engineering #vacuum #satisfying #pixelart
+
+Extra tags (optional): #dyson #cleantok #cleaning #techfacts #learnoninstagram

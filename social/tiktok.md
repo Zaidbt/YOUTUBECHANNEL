@@ -84,3 +84,7 @@ Your microwave flips water 5 billion times a second 📡 and that's why the midd
 ## 1 ball. 1 rule. (out/splitgear.mp4)
 1 ball. 1 rule: touch the spinner = split in two ⚙️ guess how long until it's full 👇 sound on 🔊
 #satisfying #oddlysatisfying #simulation #physics #asmr #fyp
+
+## How a cordless vacuum works (out/vacuum.mp4)
+Your vacuum's motor spins 125,000× a minute 🌀 slowed down 1024× to see inside 👀 sound on 🔊
+#vacuum #engineering #cleantok #satisfying #howitworks #fyp
