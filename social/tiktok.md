@@ -92,3 +92,7 @@ Your vacuum's motor spins 125,000× a minute 🌀 slowed down 1024× to see insi
 ## How a dishwasher works (out/dishwasher.mp4)
 Your dishwasher uses ~13 L. By hand? ~100 L 🍽️ here's the trick 👀 sound on 🔊
 #dishwasher #cleantok #kitchenhacks #engineering #howitworks #fyp
+
+## Galton board: pure chance draws a perfect curve (out/galton.mp4)
+1,500 random bounces… and they ALWAYS make this shape 🔔 sound on 🔊
+#satisfying #oddlysatisfying #math #plinko #probability #fyp

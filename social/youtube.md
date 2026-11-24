@@ -159,3 +159,10 @@ Description:
 A full dishwasher load uses about 13 litres. Washing the same dishes by hand: about 100 litres on average (University of Bonn study; people ranged from 33 to 440 L). How? 1) The spray arm has no motor: its own angled jets push it round, like a garden sprinkler. 2) A pump sucks the same water back up through a filter and sprays it again and again. 3) A heater warms it and the enzymes in the detergent chew through starch and protein. 4) Rinse aid lowers the water's surface tension so it slides off in a sheet instead of drying into spots. Water figures: Which? tests (14 place settings) and the Bonn study. Sound on 🔊
 #dishwasher #howitworks #engineering #kitchen #shorts
 Tags: how does a dishwasher work, dishwasher, spray arm, rinse aid, dishwasher vs hand washing, water saving, kitchen science, engineering, how it works, pixel art, shorts
+
+## Galton board: pure chance draws a perfect curve (out/galton.mp4)
+Title: 1,500 random bounces. Watch what shape they make 🎲 #shorts
+Description:
+Every ball bounces left or right at random, 13 times, on its way down. You can't predict where a single ball will land. But drop 1,500 of them and they always build the same shape: a bell curve. Most paths have about as many lefts as rights, so they pile up in the middle; very few go left (or right) every single time. This is a Galton board, invented by Francis Galton in the 1870s to show the normal distribution, the curve behind heights, test scores and measurement errors. Sound on 🔊 every bounce you hear is a peg being hit.
+#satisfying #math #probability #oddlysatisfying #shorts
+Tags: galton board, bell curve, normal distribution, probability, plinko, satisfying simulation, oddly satisfying, math, statistics, physics simulation, shorts

@@ -462,3 +462,17 @@ Sound on 🔊 Tag the friend who "pre-washes" everything 😅
 #howitworks #dishwasher #engineering #kitchenhacks #pixelart
 
 Extra tags (optional): #cleantok #lifehacks #science #learnoninstagram #home
+
+## Galton board: pure chance draws a perfect curve (out/galton.mp4)
+1,500 random bounces. Watch what shape they make 🎲
+
+Every ball bounces left or right at random, 13 times.
+One ball? Impossible to predict.
+1,500 balls? Always the same shape: a bell curve 🔔
+
+It's a Galton board (1870s), the simplest proof that chaos has rules.
+Sound on 🔊 every bounce is a note.
+
+#satisfying #oddlysatisfying #math #probability #simulation
+
+Extra tags (optional): #plinko #statistics #science #asmr #learnoninstagram
