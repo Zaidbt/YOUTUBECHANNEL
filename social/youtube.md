@@ -166,3 +166,10 @@ Description:
 Every ball bounces left or right at random, 13 times, on its way down. You can't predict where a single ball will land. But drop 1,500 of them and they always build the same shape: a bell curve. Most paths have about as many lefts as rights, so they pile up in the middle; very few go left (or right) every single time. This is a Galton board, invented by Francis Galton in the 1870s to show the normal distribution, the curve behind heights, test scores and measurement errors. Sound on 🔊 every bounce you hear is a peg being hit.
 #satisfying #math #probability #oddlysatisfying #shorts
 Tags: galton board, bell curve, normal distribution, probability, plinko, satisfying simulation, oddly satisfying, math, statistics, physics simulation, shorts
+
+## 100 balls ×2 vs 1 ball ×3 (out/tripler.mp4)
+Title: 100 balls ×2 vs 1 ball ×3. Who breaks through first? 🏁 #shorts
+Description:
+Two towers of 20 floors, each floor much tougher than the last. Left: 100 balls that double every time they break a floor. Right: ONE ball that triples. The left side is on floor 19 while the single ball is still stuck on floor 8… then ×3 snowballs: 3, 9, 27, 81… 3,486,784,401 balls by the end, versus 104,857,600. Exponential growth: the bigger multiplier always wins in the end, no matter the head start. Did you guess it? 👇 Sound on 🔊 every floor that breaks is a note.
+#satisfying #math #exponential #simulation #shorts
+Tags: exponential growth, 1 ball vs 100 balls, ball simulation, satisfying simulation, math race, x2 vs x3, compound growth, oddly satisfying, physics simulation, shorts

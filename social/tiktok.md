@@ -96,3 +96,7 @@ Your dishwasher uses ~13 L. By hand? ~100 L 🍽️ here's the trick 👀 sound 
 ## Galton board: pure chance draws a perfect curve (out/galton.mp4)
 1,500 random bounces… and they ALWAYS make this shape 🔔 sound on 🔊
 #satisfying #oddlysatisfying #math #plinko #probability #fyp
+
+## 100 balls ×2 vs 1 ball ×3 (out/tripler.mp4)
+100 balls ×2 vs 1 ball ×3… who breaks through first? 🏁 guess before the end 👇 sound on 🔊
+#satisfying #math #simulation #exponential #oddlysatisfying #fyp
