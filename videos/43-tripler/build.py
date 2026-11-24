@@ -64,7 +64,7 @@ for (t, kind, nm, x) in b[::2]:
 # bed: energetic from the first frame; breakdown on "...OR IS IT?", drop on "HERE IT COMES!"
 CH = [[50, 53, 57], [46, 50, 53], [53, 57, 60], [48, 52, 55]]; RT = [38, 34, 41, 36]
 RIFF = [(0, 74), (2, 77), (3, 74), (6, 72), (8, 69), (10, 72), (12, 74), (14, 77)]
-BREAK0, DROP = 26.8, 31.4
+BREAK0, DROP = START + 26.0, START + 30.6
 END = int((LOSE_T + 1.0) / BAR) + 1
 def brass(notes, dur, vol=0.1):
     n = int(dur * SR); t = np.arange(n) / SR; x = np.zeros(n)
@@ -87,9 +87,11 @@ for bar in range(END):
     if not (BREAK0 <= bar * BAR < DROP):
         for q, m in RIFF: S.add(chop(m, BEAT / 4 * 1.7, "ao"[q % 2], 0.16 if bar * BAR < DROP else 0.2), bar * BAR + q * BEAT / 4, 0.15, "lead")
 # hype hits on every banner
-for tb in (0.0, 9.0, 23.4, 26.8, 31.4, 35.0):
+for k3 in range(3): S.add(blip(69, 0.12, 0.3), START - 1.5 + k3 * BEAT, 0, "fx")
+S.add(blip(81, 0.14, 0.6), START, 0, "fx")
+for tb in (0.0, START, START + 8.2, START + 22.6, START + 26.0, START + 30.6, START + 34.2):
     S.add(brass([62, 65, 69, 74], BEAT * 0.9, 0.12), tb, 0, "fx"); S.add(impact(0.25), tb, 0, "fx")
-S.add(riser(WIN_T - 30.0, 0.07, seed=4), 30.0)
+S.add(riser(WIN_T - (START + 29.2), 0.07, seed=4), START + 29.2)
 S.add(impact(0.5), WIN_T, 0.4, "fx"); S.add(pad([62, 65, 69, 74, 77], 3.0, 0.035), WIN_T, 0, "fx")
 for k, m in enumerate((74, 77, 81, 86)): S.add(pluckb(m, 0.1, 1.2), WIN_T + 0.08 * k, 0.6, "notes")
 S.add(crunch(0.2, low=True), LOSE_T, -0.6, "fx")

@@ -11,9 +11,9 @@ import numpy as np
 OUT = Path(__file__).resolve().parent
 W, H, FPS = 1080, 1920, 60
 BPM = 120; BEAT = 60 / BPM; BAR = 4 * BEAT
-D = 22 * BAR                       # 44 s
+D = 24 * BAR                       # 48 s
 FLOORS = 20; G = 2.64; H0 = 10.0; RATE = 2.26
-START = 0.8                        # race starts (frame 0 = start state with the question)
+START = 4.5                        # race starts after the pick-a-side intro + 3-2-1-GO countdown
 TRAVEL = 0.14                      # fall time between floors
 LANES = [dict(name="L", n0=100, mult=2, x0=40, x1=520), dict(name="R", n0=1, mult=3, x0=560, x1=1040)]
 TOP, BOTTOM = 640.0, 1790.0

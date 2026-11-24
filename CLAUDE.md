@@ -1,4 +1,4 @@
-# How It Works with Zay — video workspace
+# 8bitloop (formerly How It Works with Zay) — video workspace
 
 Short-form explainer videos (YouTube Shorts, TikTok, Instagram Reels), 9:16, 1080x1920.
 
@@ -76,6 +76,12 @@ No Pletor credits: stay with our own tools.
 MeshToonMaterial + 3-step gradient map, PixelArtCanvas `outline` on, `scale={3}`, dark stage with blue/pink rim lights,
 a neon ring, a perspective grid floor; camera at a 3/4 angle so gear FACES are visible. User picked the gearbox to finish.
 
+## Satisfying simulations (Nov 23-24): skia + numba pipeline (videos/38-splitgear, 42-galton, 43-tripler)
+Python sims (numba physics) rendered with skia (neon orbs + bloom), sound built from the sim's own events.
+Race format (043): give a real intro before anything moves: "PICK A SIDE!" alone, then 3-2-1-GO, then the race
+(user: don't start the action under the hook). Hype callouts during the race, few words, big stamps.
+Always verify motion per second after concatenating chunks (a frozen render was sent once).
+
 ## Rejected (Nov 20): "random average, very low content" — vibration / Face ID / lock / pen / microwave
 User: same phone-notification template on random subjects, a bit childish, "for dummies", basic knowledge with drawings.
 Viewers are NOT dummies: they want something REAL they didn't know. Rules from now on:
@@ -130,7 +136,7 @@ focus 100 % on execution quality (ask for a reference reel to match shot by shot
 3D scene rendered at 270x480 through `remotion/src/brand/PixelPipeline.tsx` (`PixelArtCanvas`): 1-px depth outlines,
 4x4 Bayer dithering, every pixel snapped to a fixed palette (glows too), toon (MeshToonMaterial) shading, pixel
 textures (DataTexture, NearestFilter), upscaled 4x. Text: anchored `Labels` panels (see the text rule above).
-Brand on screen: @HOWTOWITHZAY. References: `remotion/src/videos/chameleon/ChameleonVideo.tsx` (user's favourite so far: rich scene, colour = chord,
+Brand on screen: @8BITLOOP (the page was renamed from How It Works with Zay, Nov 24). References: `remotion/src/videos/chameleon/ChameleonVideo.tsx` (user's favourite so far: rich scene, colour = chord,
 zoom into the mechanism, quality bar to match), `remotion/src/videos/dna/DnaVideo.tsx` (labels + hyper music), `remotion/src/videos/bees/BeesPixelVideo.tsx`.
 Instagram copy lives in `social/instagram.md`.
 
