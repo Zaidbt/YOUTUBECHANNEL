@@ -100,6 +100,12 @@ def draw_lane(c, ln, fi, t):
 SW, SH = W // 4, H // 4
 def draw(main, layer, small, fi):
     t = fi / FPS; c = main.getCanvas()
+    shk = 0.0
+    for nm in TL:
+        for b in TL[nm]['brk']:
+            if 0 <= t - b < 0.12: shk = max(shk, 5 * (1 - (t - b) / 0.12))
+    if 0 <= t - WIN_T < 0.6: shk = max(shk, 22 * (1 - (t - WIN_T) / 0.6))
+    c.save(); c.translate(shk * math.sin(t * 97), shk * math.cos(t * 83))
     bg = skia.Paint(); bg.setShader(skia.GradientShader.MakeLinear([skia.Point(0, 0), skia.Point(0, H)], [skia.ColorSetRGB(8, 8, 22), skia.ColorSetRGB(3, 3, 10)])); c.drawRect(skia.Rect(0, 0, W, H), bg)
     for (x, y, s, ph) in STARS: c.drawCircle(x, y, s, skia.Paint(AntiAlias=True, Color=skia.Color4f(0.8, 0.85, 1, 0.3 + 0.3 * math.sin(t * 2 + ph)).toColor()))
     lc = layer.getCanvas(); lc.clear(skia.ColorTRANSPARENT)
@@ -110,23 +116,58 @@ def draw(main, layer, small, fi):
         p = skia.Paint(); p.setImageFilter(skia.ImageFilters.Blur(sigma, sigma)); p.setBlendMode(skia.BlendMode.kPlus); p.setAlphaf(amt)
         c.saveLayer(None, None); c.scale(4, 4); c.drawImage(simg, 0, 0, SAMP, p); c.restore()
     c.drawImage(img, 0, 0)
-    # ---- header ----
-    text(c, "100 BALLS ×2  VS  1 BALL ×3", 540, 128, 92, skia.ColorWHITE, BEBAS, glow=skia.ColorSetRGB(160, 170, 255))
-    text(c, "WHO BREAKS THROUGH FIRST?", 540, 188, 46, skia.ColorSetRGB(210, 215, 240), BEBAS)
+    # ---- header (short) ----
     resetting = t >= RESET0
+    hL, sL = COL["L"]; hR, sR = COL["R"]
+    f = skia.Font(BEBAS, 128); wl, wv, wr = f.measureText("100 ×2"), f.measureText("  VS  "), f.measureText("1 ×3")
+    x = 540 - (wl + wv + wr) / 2
+    text(c, "100 ×2", x, 170, 128, hsv(hL, sL, 1.0), BEBAS, glow=hsv(hL, sL, 1.0), align="left")
+    text(c, "  VS  ", x + wl, 170, 128, skia.ColorWHITE, BEBAS, align="left")
+    text(c, "1 ×3", x + wl + wv, 170, 128, hsv(hR, sR, 1.0), BEBAS, glow=hsv(hR, sR, 1.0), align="left")
     lead = None
     if START < t < WIN_T:
         kL = lane_state("L", t)[0]; kR = lane_state("R", t)[0]; lead = "L" if kL > kR else ("R" if kR > kL else None)
     for ln in LANES:
         nm = ln["name"]; h, s = COL[nm]; cx = (ln["x0"] + ln["x1"]) / 2
         k, hp, cnt = lane_state(nm, t) if not resetting else (0, HP[0], ln["n0"])
-        if lead == nm: text(c, "LEADER", cx, 262, 34, skia.ColorSetRGB(255, 215, 90), BEBAS, glow=skia.ColorSetRGB(255, 150, 40))
+        if lead == nm: text(c, "LEADER", cx, 262, 38, skia.ColorSetRGB(255, 215, 90), BEBAS, glow=skia.ColorSetRGB(255, 150, 40))
         n = cnt if t < TL[nm]["finish"] or resetting else TL[nm]["final"]
-        size = 96 if n < 1e8 else 76
-        text(c, fmt(n), cx, 352, size, skia.ColorWHITE, BEBAS, glow=hsv(h, s, 1.0))
-        text(c, f"FLOOR {min(k + 1, FLOORS)}/{FLOORS}", cx, 402, 34, skia.ColorSetRGB(200, 205, 230), MONO)
-        text(c, "×2 EACH FLOOR" if nm == "L" else "×3 EACH FLOOR", cx, 470, 54, hsv(h, s, 1.0), BEBAS, glow=hsv(h, s, 1.0))
-        text(c, "STARTS WITH 100" if nm == "L" else "STARTS WITH 1", cx, 520, 30, hsv(h, 0.3, 0.9), MONO)
+        size = 104 if n < 1e8 else 80
+        # the counter punches on every floor break
+        lastb = max([b for b in TL[nm]["brk"] if b <= t] or [-9]); pk = 1 + 0.18 * max(0.0, 1 - (t - lastb) / 0.18)
+        c.save(); c.translate(cx, 340); c.scale(pk, pk); text(c, fmt(n), 0, 0, size, skia.ColorWHITE, BEBAS, glow=hsv(h, s, 1.0)); c.restore()
+        text(c, f"FLOOR {min(k + 1, FLOORS)}/{FLOORS}", cx, 400, 36, skia.ColorSetRGB(200, 205, 230), MONO)
+    # ---- ×2 / ×3 popups on every break ----
+    for ln in LANES:
+        nm = ln["name"]; h, s = COL[nm]; cx = (ln["x0"] + ln["x1"]) / 2
+        for j, b in enumerate(TL[nm]["brk"]):
+            u = t - b
+            if 0 <= u < 0.6 and not resetting:
+                k3 = backout(u / 0.15); a = 1 - max(0.0, (u - 0.35) / 0.25)
+                c.save(); c.translate(cx + (60 if j % 2 else -60), FY[j] - 30 - 120 * u); c.scale(k3, k3); c.rotate(-8 if j % 2 else 8)
+                text(c, "×2" if nm == "L" else "×3", 0, 0, 84, skia.ColorWHITE, BEBAS, glow=hsv(h, s, 1.0), alpha=a); c.restore()
+    # ---- hype ----
+    def banner(msg, sub, u, dur, col=(255, 215, 90), glowc=(255, 120, 40)):
+        if not (0 <= u < dur): return
+        k3 = backout(u / 0.2) * (1 + 0.03 * math.sin(u * 2 * math.pi / (BEAT / 2))); a = 1 - max(0.0, (u - dur + 0.25) / 0.25)
+        c.save(); c.translate(540, 1080); c.scale(k3, k3); c.rotate(-4)
+        p = skia.Paint(AntiAlias=True, Color=skia.Color4f(0.02, 0.02, 0.06, 0.82 * a).toColor()); c.drawRoundRect(skia.Rect(-500, -120, 500, 70 if not sub else 140), 26, 26, p)
+        text(c, msg, 0, 30, 150, skia.ColorSetRGB(*col), BEBAS, glow=skia.ColorSetRGB(*glowc), alpha=a)
+        if sub: text(c, sub, 0, 115, 64, skia.ColorWHITE, BEBAS, alpha=a)
+        c.restore()
+    hook_u = t if t < 3.3 else (t - (D - 0.45) if t >= D - 0.45 else -1)
+    if t < 3.3 or t >= D - 0.45:
+        uu = 0.5 if t >= D - 0.45 else max(0.5, t)            # identical on frame 0 and the last frames (loop)
+        banner("PICK A SIDE!", "THE ENDING IS CRAZY", uu, 99)
+        for side, xx in ((-1, 150), (1, 930)):
+            on = (int(t / (BEAT / 2)) % 2 == (0 if side < 0 else 1))
+            pth = skia.Path(); pth.moveTo(xx + side * 50, 1300); pth.lineTo(xx - side * 30, 1250); pth.lineTo(xx - side * 30, 1350); pth.close()
+            c.drawPath(pth, skia.Paint(AntiAlias=True, Color=hsv(COL["L" if side < 0 else "R"][0], 0.8, 1.0, 1.0 if on else 0.35)))
+    banner("TOO EASY?", None, t - 9.0, 1.4)
+    banner("IT'S OVER...", None, t - 23.4, 1.6)
+    banner("...OR IS IT?", None, t - 26.8, 1.6, col=(190, 255, 120), glowc=(80, 200, 60))
+    banner("HERE IT COMES!", None, t - 31.4, 1.6, col=(190, 255, 120), glowc=(80, 200, 60))
+    banner("FASTER!!!", None, t - 35.0, 1.4, col=(190, 255, 120), glowc=(80, 200, 60))
     # ---- winner / finish ----
     if WIN_T <= t < RESET0:
         u = t - WIN_T; nm = WINNER; ln = LANES[0] if nm == "L" else LANES[1]; h, s = COL[nm]; cx = (ln["x0"] + ln["x1"]) / 2
@@ -140,10 +181,11 @@ def draw(main, layer, small, fi):
         c.drawRoundRect(skia.Rect(-210, -70, 210, 50), 22, 22, skia.Paint(AntiAlias=True, Color=hsv(h, s, 0.85)))
         c.drawRoundRect(skia.Rect(-210, -70, 210, 50), 22, 22, skia.Paint(AntiAlias=True, Style=skia.Paint.kStroke_Style, StrokeWidth=7, Color=skia.ColorWHITE))
         text(c, "WINNER!", 0, 28, 100, skia.ColorWHITE, BEBAS); c.restore()
-        if u > 0.6: text(c, f"FIRST THROUGH BY {GAP:.1f} S", cx, 1235, 40, skia.ColorWHITE, BEBAS, glow=hsv(h, s, 1.0), alpha=ease((u - 0.6) / 0.3))
-        if u > 1.2: text(c, "DID YOU GUESS IT? COMMENT!", 540, 1880, 44, skia.ColorSetRGB(255, 215, 90), BEBAS, glow=skia.ColorSetRGB(255, 150, 40), alpha=ease((u - 1.2) / 0.3))
+        if u > 0.6: text(c, "×3 COMEBACK!", cx, 1275, 64, skia.ColorWHITE, BEBAS, glow=hsv(h, s, 1.0), alpha=ease((u - 0.6) / 0.3))
+        if u > 1.2: text(c, "DID YOU CALL IT?", 540, 1880, 56, skia.ColorSetRGB(255, 215, 90), BEBAS, glow=skia.ColorSetRGB(255, 150, 40), alpha=ease((u - 1.2) / 0.3))
     if not (WIN_T + 1.2 <= t < RESET0):
         text(c, "@HOWTOWITHZAY", 540, 1880, 24, skia.ColorSetRGB(120, 128, 170), MONO)
+    c.restore()
 
 def surfaces(): return skia.Surface(W, H), skia.Surface(W, H), skia.Surface(SW, SH)
 def main():

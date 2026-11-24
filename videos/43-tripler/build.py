@@ -61,26 +61,42 @@ for (t, kind, nm, x) in b[::2]:
     if t > LOSE_T: continue
     dens = np.sum(np.abs(bt_ - t) < 0.02)
     S.add(click(0.03 / np.sqrt(dens)), t, -0.6 if nm == "L" else 0.6, "clicks")
-# bed (stops after the finish; quiet reset)
+# bed: energetic from the first frame; breakdown on "...OR IS IT?", drop on "HERE IT COMES!"
 CH = [[50, 53, 57], [46, 50, 53], [53, 57, 60], [48, 52, 55]]; RT = [38, 34, 41, 36]
+RIFF = [(0, 74), (2, 77), (3, 74), (6, 72), (8, 69), (10, 72), (12, 74), (14, 77)]
+BREAK0, DROP = 26.8, 31.4
 END = int((LOSE_T + 1.0) / BAR) + 1
+def brass(notes, dur, vol=0.1):
+    n = int(dur * SR); t = np.arange(n) / SR; x = np.zeros(n)
+    for m in notes: ph = hz(m) * t; x += 2 * (ph % 1) - 1
+    return lp(x, 2600) / len(notes) * vol * np.clip(t / 0.01, 0, 1) * np.clip((dur - t) / 0.05, 0, 1)
 kicks = []
 for bar in range(END):
-    ch, r = CH[bar % 4], RT[bar % 4]; inten = min(1.0, bar / 16)
-    for q in range(8):
-        t = bar * BAR + q * BEAT / 2
+    ch, r = CH[bar % 4], RT[bar % 4]
+    for q in range(16):
+        t = bar * BAR + q * BEAT / 4
         if t > LOSE_T + 0.6: break
-        S.add(pulse(r + (12 if q % 2 else 0), BEAT / 2 * 0.9, 0.16 + 0.08 * inten), t, 0, "bass")
-        if q % 2 == 0: S.add(tkick(0.5 + 0.3 * inten), t, 0, "drums"); kicks.append(t)
-        if q % 2 == 1: S.add(hat(0.018 + 0.012 * inten, seed=bar * 8 + q), t, 0.3, "drums")
-        if bar >= 8 and q in (2, 6): S.add(clap(0.14, seed=bar + q), t, 0, "drums")
-    S.add(pad([m + 12 for m in ch], BAR, 0.012 + 0.008 * inten), bar * BAR, 0, "pads")
+        brk = BREAK0 <= t < DROP; big = t >= DROP
+        if q % 2 == 0: S.add(pulse(r + (12 if q % 4 == 2 else 0), BEAT / 2 * 0.9, 0.2 if not brk else 0.08), t, 0, "bass")
+        if q % 4 == 0 and not (brk and q != 0): S.add(tkick(0.8 if not brk else 0.5), t, 0, "drums"); kicks.append(t)
+        if q % 4 == 2 and not brk: S.add(hat(0.03, seed=bar * 16 + q, long=True), t, 0.3, "drums")
+        if big and q % 2 == 1: S.add(hat(0.018, seed=900 + bar * 16 + q), t, -0.3, "drums")
+        if q in (4, 12) and not brk: S.add(clap(0.2, seed=bar + q), t, 0, "drums")
+        if brk and t > DROP - 1.0: S.add(snare(0.05 + 0.15 * (t - DROP + 1.0), seed=q), t, 0, "drums")
+    S.add(pad([m + 12 for m in ch], BAR, 0.014 if bar * BAR < DROP else 0.022), bar * BAR, 0, "pads")
+    if not (BREAK0 <= bar * BAR < DROP):
+        for q, m in RIFF: S.add(chop(m, BEAT / 4 * 1.7, "ao"[q % 2], 0.16 if bar * BAR < DROP else 0.2), bar * BAR + q * BEAT / 4, 0.15, "lead")
+# hype hits on every banner
+for tb in (0.0, 9.0, 23.4, 26.8, 31.4, 35.0):
+    S.add(brass([62, 65, 69, 74], BEAT * 0.9, 0.12), tb, 0, "fx"); S.add(impact(0.25), tb, 0, "fx")
 S.add(riser(WIN_T - 30.0, 0.07, seed=4), 30.0)
 S.add(impact(0.5), WIN_T, 0.4, "fx"); S.add(pad([62, 65, 69, 74, 77], 3.0, 0.035), WIN_T, 0, "fx")
 for k, m in enumerate((74, 77, 81, 86)): S.add(pluckb(m, 0.1, 1.2), WIN_T + 0.08 * k, 0.6, "notes")
 S.add(crunch(0.2, low=True), LOSE_T, -0.6, "fx")
 S.add(whoosh(1.0, 0.09, rev=True), D - 2.6 - 0.2, 0, "fx")
+S.add(riser(1.2, 0.05, seed=8), D - 1.2)
 S.sidechain("pads", kicks, 0.4); S.sidechain("bass", kicks, 0.25)
 S.reverb("notes", 0.3, 1.8, 21); S.reverb("pads", 0.4, 2.6, 41); S.reverb("fx", 0.25, 1.6, 31); S.reverb("drums", 0.07, 0.8, 51); S.reverb("clicks", 0.1, 0.5, 61)
-S.save(HERE / "music.wav", gains={"notes": 1.0, "fx": 1.0, "clicks": 0.8, "bass": 0.9, "drums": 0.9, "pads": 0.85})
+S.delay("lead", BEAT * 0.75, fb=0.3, mix=0.2); S.reverb("lead", 0.25, 1.6, 71)
+S.save(HERE / "music.wav", gains={"notes": 1.0, "fx": 1.0, "clicks": 0.7, "bass": 0.95, "drums": 1.0, "pads": 0.85, "lead": 0.85})
 print("sound", D)
