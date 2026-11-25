@@ -478,15 +478,17 @@ Sound on 🔊 every bounce is a note.
 Extra tags (optional): #plinko #statistics #science #asmr #learnoninstagram
 
 ## 100 balls ×2 vs 1 ball ×3 (out/tripler.mp4)
-100 balls ×2 vs 1 ball ×3. Who breaks through first? 🏁
+PICK A SIDE before the GO 🏁
 
-Left: 100 balls, doubling every floor.
-Right: 1 ball, tripling every floor.
-At 25 s it's floor 19 vs floor 8… then the ×3 explodes 🤯
+👈 100 balls, ×2 every floor
+👉 1 ball, ×3 every floor
 
-Comment your guess BEFORE the end 👇
+Halfway: floor 19 vs floor 8… looks over, right? 😏
+Watch till the end 🤯
+
+Comment the side you picked 👇
 Sound on 🔊 every broken floor is a note.
 
 #satisfying #oddlysatisfying #math #simulation #exponential
 
-Extra tags (optional): #compoundinterest #mindset #asmr #satisfyingvideo #reels
+Extra tags (optional): #pickaside #compoundinterest #asmr #satisfyingvideo #8bitloop

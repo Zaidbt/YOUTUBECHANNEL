@@ -98,5 +98,5 @@ Your dishwasher uses ~13 L. By hand? ~100 L 🍽️ here's the trick 👀 sound 
 #satisfying #oddlysatisfying #math #plinko #probability #fyp
 
 ## 100 balls ×2 vs 1 ball ×3 (out/tripler.mp4)
-100 balls ×2 vs 1 ball ×3… who breaks through first? 🏁 guess before the end 👇 sound on 🔊
-#satisfying #math #simulation #exponential #oddlysatisfying #fyp
+Pick a side 👈👉 100 balls ×2 or 1 ball ×3? Watch till the end 🤯 sound on 🔊
+#satisfying #math #simulation #pickaside #oddlysatisfying #fyp
