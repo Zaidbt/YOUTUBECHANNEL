@@ -492,3 +492,19 @@ Sound on 🔊 every broken floor is a note.
 #satisfying #oddlysatisfying #math #simulation #exponential
 
 Extra tags (optional): #pickaside #compoundinterest #asmr #satisfyingvideo #8bitloop
+
+## Steady ×1.5 vs Gambler ×3 or ÷2 (out/gamble.mp4)
+PICK A SIDE before the GO 🪙
+
+👈 STEADY: ×1.5 every floor
+👉 GAMBLER: coin flip, ×3 or ÷2
+
+The gambler gets 6 heads and 6 tails… perfectly average luck.
+Watch what happens 🤯
+
+Comment the side you picked 👇
+Sound on 🔊
+
+#math #probability #satisfying #simulation #investing
+
+Extra tags (optional): #pickaside #coinflip #mindset #financetips #8bitloop

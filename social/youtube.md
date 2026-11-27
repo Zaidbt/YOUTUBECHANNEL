@@ -173,3 +173,10 @@ Description:
 Pick a side before the GO. Left: 100 balls that DOUBLE every floor they break. Right: ONE ball that TRIPLES. Every floor is tougher than the last. Halfway through, it's floor 19 vs floor 8 and it looks over… then ×3 snowballs: 3, 9, 27, 81… 3,486,784,401 balls vs 104,857,600 by the end. That's exponential growth: the bigger multiplier wins in the end, whatever the head start. Which side did you pick? 👇 Sound on 🔊 every broken floor is a note.
 #satisfying #math #exponential #simulation #shorts
 Tags: exponential growth, 1 ball vs 100 balls, ball simulation, satisfying simulation, math race, x2 vs x3, pick a side, compound growth, oddly satisfying, physics simulation, 8bitloop, shorts
+
+## Steady ×1.5 vs Gambler ×3 or ÷2 (out/gamble.mp4)
+Title: Steady ×1.5 vs a coin flip ×3 or ÷2… pick a side 🪙 #shorts
+Description:
+Both start with 100 balls. STEADY multiplies by 1.5 on every floor. The GAMBLER flips a coin: heads ×3, tails ÷2. Sounds like a great deal (the average flip is ×1.75!), and the gambler rockets ahead… but with exactly 6 heads and 6 tails, it ends with 1,139 balls vs 12,975. Why: one head and one tail = ×3 then ÷2 = ×1.5 for TWO floors, while steady gets ×1.5 on EACH floor. Big wins don't cancel big losses. That's volatility drag, the same maths behind why risky bets ruin you even when they look profitable on average. Which side did you pick? 👇 Sound on 🔊
+#math #probability #satisfying #simulation #shorts
+Tags: coin flip game, volatility drag, gambler vs steady, expected value, probability, investing math, compound growth, satisfying simulation, pick a side, 8bitloop, shorts
