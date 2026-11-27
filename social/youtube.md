@@ -180,3 +180,10 @@ Description:
 Both start with 100 balls. STEADY multiplies by 1.5 on every floor. The GAMBLER flips a coin: heads ×3, tails ÷2. Sounds like a great deal (the average flip is ×1.75!), and the gambler rockets ahead… but with exactly 6 heads and 6 tails, it ends with 1,139 balls vs 12,975. Why: one head and one tail = ×3 then ÷2 = ×1.5 for TWO floors, while steady gets ×1.5 on EACH floor. Big wins don't cancel big losses. That's volatility drag, the same maths behind why risky bets ruin you even when they look profitable on average. Which side did you pick? 👇 Sound on 🔊
 #math #probability #satisfying #simulation #shorts
 Tags: coin flip game, volatility drag, gambler vs steady, expected value, probability, investing math, compound growth, satisfying simulation, pick a side, 8bitloop, shorts
+
+## 1 ball vs a heart of bricks (out/bricks.mp4)
+Title: 1 ball vs 446 bricks… every brick = +1 ball 💥 #shorts
+Description:
+One ball. A heart made of 446 bricks. Every brick it breaks gives you one more ball. It crawls at first… then it explodes: 10 balls, 100, 300… and then the last 5 bricks refuse to die. Guess how many seconds it takes before the end! Every brick you hear breaking is a note. 🔊
+#satisfying #oddlysatisfying #simulation #asmr #shorts
+Tags: satisfying simulation, 1 ball vs bricks, brick breaker, every brick +1 ball, exponential growth, oddly satisfying, ball simulation, asmr, satisfying video, 8bitloop, shorts

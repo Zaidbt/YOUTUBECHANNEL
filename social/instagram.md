@@ -508,3 +508,15 @@ Sound on 🔊
 #math #probability #satisfying #simulation #investing
 
 Extra tags (optional): #pickaside #coinflip #mindset #financetips #8bitloop
+
+## 1 ball vs a heart of bricks (out/bricks.mp4)
+1 ball vs 446 bricks 💥 every brick = +1 ball
+
+It starts sooo slow… then 100 balls… 300… and the last 5 bricks 😤
+
+Guess the time before the end 👇
+Sound on 🔊 every brick is a note.
+
+#satisfying #oddlysatisfying #simulation #asmr #satisfyingvideo
+
+Extra tags (optional): #brickbreaker #relaxing #8bitloop #reels #mesmerizing

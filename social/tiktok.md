@@ -104,3 +104,7 @@ Pick a side 👈👉 100 balls ×2 or 1 ball ×3? Watch till the end 🤯 sound 
 ## Steady ×1.5 vs Gambler ×3 or ÷2 (out/gamble.mp4)
 Steady ×1.5 or a coin flip ×3 / ÷2? 🪙 Pick a side 👈👉 6 heads, 6 tails… watch the end 🤯
 #math #probability #coinflip #pickaside #satisfying #fyp
+
+## 1 ball vs a heart of bricks (out/bricks.mp4)
+1 ball vs 446 bricks, every brick = +1 ball 💥 guess the time 👇 sound on 🔊
+#satisfying #oddlysatisfying #simulation #asmr #brickbreaker #fyp
